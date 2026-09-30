@@ -304,3 +304,8 @@ Potential future expansion areas:
   <b>Rudranarayan Jena</b><br>
   <i>Founder @ Voxion Labs</i>
 </div>
+
+---
+<div align="center">
+  <strong>(c) Voxion Labs</strong>
+</div>
