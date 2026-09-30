@@ -307,5 +307,5 @@ Potential future expansion areas:
 
 ---
 <div align="center">
-  <strong>(c) Voxion Labs</strong>
+  <strong>(c)Voxion Labs</strong>
 </div>
