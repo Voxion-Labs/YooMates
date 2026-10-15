@@ -2,10 +2,9 @@
   <img src="public/branding/yoomates-logo.png" alt="YooMates logo" width="180" />
 </p>
 
----
-<p align="center">
-  Unified communication, publishing, and execution for modern teams.
-</p>
+<br>
+
+# <div align="center"><strong>YooMates</strong></div>
 
 YooMates is a unified collaboration platform that combines:
 
@@ -95,24 +94,24 @@ YooMates is built around three core pillars:
 ### Repository Structure
 
 ```text
-src/
-  app/
-    (auth)/
-    (main)/
-    api/
-  modules/
-    ai/
-    auth/
-    global/
-    hubs/
-    myspace/
-    profile/
-  shared/
-    components/
-    hooks/
-    lib/
-prisma/
-public/
+├── 📂 src/
+│   ├── 📂 app/
+│   │   ├── 📂 (auth)/
+│   │   ├── 📂 (main)/
+│   │   └── 📂 api/
+│   ├── 📂 modules/
+│   │   ├── 📂 ai/
+│   │   ├── 📂 auth/
+│   │   ├── 📂 global/
+│   │   ├── 📂 hubs/
+│   │   ├── 📂 myspace/
+│   │   └── 📂 profile/
+│   └── 📂 shared/
+│       ├── 📂 components/
+│       ├── 📂 hooks/
+│       └── 📂 lib/
+├── 📂 prisma/
+└── 📂 public/
 ```
 
 ## Tech Decisions
@@ -122,66 +121,6 @@ public/
 - `Route Handlers` are used for client-side fetch flows, realtime-related endpoints, and external service boundaries.
 - `Prisma` provides the relational base for social, communication, and workspace features.
 - `Pusher` handles realtime message fanout, presence, and incremental UI updates.
-
-## Environment Variables
-
-Copy `.env.example` to `.env` for local development, and mirror the same variables in Vercel or Render.
-
-### Core
-
-```bash
-DATABASE_URL=
-NEXTAUTH_SECRET=
-NEXTAUTH_URL=
-NEXT_PUBLIC_APP_URL=
-```
-
-### OAuth Providers
-
-```bash
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-TWITTER_CLIENT_ID=
-TWITTER_CLIENT_SECRET=
-MICROSOFT_CLIENT_ID=
-MICROSOFT_CLIENT_SECRET=
-MICROSOFT_TENANT_ID=
-```
-
-### Realtime
-
-```bash
-PUSHER_APP_ID=
-PUSHER_KEY=
-PUSHER_SECRET=
-PUSHER_CLUSTER=
-NEXT_PUBLIC_PUSHER_KEY=
-NEXT_PUBLIC_PUSHER_CLUSTER=
-```
-
-### Uploads
-
-```bash
-UPLOADTHING_SECRET=
-UPLOADTHING_APP_ID=
-```
-
-### AI
-
-```bash
-OPENAI_API_KEY=
-OPENAI_MODEL=gpt-4o-mini
-```
-
-### Email Notifications
-
-```bash
-EMAIL_SERVER_HOST=
-EMAIL_SERVER_PORT=
-EMAIL_SERVER_USER=
-EMAIL_SERVER_PASSWORD=
-EMAIL_FROM=
-```
 
 ## Local Development
 
