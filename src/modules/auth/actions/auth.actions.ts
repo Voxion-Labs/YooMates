@@ -19,7 +19,7 @@ type RegisterActionState = {
 };
 
 async function generateUniqueUsername(name: string) {
-  const base = slugify(name) || "horizonsync-user";
+  const base = slugify(name) || "yoomates-user";
   let suffix = 0;
 
   while (true) {

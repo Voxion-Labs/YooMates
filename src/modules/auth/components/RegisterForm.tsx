@@ -38,7 +38,7 @@ export function RegisterForm() {
         <label className="text-sm font-medium text-[rgb(var(--foreground))]" htmlFor="email">
           Email
         </label>
-        <Input id="email" name="email" placeholder="you@horizonsync.com" required type="email" />
+        <Input id="email" name="email" placeholder="you@yoomates.com" required type="email" />
       </div>
 
       <div className="space-y-2">

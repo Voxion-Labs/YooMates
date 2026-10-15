@@ -169,7 +169,7 @@ export function FeedComposer({ onClearQuote, onCreate, quoteTarget }: FeedCompos
           className="min-h-[140px]"
           maxLength={2000}
           onChange={(event) => setContent(event.target.value)}
-          placeholder="What is moving across HorizonSync today?"
+          placeholder="What is moving across YooMates today?"
           value={content}
         />
       </div>

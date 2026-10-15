@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: horizonsync
+    name: yoomates
     env: node
     plan: free
     autoDeploy: true

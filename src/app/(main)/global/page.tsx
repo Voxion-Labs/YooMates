@@ -17,7 +17,7 @@ export default async function GlobalPage() {
   return (
     <div className="space-y-6">
       <PlaceholderPanel
-        description="This is the public-facing conversation layer of HorizonSync, blending broadcast communication, community signals, and quick collaboration entry points."
+        description="This is the public-facing conversation layer of YooMates, blending broadcast communication, community signals, and quick collaboration entry points."
         title="Global feed"
       />
       <FeedList
@@ -26,7 +26,7 @@ export default async function GlobalPage() {
         viewer={{
           id: currentUser.id,
           image: currentUser.image ?? null,
-          name: currentUser.name ?? currentUser.email ?? "HorizonSync User",
+          name: currentUser.name ?? currentUser.email ?? "YooMates User",
           username: currentUser.username ?? null,
         }}
       />

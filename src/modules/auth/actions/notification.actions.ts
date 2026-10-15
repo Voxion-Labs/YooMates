@@ -43,9 +43,9 @@ export async function sendLoginNotificationAction({
     <div style="margin:0;padding:32px 16px;background:#090a12;font-family:Segoe UI,Arial,sans-serif;color:#f8f9ff;">
       <div style="max-width:640px;margin:0 auto;border:1px solid rgba(168,85,247,0.18);border-radius:28px;overflow:hidden;background:linear-gradient(180deg,#12131c 0%,#0f1018 100%);box-shadow:0 32px 100px -48px rgba(0,0,0,0.85);">
         <div style="padding:32px;background:linear-gradient(135deg,rgba(168,85,247,0.22),rgba(17,18,28,0.16));border-bottom:1px solid rgba(168,85,247,0.15);">
-          <div style="display:inline-block;padding:10px 14px;border-radius:999px;background:#a855f7;color:#ffffff;font-weight:700;letter-spacing:0.12em;font-size:12px;text-transform:uppercase;">HorizonSync</div>
+          <div style="display:inline-block;padding:10px 14px;border-radius:999px;background:#a855f7;color:#ffffff;font-weight:700;letter-spacing:0.12em;font-size:12px;text-transform:uppercase;">YooMates</div>
           <h1 style="margin:20px 0 12px;font-size:30px;line-height:1.2;">Welcome back, ${displayName}</h1>
-          <p style="margin:0;font-size:15px;line-height:1.8;color:#cfd4f8;">A successful sign-in was recorded on your HorizonSync workspace. This email is part welcome message, part visibility check for account security.</p>
+          <p style="margin:0;font-size:15px;line-height:1.8;color:#cfd4f8;">A successful sign-in was recorded on your YooMates workspace. This email is part welcome message, part visibility check for account security.</p>
         </div>
         <div style="padding:32px;">
           <div style="padding:20px;border-radius:22px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);">
@@ -56,7 +56,7 @@ export async function sendLoginNotificationAction({
           </div>
           <p style="margin:24px 0 0;font-size:15px;line-height:1.8;color:#cfd4f8;">If this was you, no action is needed. If this looks unfamiliar, rotate your password and review connected providers immediately.</p>
           <div style="margin-top:28px;">
-            <a href="${dashboardUrl}" style="display:inline-block;padding:14px 18px;border-radius:18px;background:#a855f7;color:#ffffff;text-decoration:none;font-weight:700;">Open HorizonSync</a>
+            <a href="${dashboardUrl}" style="display:inline-block;padding:14px 18px;border-radius:18px;background:#a855f7;color:#ffffff;text-decoration:none;font-weight:700;">Open YooMates</a>
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@ export async function sendLoginNotificationAction({
   `;
 
   const text = [
-    `Welcome back to HorizonSync, ${name?.trim() || "there"}.`,
+    `Welcome back to YooMates, ${name?.trim() || "there"}.`,
     `A login was recorded for ${email}.`,
     `Provider: ${provider ?? "credentials"}`,
     `Time: ${formattedTimestamp}`,
@@ -74,7 +74,7 @@ export async function sendLoginNotificationAction({
   await transporter.sendMail({
     from: getEmailFromAddress(),
     html,
-    subject: "HorizonSync sign-in confirmation",
+    subject: "YooMates sign-in confirmation",
     text,
     to: email,
   });

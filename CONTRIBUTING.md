@@ -1,11 +1,11 @@
-# HorizonSync Operational & Contribution Protocols
+# YooMates Operational & Contribution Protocols
 
-HorizonSync operates under strict full-stack architectural and relational database constraints. We do not accept unoptimized React renders, insecure Server Actions, or schema mutations that break real-time synchronization. This repository is maintained as a proprietary, high-performance team collaboration platform.
+YooMates operates under strict full-stack architectural and relational database constraints. We do not accept unoptimized React renders, insecure Server Actions, or schema mutations that break real-time synchronization. This repository is maintained as a proprietary, high-performance team collaboration platform.
 
 If you intend to submit a Pull Request, you must adhere strictly to the following institutional directives.
 
 ## 1. Architectural Standards
-All code submitted to HorizonSync must meet our baseline performance and security metrics:
+All code submitted to YooMates must meet our baseline performance and security metrics:
 * **Real-time Integrity:** Any modifications to the Pusher event fanout system must guarantee sub-millisecond delivery and zero message duplication.
 * **Database Relational Strictness:** Changes to the Prisma schema require explicit, reversible migration paths. Orphaned relational data or unoptimized queries on the PostgreSQL layer will result in immediate rejection.
 * **Component Isolation:** Ensure Next.js Server Components and Client Components are strictly delineated. Do not leak server secrets to the client bundle.

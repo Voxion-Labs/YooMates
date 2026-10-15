@@ -101,7 +101,7 @@ const DEFAULT_DOCUMENT_BLOCKS: DocumentBlock[] = [
     id: "paragraph-intro",
     type: "paragraph",
     content:
-      "This is your private execution layer inside HorizonSync. Draft ideas, collect assets, and plan work before anything reaches the Global feed.",
+      "This is your private execution layer inside YooMates. Draft ideas, collect assets, and plan work before anything reaches the Global feed.",
   },
   {
     id: "checklist-launch",
@@ -232,7 +232,7 @@ async function ensureWorkspace(userId: string) {
 
   await db.document.create({
     data: {
-      title: "HorizonSync Workspace Brief",
+      title: "YooMates Workspace Brief",
       icon: "HS",
       folderId: folder.id,
       userId,

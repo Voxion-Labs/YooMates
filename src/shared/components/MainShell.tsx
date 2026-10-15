@@ -33,7 +33,7 @@ export function MainShell({
       <MasterNavigation className="hidden lg:flex" />
 
       <Drawer
-        description="Switch between your core HorizonSync workspaces."
+        description="Switch between your core YooMates workspaces."
         onClose={() => setIsMobileNavigationOpen(false)}
         open={isMobileNavigationOpen}
         title="Navigation"
@@ -66,7 +66,7 @@ export function MainShell({
                   href="/global"
                 />
                 <h1 className="mt-1 text-xl font-semibold text-[rgb(var(--foreground))] sm:hidden">
-                  HorizonSync
+                  YooMates
                 </h1>
               </div>
             </div>
@@ -77,7 +77,7 @@ export function MainShell({
 
             <div className="hidden text-right md:block">
               <p className="text-sm font-semibold text-[rgb(var(--foreground))]">
-                {userName ?? "HorizonSync User"}
+                {userName ?? "YooMates User"}
               </p>
               <p className="text-xs text-[rgb(var(--muted-foreground))]">
                 {userEmail ?? "No email available"}

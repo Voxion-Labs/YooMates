@@ -22,7 +22,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     <ProfileHeader
       bio={profile.bio}
       image={profile.image}
-      name={profile.name ?? "HorizonSync User"}
+      name={profile.name ?? "YooMates User"}
       username={profile.username ?? params.username}
     />
   );

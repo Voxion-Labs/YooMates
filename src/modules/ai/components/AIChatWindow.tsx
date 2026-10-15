@@ -116,7 +116,7 @@ export function AIChatWindow() {
         <Textarea
           className="min-h-[110px]"
           onChange={handleInputChange}
-          placeholder="Ask HorizonSync AI to explain, summarize, or draft..."
+          placeholder="Ask YooMates AI to explain, summarize, or draft..."
           value={input}
         />
         <div className="mt-3 flex justify-end">

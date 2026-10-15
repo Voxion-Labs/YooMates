@@ -14,7 +14,7 @@ export default async function ProfileSettingsPage() {
   return (
     <div className="space-y-6">
       <PlaceholderPanel
-        description="Fine-tune your HorizonSync identity across the unified workspace. This phase focuses on the core profile attributes needed by auth and the shell."
+        description="Fine-tune your YooMates identity across the unified workspace. This phase focuses on the core profile attributes needed by auth and the shell."
         title="Profile settings"
       />
 

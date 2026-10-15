@@ -27,7 +27,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               One workspace for live conversation, global reach, and personal execution.
             </h1>
             <p className="relative mt-6 max-w-xl text-sm leading-7 text-white/80">
-              HorizonSync unifies community, collaboration, and execution into one high-trust
+              YooMates unifies community, collaboration, and execution into one high-trust
               operating surface with secure sign-in, polished workflows, and branded product
               presence across every device.
             </p>

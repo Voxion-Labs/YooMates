@@ -19,38 +19,38 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
   title: {
-    default: "HorizonSync",
-    template: "%s | HorizonSync",
+    default: "YooMates",
+    template: "%s | YooMates",
   },
   description:
     "A unified collaboration platform combining real-time communication, global publishing, and private execution in one polished workspace.",
-  applicationName: "HorizonSync",
+  applicationName: "YooMates",
   icons: {
-    apple: "/branding/horizonsync-logo.jpg",
-    icon: "/branding/horizonsync-logo.jpg",
-    shortcut: "/branding/horizonsync-logo.jpg",
+    apple: "/branding/yoomates-logo.png",
+    icon: "/branding/yoomates-logo.png",
+    shortcut: "/branding/yoomates-logo.png",
   },
   openGraph: {
-    title: "HorizonSync",
+    title: "YooMates",
     description:
       "A unified collaboration platform combining real-time communication, global publishing, and private execution in one polished workspace.",
     images: [
       {
-        alt: "HorizonSync wordmark banner",
+        alt: "YooMates wordmark banner",
         height: 210,
-        url: "/branding/horizonsync-banner.jpg",
+        url: "/branding/yoomates-logo.png",
         width: 989,
       },
     ],
-    siteName: "HorizonSync",
+    siteName: "YooMates",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     description:
       "A unified collaboration platform combining real-time communication, global publishing, and private execution in one polished workspace.",
-    images: ["/branding/horizonsync-banner.jpg"],
-    title: "HorizonSync",
+    images: ["/branding/yoomates-logo.png"],
+    title: "YooMates",
   },
 };
 

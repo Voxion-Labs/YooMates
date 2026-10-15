@@ -58,7 +58,7 @@ function resolveOAuthProviders() {
         email: {
           label: "Email",
           type: "email",
-          placeholder: "you@horizonsync.com",
+          placeholder: "you@yoomates.com",
         },
         password: {
           label: "Password",
@@ -98,7 +98,7 @@ function resolveOAuthProviders() {
 }
 
 async function generateUniqueUsername(candidate: string | null | undefined) {
-  const baseCandidate = slugify(candidate || "horizonsync-user") || "horizonsync-user";
+  const baseCandidate = slugify(candidate || "yoomates-user") || "yoomates-user";
   let suffix = 0;
 
   while (true) {
@@ -207,7 +207,7 @@ export const authOptions: NextAuthOptions = {
         provider: account?.provider ?? null,
         timestampIso: new Date().toISOString(),
       }).catch((error) => {
-        console.error("Failed to send HorizonSync login notification.", error);
+        console.error("Failed to send YooMates login notification.", error);
       });
     },
   },

@@ -130,7 +130,7 @@ export function LoginForm({ callbackUrl = "/global" }: LoginFormProps) {
           </label>
           <div className="relative">
             <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgb(var(--muted-foreground))]" />
-            <Input className="pl-11" id="email" name="email" placeholder="you@horizonsync.com" required type="email" />
+            <Input className="pl-11" id="email" name="email" placeholder="you@yoomates.com" required type="email" />
           </div>
         </div>
 

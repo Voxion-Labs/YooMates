@@ -1,9 +1,5 @@
 <p align="center">
-  <img src="public/branding/horizonsync-logo.jpg" alt="HorizonSync logo" width="180" />
-</p>
-
-<p align="center">
-  <img src="public/branding/horizonsync-banner.jpg" alt="HorizonSync banner" width="640" />
+  <img src="public/branding/yoomates-logo.png" alt="YooMates logo" width="180" />
 </p>
 
 ---
@@ -11,7 +7,7 @@
   Unified communication, publishing, and execution for modern teams.
 </p>
 
-HorizonSync is a unified collaboration platform that combines:
+YooMates is a unified collaboration platform that combines:
 
 - real-time team communication 
 - a public social feed 
@@ -21,7 +17,7 @@ The product is designed as a single, cohesive operating surface for modern teams
 
 ## Product Overview
 
-HorizonSync is built around three core pillars:
+YooMates is built around three core pillars:
 
 - `Hubs`
   Real-time team collaboration with channels, direct messages, reactions, forwarding, and side-panel threads.
@@ -222,7 +218,7 @@ npm run build
 
 ## Security Posture
 
-HorizonSync includes:
+YooMates includes:
 
 - server-side input sanitization helpers
 - same-origin protection for mutation routes
@@ -241,7 +237,7 @@ HorizonSync includes:
 
 ## Deployment Notes
 
-HorizonSync is designed to run well on a standard Next.js deployment stack such as:
+YooMates is designed to run well on a standard Next.js deployment stack such as:
 
 - Vercel for app hosting
 - Neon, Supabase, or Railway PostgreSQL for data
@@ -307,5 +303,5 @@ Potential future expansion areas:
 
 ---
 <div align="center">
-  <strong>(c)Voxion Labs</strong>
+  <strong>(c) Voxion Labs</strong>
 </div>

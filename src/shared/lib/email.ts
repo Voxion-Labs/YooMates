@@ -31,5 +31,5 @@ export function getEmailTransporter() {
 }
 
 export function getEmailFromAddress() {
-  return process.env.EMAIL_FROM ?? "HorizonSync <no-reply@horizonsync.app>";
+  return process.env.EMAIL_FROM ?? "YooMates <no-reply@yoomates.app>";
 }

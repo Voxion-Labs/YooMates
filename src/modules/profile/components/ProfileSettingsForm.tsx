@@ -121,7 +121,7 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
             id="bio"
             maxLength={280}
             name="bio"
-            placeholder="Tell HorizonSync who you are and what you care about."
+            placeholder="Tell YooMates who you are and what you care about."
           />
         </div>
       </section>
@@ -131,7 +131,7 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
           <div>
             <h2 className="text-lg font-semibold text-[rgb(var(--foreground))]">Social links</h2>
             <p className="mt-1 text-sm text-[rgb(var(--muted-foreground))]">
-              HorizonSync reserves exactly four public link slots for your profile.
+              YooMates reserves exactly four public link slots for your profile.
             </p>
           </div>
           <span className="rounded-full border border-[rgb(var(--border))] px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[rgb(var(--muted-foreground))]">

@@ -30,7 +30,7 @@ export function ProfileHeader({
           <h1 className="text-3xl font-semibold text-[rgb(var(--foreground))]">{name}</h1>
           <p className="text-sm font-medium text-[rgb(var(--accent-strong))]">@{username}</p>
           <p className="max-w-2xl text-sm leading-6 text-[rgb(var(--muted-foreground))]">
-            {bio || "This HorizonSync profile is still taking shape."}
+            {bio || "This YooMates profile is still taking shape."}
           </p>
         </div>
       </div>

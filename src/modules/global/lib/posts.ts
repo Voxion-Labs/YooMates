@@ -179,7 +179,7 @@ async function ensureSeedPosts(userId: string) {
       {
         authorId: userId,
         content:
-          "HorizonSync Global is live. This feed is where product notes, launch updates, and community signals flow together without forcing context switches.",
+          "YooMates Global is live. This feed is where product notes, launch updates, and community signals flow together without forcing context switches.",
       },
       {
         authorId: userId,

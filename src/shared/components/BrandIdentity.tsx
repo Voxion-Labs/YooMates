@@ -35,11 +35,11 @@ export function BrandLogo({ className, href, priority = false }: BrandAssetProps
       )}
     >
       <Image
-        alt="HorizonSync logo"
+        alt="YooMates logo"
         className="h-full w-full object-cover"
         height={659}
         priority={priority}
-        src="/branding/horizonsync-logo.jpg"
+        src="/branding/yoomates-logo.png"
         width={770}
       />
     </span>
@@ -52,11 +52,11 @@ export function BrandWordmark({ className, href, priority = false }: BrandAssetP
   const content = (
     <span className={cn("inline-flex", className)}>
       <Image
-        alt="HorizonSync wordmark"
+        alt="YooMates wordmark"
         className="h-auto w-full object-contain"
         height={210}
         priority={priority}
-        src="/branding/horizonsync-banner.jpg"
+        src="/branding/yoomates-logo.png"
         width={989}
       />
     </span>

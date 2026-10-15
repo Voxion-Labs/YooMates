@@ -7,7 +7,7 @@ export default function RegisterPage() {
         Register
       </p>
       <h2 className="mt-3 text-3xl font-semibold text-[rgb(var(--foreground))]">
-        Create your HorizonSync account
+        Create your YooMates account
       </h2>
       <p className="mt-3 text-sm leading-6 text-[rgb(var(--muted-foreground))]">
         Credentials login is available immediately, and social providers appear when their env keys
