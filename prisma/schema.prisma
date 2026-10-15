@@ -10,7 +10,7 @@ datasource db {
 // ==========================================
 // 1. AUTH & USER IDENTITY (The Profile)
 // These models are aligned with NextAuth's Prisma adapter while
-// still carrying the extra profile fields HorizonSync needs.
+// still carrying the extra profile fields YooMates needs.
 // ==========================================
 model User {
   id            String    @id @default(cuid())
