@@ -303,5 +303,5 @@ Potential future expansion areas:
 
 ---
 <div align="center">
-  <strong>(c) Voxion Labs</strong>
+  <strong>(c) 2026 Voxion Labs & Rudranarayan Jena</strong>
 </div>
