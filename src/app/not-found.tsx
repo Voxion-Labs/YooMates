@@ -10,7 +10,7 @@ export default function NotFoundPage() {
           404
         </p>
         <h1 className="mt-4 text-4xl font-semibold text-[rgb(var(--foreground))]">
-          This horizon does not exist
+          This page does not exist
         </h1>
         <p className="mt-4 text-sm leading-6 text-[rgb(var(--muted-foreground))]">
           The page you requested could not be found. Jump back into the main workspace shell.

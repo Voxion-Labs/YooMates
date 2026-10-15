@@ -59,7 +59,7 @@ export function BlockEditor({ document: workspaceDocument }: BlockEditorProps) {
   const { showToast } = useToast();
   const { requestDraft } = useAssistant();
   const [title, setTitle] = useState(workspaceDocument.title);
-  const [icon, setIcon] = useState(workspaceDocument.icon ?? "HS");
+  const [icon, setIcon] = useState(workspaceDocument.icon ?? "YM");
   const [blocks, setBlocks] = useState<DocumentBlock[]>(workspaceDocument.content);
   const [status, setStatus] = useState(workspaceDocument.status ?? "Backlog");
   const [dueDate, setDueDate] = useState(

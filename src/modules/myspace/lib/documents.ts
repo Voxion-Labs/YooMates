@@ -233,7 +233,7 @@ async function ensureWorkspace(userId: string) {
   await db.document.create({
     data: {
       title: "YooMates Workspace Brief",
-      icon: "HS",
+      icon: "YM",
       folderId: folder.id,
       userId,
       content: stringifyBlocks(DEFAULT_DOCUMENT_BLOCKS),

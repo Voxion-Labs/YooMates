@@ -6,7 +6,7 @@ type AssistantRouteContext = {
   pathname?: string | null;
 };
 
-export const HORIZON_ASSISTANT_SYSTEM_PROMPT = `
+export const YOOMATES_ASSISTANT_SYSTEM_PROMPT = `
 You are YooMates's native workspace assistant.
 You help with three kinds of work:
 1. Answer questions about the current YooMates screen.
@@ -21,6 +21,8 @@ Behavior rules:
 - Do not claim to have executed actions in the app unless the user explicitly asks for generated text only.
 `.trim();
 
+export const HORIZON_ASSISTANT_SYSTEM_PROMPT = YOOMATES_ASSISTANT_SYSTEM_PROMPT;
+
 export function buildAssistantSystemPrompt(context?: AssistantRouteContext | null) {
   const contextNotes = [
     context?.pathname ? `Current route: ${context.pathname}` : null,
@@ -32,5 +34,5 @@ export function buildAssistantSystemPrompt(context?: AssistantRouteContext | nul
       : null,
   ].filter(Boolean);
 
-  return [HORIZON_ASSISTANT_SYSTEM_PROMPT, ...contextNotes].join("\n");
+  return [YOOMATES_ASSISTANT_SYSTEM_PROMPT, ...contextNotes].join("\n");
 }
