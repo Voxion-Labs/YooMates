@@ -1,10 +1,19 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-23T11:23:40Z",
-  "branch": "main",
-  "head_commit": "b397ba1973acec8dc718314fe334fd3443e73399",
+  "last_updated": "2026-11-23T11:28:31Z",
+  "branch": "HEAD",
+  "head_commit": "ddabf80c3b3ea5e3e80e5649d69739f0f95b4e43",
   "history": [
+    {
+      "hash": "ddabf80c3b3ea5e3e80e5649d69739f0f95b4e43",
+      "short_hash": "ddabf80",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-23T11:23:41Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "b397ba1973acec8dc718314fe334fd3443e73399",
       "short_hash": "b397ba1",
@@ -171,157 +180,7 @@
       "author_email": "rudrajena440@gmail.com",
       "timestamp": "2026-05-01T14:28:54+05:30",
       "subject": "Done",
-      "files_changed": [
-        "render.yaml"
-      ]
-    },
-    {
-      "hash": "7095b0fd424c06d73ba1ef1ebe2d0df50a49a1f9",
-      "short_hash": "7095b0f",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-05-01T13:38:38+05:30",
-      "subject": "Done",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "4ae5590d7efaa83eaa25932fc89cec7cdb2a56e8",
-      "short_hash": "4ae5590",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-26T18:21:56+05:30",
-      "subject": "Merge branch 'main' of https://github.com/liambrooks-lab/HorizonSync",
       "files_changed": null
-    },
-    {
-      "hash": "5ec0f69c61ea2a853147188f285ededc8fe31105",
-      "short_hash": "5ec0f69",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-26T18:21:42+05:30",
-      "subject": "Done",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "786624bfba39e58c566564d9febd0ae9f69b183d",
-      "short_hash": "786624b",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T21:40:15+05:30",
-      "subject": "Update README.md",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "46145890a0d6a69dcc1654b812ba27d4e9aad7a2",
-      "short_hash": "4614589",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T21:33:29+05:30",
-      "subject": "Update README.md",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "2631f9a0254581a81cd30537d4f735d570f0d0c6",
-      "short_hash": "2631f9a",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:50:49+05:30",
-      "subject": "Merge branch 'main' of https://github.com/liambrooks-lab/HorizonSync",
-      "files_changed": null
-    },
-    {
-      "hash": "9fe085e0ad11d003c5b0461e0e3e35d129c36a68",
-      "short_hash": "9fe085e",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:50:32+05:30",
-      "subject": "Done",
-      "files_changed": [
-        "README.md",
-        "public/author/rudranarayan-jena.jpg"
-      ]
-    },
-    {
-      "hash": "2932d715e270a96aa724f5eaeea76b175f5d24ed",
-      "short_hash": "2932d71",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:31:50+05:30",
-      "subject": "Update README.md",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "c7a5322e7701831609c4ca21b0c4b762d4dad24f",
-      "short_hash": "c7a5322",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:30:06+05:30",
-      "subject": "Merge branch 'main' of https://github.com/liambrooks-lab/HorizonSync",
-      "files_changed": null
-    },
-    {
-      "hash": "8f094937534235787310d2d500c634c518aa5ddf",
-      "short_hash": "8f09493",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:29:46+05:30",
-      "subject": "done",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "1caf031ea8d8c82e14dec1c3bc9b2ba427aa0224",
-      "short_hash": "1caf031",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:27:16+05:30",
-      "subject": "Update README.md",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "0aa29b50e6812061cbefd4c3c12cc4c471d71189",
-      "short_hash": "0aa29b5",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:25:22+05:30",
-      "subject": "Merge branch 'main' of https://github.com/liambrooks-lab/HorizonSync",
-      "files_changed": null
-    },
-    {
-      "hash": "7601d9b0c9abdf99858215ebf991c05bc38d7174",
-      "short_hash": "7601d9b",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-04-21T18:24:23+05:30",
-      "subject": "Applied the final touches to the project. and an empty message aborts the commit.",
-      "files_changed": [
-        ".env.example",
-        "README.md",
-        "package.json",
-        "public/branding/horizonsync-banner.jpg",
-        "public/branding/horizonsync-logo.jpg",
-        "render.yaml",
-        "src/app/(auth)/layout.tsx",
-        "src/app/layout.tsx",
-        "src/shared/components/BrandIdentity.tsx",
-        "src/shared/components/MainShell.tsx",
-        "src/shared/components/MasterNavigation.tsx",
-        "src/shared/components/PlaceholderPanel.tsx",
-        "vercel.json"
-      ]
     }
   ]
 }

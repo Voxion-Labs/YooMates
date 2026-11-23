@@ -41,11 +41,12 @@ YooMates is designed around three tightly integrated pillars:
 
 ## 3. Master Phases & Sub-phases Breakdown
 
-### **Phase 0: Project Governance & Safety Automation** `[IN PROGRESS]`
+### **Phase 0: Project Governance & Safety Automation** `[DONE]`
 - [x] **Sub-phase 0.1**: Master blueprint & rules documentation (`ROADMAP.md`).
-- [ ] **Sub-phase 0.2**: `voxion-bot` commit manifest generator & secure GitHub Action workflow (strict fork isolation & write permissions).
-- [ ] **Sub-phase 0.3**: Rebase-and-push safe `Makefile` with clean sync & manifest automation.
-- [ ] **Sub-phase 0.4**: Phase 0 verification and awaiting user approval.
+- [x] **Sub-phase 0.2**: `voxion-bot` commit manifest generator & secure GitHub Action workflow (strict fork isolation & write permissions).
+- [x] **Sub-phase 0.3**: Rebase-and-push safe `Makefile` with clean sync & manifest automation.
+- [x] **Sub-phase 0.4**: CI/CD pipeline (`.github/workflows/ci.yml`) for Go formatting, vet, tests, and multi-stage Docker build verification.
+- [ ] **Sub-phase 0.5**: Phase 0 verification and awaiting user approval.
 
 ---
 
