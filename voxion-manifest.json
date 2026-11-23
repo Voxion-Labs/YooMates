@@ -1,0 +1,166 @@
+{
+  "project": "YooMates",
+  "bot_name": "voxion-bot",
+  "last_updated": "2026-11-23T11:23:01Z",
+  "branch": "main",
+  "head_commit": "c83b57ffd65812c9c43dbfa03e6368f03150f9cc",
+  "history": [
+    {
+      "hash": "c83b57ffd65812c9c43dbfa03e6368f03150f9cc",
+      "short_hash": "c83b57f",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-11-23T16:52:56+05:30",
+      "subject": "feat(phase0): initialize governance roadmap, voxion-bot workflow, and rebase Makefile",
+      "files_changed": [
+        ".github/workflows/voxion-bot.yml",
+        "LICENSE",
+        "Makefile",
+        "ROADMAP.md",
+        "public/author/rudranarayan-jena.jpg",
+        "scripts/manifest.go"
+      ]
+    },
+    {
+      "hash": "a79facef3500d9c6f2b040d61a5716621cadd12a",
+      "short_hash": "a79face",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-10-15T18:13:46+05:30",
+      "subject": "chore: update YooMates references in LICENSE and schema.prisma",
+      "files_changed": [
+        "LICENSE",
+        "prisma/schema.prisma"
+      ]
+    },
+    {
+      "hash": "4cdd85a89506324df5e04f40c717f5f0c11a4661",
+      "short_hash": "4cdd85a",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-10-15T18:12:41+05:30",
+      "subject": "chore: polish remaining brand strings and icons to YooMates",
+      "files_changed": [
+        "src/app/not-found.tsx",
+        "src/modules/ai/utils/system-prompts.ts",
+        "src/modules/myspace/components/BlockEditor.tsx",
+        "src/modules/myspace/lib/documents.ts"
+      ]
+    },
+    {
+      "hash": "431a8995e5b9bd86ba616ed0b22b9bab2bb12a1b",
+      "short_hash": "431a899",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-10-15T18:08:57+05:30",
+      "subject": "Merge remote-tracking branch 'origin/main'",
+      "files_changed": null
+    },
+    {
+      "hash": "c3fe49f8d51632fa3de2fe3135978b838754ce98",
+      "short_hash": "c3fe49f",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-10-15T18:00:08+05:30",
+      "subject": "chore: rebrand HorizonSync to YooMates",
+      "files_changed": [
+        ".env.example",
+        "CONTRIBUTING.md",
+        "README.md",
+        "package-lock.json",
+        "package.json",
+        "public/branding/horizonsync-banner.jpg",
+        "public/branding/horizonsync-logo.jpg",
+        "public/branding/yoomates-logo.png",
+        "render.yaml",
+        "src/app/(auth)/layout.tsx",
+        "src/app/(auth)/login/page.tsx",
+        "src/app/(auth)/register/page.tsx",
+        "src/app/(main)/global/page.tsx",
+        "src/app/(main)/profile/[username]/page.tsx",
+        "src/app/(main)/profile/settings/page.tsx",
+        "src/app/layout.tsx",
+        "src/modules/ai/components/AIChatWindow.tsx",
+        "src/modules/ai/utils/system-prompts.ts",
+        "src/modules/auth/actions/auth.actions.ts",
+        "src/modules/auth/actions/notification.actions.ts",
+        "src/modules/auth/components/LoginForm.tsx",
+        "src/modules/auth/components/RegisterForm.tsx",
+        "src/modules/global/components/FeedComposer.tsx",
+        "src/modules/global/lib/posts.ts",
+        "src/modules/myspace/lib/documents.ts",
+        "src/modules/profile/components/ProfileHeader.tsx",
+        "src/modules/profile/components/ProfileSettingsForm.tsx",
+        "src/shared/components/BrandIdentity.tsx",
+        "src/shared/components/MainShell.tsx",
+        "src/shared/lib/auth.ts",
+        "src/shared/lib/email.ts"
+      ]
+    },
+    {
+      "hash": "4b6d3e2f312b91c17a6940550b16ce9628adfb8f",
+      "short_hash": "4b6d3e2",
+      "author_name": "Rudranarayan Jena",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-09-30T08:23:58+05:30",
+      "subject": "Update README to remove author details",
+      "files_changed": [
+        "README.md"
+      ]
+    },
+    {
+      "hash": "08aba7e2e540ca540744ff31698f21a70bfc71ca",
+      "short_hash": "08aba7e",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-09-30T08:18:48+05:30",
+      "subject": "Added copyright mark and updated readme",
+      "files_changed": [
+        "README.md"
+      ]
+    },
+    {
+      "hash": "6b4e94548c18b2120e45d8e3f136a68c0eedcf17",
+      "short_hash": "6b4e945",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-09-30T08:16:20+05:30",
+      "subject": "Added copyright mark and updated readme",
+      "files_changed": [
+        "README.md"
+      ]
+    },
+    {
+      "hash": "6b4bd44c63c0d5e05597ed38fec980346c8ec2c4",
+      "short_hash": "6b4bd44",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-09-30T08:11:59+05:30",
+      "subject": "Fine tuned readme and added author and license section",
+      "files_changed": [
+        "README.md"
+      ]
+    },
+    {
+      "hash": "7f5ec79a36ee258f9d0ec4bb74ea48fe0f1d78df",
+      "short_hash": "7f5ec79",
+      "author_name": "liambrooks-lab",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-09-23T10:55:22+05:30",
+      "subject": "added contributing file and updated license",
+      "files_changed": [
+        "CONTRIBUTING.md",
+        "LICENSE"
+      ]
+    },
+    {
+      "hash": "4ce0d31fabde30d16828bbea524b731603ae02ca",
+      "short_hash": "4ce0d31",
+      "author_name": "MR. Rudranarayan Jena",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-05-01T14:28:54+05:30",
+      "subject": "Done",
+      "files_changed": null
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+name: voxion-bot
+
+# Security Architecture:
+# - Triggers strictly on direct pushes to protected branches.
+# - Explicitly IGNORES pull_request and pull_request_target events to prevent forks or untrusted actors from executing or gaining write access.
+# - Top-level permissions default to read-all.
+# - Ignores edits to voxion-manifest.json to prevent infinite recursion.
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - 'voxion-manifest.json'
+
+permissions:
+  contents: read
+
+jobs:
+  update-manifest:
+    name: Generate Commit Manifest
+    runs-on: ubuntu-latest
+    # Security guard: never run on forks; only run on upstream repository
+    if: github.event.repository.fork == false
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Go Runtime
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: false
+
+      - name: Run voxion-bot Manifest Generator
+        run: go run scripts/manifest.go
+
+      - name: Commit and Push Manifest
+        run: |
+          git config --global user.name "voxion-bot"
+          git config --global user.email "voxion-bot@voxionlabs.io"
+          
+          if [[ -n $(git status -s voxion-manifest.json) ]]; then
+            git add voxion-manifest.json
+            git commit -m "chore(bot): update commit manifest [skip ci]"
+            git push origin HEAD:${{ github.ref }}
+          else
+            echo "voxion-manifest.json is up to date. No changes to commit."
+          fi
