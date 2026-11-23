@@ -10,39 +10,42 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"yoomates/internal/config"
 )
 
 type HealthResponse struct {
 	Status    string `json:"status"`
 	Engine    string `json:"engine"`
+	Env       string `json:"env"`
 	Timestamp string `json:"timestamp"`
 }
 
-func HealthHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(HealthResponse{
-		Status:    "ok",
-		Engine:    "yoomates-go",
-		Timestamp: time.Now().UTC().Format(time.RFC3339),
-	})
+func HealthHandler(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(HealthResponse{
+			Status:    "ok",
+			Engine:    "yoomates-go",
+			Env:       cfg.Env,
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+		})
+	}
 }
 
-func SetupRoutes() http.Handler {
+func SetupRoutes(cfg *config.Config) http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthz", HealthHandler)
+	mux.HandleFunc("/healthz", HealthHandler(cfg))
 	return mux
 }
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	cfg := config.Load()
 
 	server := &http.Server{
-		Addr:         ":" + port,
-		Handler:      SetupRoutes(),
+		Addr:         ":" + cfg.Port,
+		Handler:      SetupRoutes(cfg),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
@@ -51,7 +54,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
-		log.Printf("[yoomates-server] Starting on http://localhost:%s\n", port)
+		log.Printf("[yoomates-server] Starting (%s) on http://localhost:%s\n", cfg.Env, cfg.Port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("[yoomates-server] Listen error: %v\n", err)
 		}

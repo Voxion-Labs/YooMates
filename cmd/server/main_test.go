@@ -5,13 +5,16 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"yoomates/internal/config"
 )
 
 func TestHealthHandler(t *testing.T) {
+	cfg := config.Load()
 	req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	rr := httptest.NewRecorder()
 
-	handler := SetupRoutes()
+	handler := SetupRoutes(cfg)
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusOK {
