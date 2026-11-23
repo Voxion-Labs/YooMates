@@ -11,7 +11,9 @@ import (
 	"syscall"
 	"time"
 
+	"yoomates/internal/auth"
 	"yoomates/internal/config"
+	"yoomates/internal/db"
 )
 
 type HealthResponse struct {
@@ -34,18 +36,43 @@ func HealthHandler(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-func SetupRoutes(cfg *config.Config) http.Handler {
+func SetupRoutes(cfg *config.Config, authMgr *auth.Manager) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", HealthHandler(cfg))
+
+	if authMgr != nil {
+		mux.HandleFunc("/api/auth/register", authMgr.RegisterHandler)
+		mux.HandleFunc("/api/auth/login", authMgr.LoginHandler)
+		mux.HandleFunc("/api/auth/logout", authMgr.LogoutHandler)
+		mux.Handle("/api/auth/me", authMgr.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(authMgr.MeHandler))))
+	}
+
 	return mux
 }
 
 func main() {
 	cfg := config.Load()
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// Initialize connection pool
+	pool, err := db.NewPool(ctx, cfg.DatabaseURL)
+	if err != nil {
+		log.Printf("[yoomates-db] Warning: Database pool uninitialized (%v). Running with mock/offline state.\n", err)
+	} else {
+		defer pool.Close()
+		log.Println("[yoomates-db] PostgreSQL connection pool active.")
+	}
+
+	var authMgr *auth.Manager
+	if pool != nil {
+		authMgr = auth.NewManager(pool, cfg)
+	}
+
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      SetupRoutes(cfg),
+		Handler:      SetupRoutes(cfg, authMgr),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
@@ -63,10 +90,10 @@ func main() {
 	<-stop
 	log.Println("[yoomates-server] Shutting down gracefully...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer shutdownCancel()
 
-	if err := server.Shutdown(ctx); err != nil {
+	if err := server.Shutdown(shutdownCtx); err != nil {
 		log.Printf("[yoomates-server] Server forced shutdown: %v\n", err)
 	}
 	fmt.Println("[yoomates-server] Stopped cleanly.")

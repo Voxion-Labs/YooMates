@@ -50,10 +50,10 @@ YooMates is designed around three tightly integrated pillars:
 
 ---
 
-### **Phase 1: Foundation, DB Migration & Go Core** `[IN PROGRESS]`
+### **Phase 1: Foundation, DB Migration & Go Core** `[DONE]`
 - [x] **Sub-phase 1.1**: Go module initialization (`go mod init yoomates`), multi-stage `Dockerfile`, full orchestration `docker-compose.yml` (Go, PostgreSQL, Redis, MinIO local S3), and native `internal/config` configuration management.
 - [x] **Sub-phase 1.2**: Pure SQL schema migration (`migrations/0001_initial_schema.sql`) converting Prisma PostgreSQL models to raw, optimized SQL with `pgx/v5` connection pooling and migration runner (`internal/db`).
-- [ ] **Sub-phase 1.3**: Native Go session-based authentication engine (Argon2id hashing, HTTP-only secure cookie sessions, OAuth2 handlers).
+- [x] **Sub-phase 1.3**: Native Go session-based authentication engine (Argon2id password hashing, HTTP-only secure cookie sessions, auth handlers, and middleware).
 
 ---
 

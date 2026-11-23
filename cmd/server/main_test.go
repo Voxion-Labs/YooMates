@@ -14,7 +14,7 @@ func TestHealthHandler(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	rr := httptest.NewRecorder()
 
-	handler := SetupRoutes(cfg)
+	handler := SetupRoutes(cfg, nil)
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusOK {
