@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build the static Go binary
-FROM golang:1.23-alpine AS builder
+FROM golang:alpine AS builder
+
+ENV GOTOOLCHAIN=auto
 
 RUN apk add --no-cache git ca-certificates tzdata
 
