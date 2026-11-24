@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
@@ -9,41 +10,46 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-// NewPool initializes a high-performance pgx connection pool
-func NewPool(ctx context.Context, connString string) (*pgxpool.Pool, error) {
-	config, err := pgxpool.ParseConfig(connString)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse database config: %w", err)
+// NewPool initializes an enterprise-grade MySQL connection pool using database/sql
+func NewPool(ctx context.Context, connString string) (*sql.DB, error) {
+	// If parseTime is not in DSN, append it so MySQL DATETIME maps cleanly to time.Time
+	if !strings.Contains(connString, "parseTime=true") {
+		if strings.Contains(connString, "?") {
+			connString += "&parseTime=true&multiStatements=true"
+		} else {
+			connString += "?parseTime=true&multiStatements=true"
+		}
+	} else if !strings.Contains(connString, "multiStatements=true") {
+		connString += "&multiStatements=true"
 	}
 
-	// Optimize pool settings for real-time collaboration
-	config.MaxConns = 50
-	config.MinConns = 5
-	config.MaxConnLifetime = 1 * time.Hour
-	config.MaxConnIdleTime = 15 * time.Minute
-	config.HealthCheckPeriod = 1 * time.Minute
-
-	pool, err := pgxpool.NewWithConfig(ctx, config)
+	db, err := sql.Open("mysql", connString)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create connection pool: %w", err)
+		return nil, fmt.Errorf("failed to open mysql connection: %w", err)
 	}
+
+	// High-throughput connection pooling
+	db.SetMaxOpenConns(50)
+	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(1 * time.Hour)
+	db.SetConnMaxIdleTime(15 * time.Minute)
 
 	// Verify connection
 	pingCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	if err := pool.Ping(pingCtx); err != nil {
-		return nil, fmt.Errorf("failed to ping database: %w", err)
+	if err := db.PingContext(pingCtx); err != nil {
+		return nil, fmt.Errorf("failed to ping mysql database: %w", err)
 	}
 
-	return pool, nil
+	return db, nil
 }
 
-// RunMigrations executes all SQL files found in the specified migrations directory
-func RunMigrations(ctx context.Context, pool *pgxpool.Pool, migrationDir string) error {
+// RunMigrations executes all SQL migration files found in the specified directory
+func RunMigrations(ctx context.Context, db *sql.DB, migrationDir string) error {
 	entries, err := os.ReadDir(migrationDir)
 	if err != nil {
 		return fmt.Errorf("unable to read migration directory %s: %w", migrationDir, err)
@@ -60,12 +66,12 @@ func RunMigrations(ctx context.Context, pool *pgxpool.Pool, migrationDir string)
 			return fmt.Errorf("failed to read migration file %s: %w", filePath, err)
 		}
 
-		log.Printf("[db-migration] Executing migration: %s\n", entry.Name())
-		if _, err := pool.Exec(ctx, string(sqlBytes)); err != nil {
+		log.Printf("[mysql-migration] Executing migration: %s\n", entry.Name())
+		if _, err := db.ExecContext(ctx, string(sqlBytes)); err != nil {
 			return fmt.Errorf("failed to execute migration %s: %w", entry.Name(), err)
 		}
 	}
 
-	log.Println("[db-migration] All migrations applied successfully.")
+	log.Println("[mysql-migration] All MySQL migrations applied successfully.")
 	return nil
 }

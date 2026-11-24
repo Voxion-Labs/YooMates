@@ -1,10 +1,19 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-24T07:24:28Z",
-  "branch": "main",
-  "head_commit": "aa3fff419c7fb8fb1bff9547850fc1c3c18dc734",
+  "last_updated": "2026-11-24T07:36:42Z",
+  "branch": "HEAD",
+  "head_commit": "f45c9d74026904a7de4114db0925bd980d5d9219",
   "history": [
+    {
+      "hash": "f45c9d74026904a7de4114db0925bd980d5d9219",
+      "short_hash": "f45c9d7",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-24T07:24:28Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "aa3fff419c7fb8fb1bff9547850fc1c3c18dc734",
       "short_hash": "aa3fff4",
@@ -346,18 +355,6 @@
       "subject": "Fine tuned readme and added author and license section",
       "files_changed": [
         "README.md"
-      ]
-    },
-    {
-      "hash": "7f5ec79a36ee258f9d0ec4bb74ea48fe0f1d78df",
-      "short_hash": "7f5ec79",
-      "author_name": "liambrooks-lab",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-09-23T10:55:22+05:30",
-      "subject": "added contributing file and updated license",
-      "files_changed": [
-        "CONTRIBUTING.md",
-        "LICENSE"
       ]
     }
   ]

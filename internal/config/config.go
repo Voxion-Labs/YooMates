@@ -53,7 +53,7 @@ func Load() *Config {
 		Port:               getEnv("PORT", "8080"),
 		Env:                getEnv("ENV", "development"),
 		AppURL:             getEnv("APP_URL", "http://localhost:8080"),
-		DatabaseURL:        getEnv("DATABASE_URL", "postgres://yoomates:yoomates_secret@localhost:5432/yoomates?sslmode=disable"),
+		DatabaseURL:        getEnv("DATABASE_URL", "yoomates:yoomates_secret@tcp(localhost:3306)/yoomates?parseTime=true&multiStatements=true"),
 		RedisURL:           getEnv("REDIS_URL", "redis://localhost:6379"),
 		S3Endpoint:         getEnv("S3_ENDPOINT", "http://localhost:9000"),
 		S3AccessKey:        getEnv("S3_ACCESS_KEY", "minioadmin"),

@@ -11,7 +11,7 @@ services:
       - "${PORT:-8080}:8080"
     environment:
       PORT: 8080
-      DATABASE_URL: postgres://${POSTGRES_USER:-yoomates}:${POSTGRES_PASSWORD:-yoomates_secret}@postgres:5432/${POSTGRES_DB:-yoomates}?sslmode=disable
+      DATABASE_URL: ${MYSQL_USER:-yoomates}:${MYSQL_PASSWORD:-yoomates_secret}@tcp(mysql:3306)/${MYSQL_DATABASE:-yoomates}?parseTime=true&multiStatements=true
       REDIS_URL: redis://redis:6379
       S3_ENDPOINT: http://minio:9000
       S3_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
@@ -21,7 +21,7 @@ services:
       SESSION_SECRET: ${SESSION_SECRET:-voxion_yoomates_session_secret_change_in_production}
       ENV: ${ENV:-development}
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -30,24 +30,26 @@ services:
     networks:
       - yoomates_net
 
-  postgres:
-    image: postgres:16-alpine
-    container_name: yoomates_postgres
+  mysql:
+    image: mysql:8.4
+    container_name: yoomates_mysql
     restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-yoomates}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-yoomates_secret}
-      POSTGRES_DB: ${POSTGRES_DB:-yoomates}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-yoomates_root_secret}
+      MYSQL_USER: ${MYSQL_USER:-yoomates}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-yoomates_secret}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-yoomates}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${MYSQL_PORT:-3306}:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
       - ./migrations:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-yoomates} -d ${POSTGRES_DB:-yoomates}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD:-yoomates_root_secret}"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
       - yoomates_net
 
@@ -89,7 +91,7 @@ services:
       - yoomates_net
 
 volumes:
-  postgres_data:
+  mysql_data:
   redis_data:
   minio_data:
 

@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestMigrationFilesValid(t *testing.T) {
+func TestMySQLMigrationFilesValid(t *testing.T) {
 	migrationDir := filepath.Join("..", "..", "migrations")
 	entries, err := os.ReadDir(migrationDir)
 	if err != nil {
@@ -23,17 +23,21 @@ func TestMigrationFilesValid(t *testing.T) {
 				t.Fatalf("failed to read %s: %v", entry.Name(), err)
 			}
 			sqlStr := string(content)
+
+			if !strings.Contains(sqlStr, "ENGINE=InnoDB") {
+				t.Errorf("%s missing MySQL ENGINE=InnoDB definition", entry.Name())
+			}
 			if !strings.Contains(sqlStr, "CREATE TABLE IF NOT EXISTS users") {
 				t.Errorf("%s missing users table definition", entry.Name())
 			}
 			if !strings.Contains(sqlStr, "CREATE TABLE IF NOT EXISTS messages") {
 				t.Errorf("%s missing messages table definition", entry.Name())
 			}
+			if !strings.Contains(sqlStr, "CREATE TABLE IF NOT EXISTS servers") {
+				t.Errorf("%s missing servers table definition", entry.Name())
+			}
 			if !strings.Contains(sqlStr, "CREATE TABLE IF NOT EXISTS posts") {
 				t.Errorf("%s missing posts table definition", entry.Name())
-			}
-			if !strings.Contains(sqlStr, "CREATE TABLE IF NOT EXISTS documents") {
-				t.Errorf("%s missing documents table definition", entry.Name())
 			}
 		}
 	}

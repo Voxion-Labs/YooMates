@@ -1,6 +1,7 @@
 package hubs
 
 import (
+	"database/sql"
 	"fmt"
 	"html/template"
 	"log"
@@ -9,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"yoomates/internal/auth"
 )
 
@@ -65,11 +65,11 @@ type HubsViewModel struct {
 // ViewEngine manages parsed html/templates
 type ViewEngine struct {
 	templates *template.Template
-	pool      *pgxpool.Pool
+	db        *sql.DB
 }
 
 // NewViewEngine parses all html templates in the templates directory
-func NewViewEngine(templatesDir string, pool *pgxpool.Pool) (*ViewEngine, error) {
+func NewViewEngine(templatesDir string, db *sql.DB) (*ViewEngine, error) {
 	pattern := filepath.Join(templatesDir, "*.html")
 	partialsPattern := filepath.Join(templatesDir, "partials", "*.html")
 
@@ -85,7 +85,7 @@ func NewViewEngine(templatesDir string, pool *pgxpool.Pool) (*ViewEngine, error)
 
 	return &ViewEngine{
 		templates: tmpl,
-		pool:      pool,
+		db:        db,
 	}, nil
 }
 

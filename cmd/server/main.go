@@ -88,7 +88,7 @@ func main() {
 		log.Printf("[yoomates-db] Warning: Database pool uninitialized (%v). Running with mock/offline state.\n", err)
 	} else {
 		defer pool.Close()
-		log.Println("[yoomates-db] PostgreSQL connection pool active.")
+		log.Println("[yoomates-db] MySQL connection pool active.")
 	}
 
 	var authMgr *auth.Manager
