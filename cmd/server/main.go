@@ -14,6 +14,7 @@ import (
 	"yoomates/internal/auth"
 	"yoomates/internal/config"
 	"yoomates/internal/db"
+	"yoomates/internal/hubs"
 )
 
 type HealthResponse struct {
@@ -36,7 +37,7 @@ func HealthHandler(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-func SetupRoutes(cfg *config.Config, authMgr *auth.Manager) http.Handler {
+func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", HealthHandler(cfg))
 
@@ -45,6 +46,10 @@ func SetupRoutes(cfg *config.Config, authMgr *auth.Manager) http.Handler {
 		mux.HandleFunc("/api/auth/login", authMgr.LoginHandler)
 		mux.HandleFunc("/api/auth/logout", authMgr.LogoutHandler)
 		mux.Handle("/api/auth/me", authMgr.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(authMgr.MeHandler))))
+	}
+
+	if hub != nil {
+		mux.HandleFunc("/ws", hubs.WSHandler(hub, authMgr))
 	}
 
 	return mux
@@ -70,9 +75,14 @@ func main() {
 		authMgr = auth.NewManager(pool, cfg)
 	}
 
+	// Initialize real-time WebSocket Hub
+	hub := hubs.NewHub()
+	go hub.Run()
+	log.Println("[yoomates-hubs] Real-time WebSocket hub active.")
+
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      SetupRoutes(cfg, authMgr),
+		Handler:      SetupRoutes(cfg, authMgr, hub),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
