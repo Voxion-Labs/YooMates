@@ -1,10 +1,24 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-24T07:15:41Z",
-  "branch": "HEAD",
-  "head_commit": "06f55303d12620f0e474e7fd73242155c2d7307f",
+  "last_updated": "2026-11-24T07:16:06Z",
+  "branch": "main",
+  "head_commit": "295d008723d4f5631f19a5fe6d736ab4871f1120",
   "history": [
+    {
+      "hash": "295d008723d4f5631f19a5fe6d736ab4871f1120",
+      "short_hash": "295d008",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-11-24T12:45:13+05:30",
+      "subject": "Update Docker builder and CI workflows to use latest Go toolchain",
+      "files_changed": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/voxion-bot.yml",
+        "Dockerfile",
+        "go.mod"
+      ]
+    },
     {
       "hash": "06f55303d12620f0e474e7fd73242155c2d7307f",
       "short_hash": "06f5530",
@@ -316,7 +330,20 @@
       "author_email": "rudrajena440@gmail.com",
       "timestamp": "2026-05-01T14:28:54+05:30",
       "subject": "Done",
-      "files_changed": null
+      "files_changed": [
+        "render.yaml"
+      ]
+    },
+    {
+      "hash": "7095b0fd424c06d73ba1ef1ebe2d0df50a49a1f9",
+      "short_hash": "7095b0f",
+      "author_name": "MR. Rudranarayan Jena",
+      "author_email": "rudrajena440@gmail.com",
+      "timestamp": "2026-05-01T13:38:38+05:30",
+      "subject": "Done",
+      "files_changed": [
+        "README.md"
+      ]
     }
   ]
 }
