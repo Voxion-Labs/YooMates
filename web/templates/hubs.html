@@ -1,0 +1,40 @@
+{{template "base.html" .}}
+
+{{define "title"}}#{{if .CurrentChannel.Name}}{{.CurrentChannel.Name}}{{else}}general{{end}} | YooMates Hubs{{end}}
+
+{{define "content"}}
+<div class="hubs-shell">
+  <!-- Column 1: Server/Guild Rail -->
+  {{template "server_rail" .}}
+
+  <!-- Column 2: Channel & DM Sidebar -->
+  {{template "channel_sidebar" .}}
+
+  <!-- Column 3: Active Chat Window with Real-time HTMX WebSocket Connection -->
+  <main class="chat-window" id="chat-window" hx-ext="ws" ws-connect="/ws?server_id={{.CurrentServer.ID}}&channel_id={{.CurrentChannel.ID}}">
+    <!-- Channel Header -->
+    <header class="chat-header">
+      <div class="channel-title-box">
+        <span class="channel-prefix" style="font-size: 16px;">#</span>
+        <h1 class="channel-title">{{if .CurrentChannel.Name}}{{.CurrentChannel.Name}}{{else}}general{{end}}</h1>
+        <span class="channel-desc">{{if .CurrentChannel.Description}}{{.CurrentChannel.Description}}{{else}}Real-time team collaboration surface{{end}}</span>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); border: 1px solid var(--border-muted); padding: 2px 6px; border-radius: 4px;">
+          WS: Connected
+        </span>
+      </div>
+    </header>
+
+    <!-- Message Stream -->
+    {{template "message_stream" .}}
+
+    <!-- Input Bar -->
+    {{template "message_input" .}}
+  </main>
+
+  <!-- Column 4: Server Members -->
+  {{template "member_sidebar" .}}
+</div>
+{{end}}

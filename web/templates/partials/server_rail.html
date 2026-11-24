@@ -1,0 +1,37 @@
+{{define "server_rail"}}
+<nav class="server-rail" aria-label="Servers and navigation">
+  <!-- Direct Messages / Home -->
+  <a href="/hubs" class="rail-btn {{if eq .CurrentServer.ID ""}}active{{end}}" title="Direct Messages">
+    DM
+  </a>
+
+  <div class="rail-divider"></div>
+
+  <!-- Server List -->
+  {{range .Servers}}
+  <a href="/hubs?server_id={{.ID}}" class="rail-btn {{if eq $.CurrentServer.ID .ID}}active{{end}}" title="{{.Name}}">
+    {{.Initials}}
+  </a>
+  {{else}}
+  <a href="/hubs?server_id=default" class="rail-btn active" title="General Hub">
+    GH
+  </a>
+  {{end}}
+
+  <button class="rail-btn" title="Add Server" onclick="alert('Create Hub modal')">
+    +
+  </button>
+
+  <div class="rail-divider" style="margin-top: auto;"></div>
+
+  <!-- Quick Switcher to Global (Twitter) -->
+  <a href="/global" class="rail-btn" title="Global Feed">
+    GL
+  </a>
+
+  <!-- Quick Switcher to My Space (Notion) -->
+  <a href="/myspace" class="rail-btn" title="My Space">
+    MS
+  </a>
+</nav>
+{{end}}

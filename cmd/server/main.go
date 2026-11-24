@@ -37,9 +37,30 @@ func HealthHandler(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub) http.Handler {
+func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewEngine *hubs.ViewEngine) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", HealthHandler(cfg))
+
+	// Static assets file server
+	staticFS := http.FileServer(http.Dir("web/static"))
+	mux.Handle("/static/", http.StripPrefix("/static/", staticFS))
+
+	// Root redirect: Hubs (Discord chat) is the default primary view
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+		http.Redirect(w, r, "/hubs", http.StatusTemporaryRedirect)
+	})
+
+	if viewEngine != nil {
+		var hubsHandler http.Handler = http.HandlerFunc(viewEngine.HubsHandler)
+		if authMgr != nil {
+			hubsHandler = authMgr.SessionMiddleware(hubsHandler)
+		}
+		mux.Handle("/hubs", hubsHandler)
+	}
 
 	if authMgr != nil {
 		mux.HandleFunc("/api/auth/register", authMgr.RegisterHandler)
@@ -80,9 +101,17 @@ func main() {
 	go hub.Run()
 	log.Println("[yoomates-hubs] Real-time WebSocket hub active.")
 
+	// Initialize HTML template view engine
+	viewEngine, err := hubs.NewViewEngine("web/templates", pool)
+	if err != nil {
+		log.Printf("[yoomates-views] Warning: Could not initialize template view engine (%v)\n", err)
+	} else {
+		log.Println("[yoomates-views] HTML templates loaded successfully.")
+	}
+
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      SetupRoutes(cfg, authMgr, hub),
+		Handler:      SetupRoutes(cfg, authMgr, hub, viewEngine),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

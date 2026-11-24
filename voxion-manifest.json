@@ -1,10 +1,19 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-24T07:16:06Z",
-  "branch": "main",
-  "head_commit": "295d008723d4f5631f19a5fe6d736ab4871f1120",
+  "last_updated": "2026-11-24T07:24:06Z",
+  "branch": "HEAD",
+  "head_commit": "5b64f9479ae895ab233467cb8790e11cf9b53b33",
   "history": [
+    {
+      "hash": "5b64f9479ae895ab233467cb8790e11cf9b53b33",
+      "short_hash": "5b64f94",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-24T07:16:06Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "295d008723d4f5631f19a5fe6d736ab4871f1120",
       "short_hash": "295d008",
@@ -330,20 +339,7 @@
       "author_email": "rudrajena440@gmail.com",
       "timestamp": "2026-05-01T14:28:54+05:30",
       "subject": "Done",
-      "files_changed": [
-        "render.yaml"
-      ]
-    },
-    {
-      "hash": "7095b0fd424c06d73ba1ef1ebe2d0df50a49a1f9",
-      "short_hash": "7095b0f",
-      "author_name": "MR. Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-05-01T13:38:38+05:30",
-      "subject": "Done",
-      "files_changed": [
-        "README.md"
-      ]
+      "files_changed": null
     }
   ]
 }

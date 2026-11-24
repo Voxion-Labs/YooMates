@@ -1,0 +1,21 @@
+{{define "message_item"}}
+<article class="message-item" id="msg-{{.ID}}">
+  <div class="msg-avatar">
+    {{.Initials}}
+  </div>
+  <div class="msg-content-box">
+    <header class="msg-meta">
+      <span class="msg-author">{{.AuthorName}}</span>
+      <time class="msg-time">{{.FormattedTime}}</time>
+    </header>
+    <div class="msg-body">{{.Content}}</div>
+    {{if .FileURL}}
+    <div style="margin-top: 6px;">
+      <a href="{{.FileURL}}" target="_blank" style="color: var(--accent-white); font-size: 12px; text-decoration: underline;">
+        📎 {{if .FileName}}{{.FileName}}{{else}}Attachment{{end}}
+      </a>
+    </div>
+    {{end}}
+  </div>
+</article>
+{{end}}

@@ -1,0 +1,32 @@
+{{define "message_stream"}}
+<div class="message-stream" id="message-stream">
+  <!-- Channel Intro Header -->
+  <div style="padding: 24px 0 16px 0; border-bottom: 1px solid var(--border-subtle); margin-bottom: 12px;">
+    <h2 style="font-size: 20px; font-weight: 700;">Welcome to #{{if .CurrentChannel.Name}}{{.CurrentChannel.Name}}{{else}}general{{end}}!</h2>
+    <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+      {{if .CurrentChannel.Description}}{{.CurrentChannel.Description}}{{else}}This is the start of the #general channel. Discuss team topics, share updates, and collaborate in real time.{{end}}
+    </p>
+  </div>
+
+  <!-- Historical Messages -->
+  <div id="messages-container" style="display: flex; flex-direction: column; gap: 8px;">
+    {{range .Messages}}
+      {{template "message_item" .}}
+    {{else}}
+      <div class="message-item" id="msg-welcome">
+        <div class="msg-avatar">YM</div>
+        <div class="msg-content-box">
+          <header class="msg-meta">
+            <span class="msg-author">YooMates Bot</span>
+            <time class="msg-time">Today</time>
+          </header>
+          <div class="msg-body">Channel initialized on high-throughput Go engine. Type a message below to test real-time WebSocket delivery!</div>
+        </div>
+      </div>
+    {{end}}
+  </div>
+
+  <!-- Realtime append target for HTMX WebSocket frames -->
+  <div id="ws-stream-target"></div>
+</div>
+{{end}}

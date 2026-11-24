@@ -1,0 +1,30 @@
+{{define "message_input"}}
+<footer class="chat-input-area">
+  <form id="chat-input-form" ws-send hx-trigger="submit">
+    <div class="input-container">
+      <button type="button" class="input-btn" title="Add Attachment" onclick="alert('Attachment pipeline ready in subphase 2.4')">
+        📎
+      </button>
+
+      <input type="hidden" name="type" value="chat">
+      <input type="hidden" name="server_id" value="{{.CurrentServer.ID}}">
+      <input type="hidden" name="channel_id" value="{{.CurrentChannel.ID}}">
+
+      <input 
+        type="text" 
+        name="content" 
+        id="chat-input-field" 
+        class="chat-input" 
+        placeholder="Message #{{if .CurrentChannel.Name}}{{.CurrentChannel.Name}}{{else}}general{{end}} (Press Enter to send, Ctrl+K to focus)" 
+        autocomplete="off"
+        required
+        autofocus
+      >
+
+      <button type="submit" class="input-btn" title="Send Message">
+        ➤
+      </button>
+    </div>
+  </form>
+</footer>
+{{end}}

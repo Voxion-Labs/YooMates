@@ -30,8 +30,10 @@ RUN addgroup -S voxion && adduser -S voxion -G voxion
 
 WORKDIR /app
 
-# Copy binary from builder
+# Copy binary and static assets from builder
 COPY --from=builder /app/yoomates /app/yoomates
+COPY --from=builder /src/web /app/web
+COPY --from=builder /src/migrations /app/migrations
 
 # Set ownership
 RUN chown -R voxion:voxion /app

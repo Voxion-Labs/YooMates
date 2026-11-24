@@ -1,0 +1,32 @@
+{{define "member_sidebar"}}
+<aside class="member-sidebar" aria-label="Server Members">
+  <div class="member-heading">Online — {{len .OnlineMembers}}</div>
+  {{range .OnlineMembers}}
+  <div class="member-item">
+    <div class="user-avatar-badge" style="width: 26px; height: 26px; font-size: 11px;">
+      {{.Initials}}
+      <span class="status-dot"></span>
+    </div>
+    <span class="member-name">{{.Name}}</span>
+  </div>
+  {{else}}
+  <div class="member-item">
+    <div class="user-avatar-badge" style="width: 26px; height: 26px; font-size: 11px;">
+      YM
+      <span class="status-dot"></span>
+    </div>
+    <span class="member-name">YooMates Engine</span>
+  </div>
+  {{end}}
+
+  <div class="member-heading" style="margin-top: 14px;">Offline</div>
+  {{range .OfflineMembers}}
+  <div class="member-item" style="opacity: 0.6;">
+    <div class="user-avatar-badge" style="width: 26px; height: 26px; font-size: 11px;">
+      {{.Initials}}
+    </div>
+    <span class="member-name">{{.Name}}</span>
+  </div>
+  {{end}}
+</aside>
+{{end}}

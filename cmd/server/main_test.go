@@ -14,7 +14,7 @@ func TestHealthHandler(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	rr := httptest.NewRecorder()
 
-	handler := SetupRoutes(cfg, nil, nil)
+	handler := SetupRoutes(cfg, nil, nil, nil)
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusOK {
@@ -32,5 +32,23 @@ func TestHealthHandler(t *testing.T) {
 
 	if res.Engine != "yoomates-go" {
 		t.Errorf("expected engine 'yoomates-go', got %s", res.Engine)
+	}
+}
+
+func TestRootRedirect(t *testing.T) {
+	cfg := config.Load()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rr := httptest.NewRecorder()
+
+	handler := SetupRoutes(cfg, nil, nil, nil)
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Fatalf("expected redirect 307, got %d", rr.Code)
+	}
+
+	location := rr.Header().Get("Location")
+	if location != "/hubs" {
+		t.Errorf("expected redirect location /hubs, got %s", location)
 	}
 }

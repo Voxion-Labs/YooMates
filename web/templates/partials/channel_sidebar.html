@@ -1,0 +1,60 @@
+{{define "channel_sidebar"}}
+<aside class="channel-sidebar" aria-label="Channels">
+  <div class="server-header">
+    <span>{{if .CurrentServer.Name}}{{.CurrentServer.Name}}{{else}}General Hub{{end}}</span>
+    <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">v2.0</span>
+  </div>
+
+  <div class="channel-list">
+    <!-- Text Channels -->
+    <div class="channel-category">Text Channels</div>
+    {{range .Channels}}
+    <a href="/hubs?server_id={{$.CurrentServer.ID}}&channel_id={{.ID}}" 
+       class="channel-item {{if eq $.CurrentChannel.ID .ID}}active{{end}}"
+       hx-get="/hubs/channel/{{.ID}}"
+       hx-target="#chat-window"
+       hx-push-url="/hubs?server_id={{$.CurrentServer.ID}}&channel_id={{.ID}}">
+      <span class="channel-prefix">#</span>
+      <span>{{.Name}}</span>
+    </a>
+    {{else}}
+    <a href="/hubs?channel_id=general" class="channel-item active">
+      <span class="channel-prefix">#</span>
+      <span>general</span>
+    </a>
+    <a href="/hubs?channel_id=engineering" class="channel-item">
+      <span class="channel-prefix">#</span>
+      <span>engineering</span>
+    </a>
+    <a href="/hubs?channel_id=announcements" class="channel-item">
+      <span class="channel-prefix">#</span>
+      <span>announcements</span>
+    </a>
+    {{end}}
+
+    <!-- Voice Channels -->
+    <div class="channel-category" style="margin-top: 10px;">Voice Channels</div>
+    <div class="channel-item" style="opacity: 0.85;">
+      <span class="channel-prefix">🔊</span>
+      <span>Lounge</span>
+    </div>
+  </div>
+
+  <!-- User Status Card -->
+  <div class="user-status-card">
+    <div class="user-avatar-badge">
+      {{if .CurrentUser.Username}}{{.CurrentUser.Initials}}{{else}}YU{{end}}
+      <span class="status-dot"></span>
+    </div>
+    <div class="user-details">
+      <span class="user-name">{{if .CurrentUser.Name}}{{.CurrentUser.Name}}{{else}}YooMates Member{{end}}</span>
+      <span class="user-handle">@{{if .CurrentUser.Username}}{{.CurrentUser.Username}}{{else}}guest{{end}}</span>
+    </div>
+    <form action="/api/auth/logout" method="POST" style="margin-left: auto;">
+      <button class="input-btn" title="Sign Out" type="submit" style="font-size: 11px;">
+        ✕
+      </button>
+    </form>
+  </div>
+</aside>
+{{end}}
