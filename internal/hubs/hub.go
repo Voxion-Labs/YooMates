@@ -117,18 +117,22 @@ func (h *Hub) processAndRoute(msg *WSMessage) {
 			authorID = "guest"
 		}
 
-		if h.repo != nil && msg.Content != "" {
-			item, err := h.repo.SaveMessage(ctx, authorID, authorName, msg.ChannelID, msg.ServerID, msg.Content)
+		if h.repo != nil && (msg.Content != "" || msg.FileURL != "") {
+			item, err := h.repo.SaveMessageWithAttachment(ctx, authorID, authorName, msg.ChannelID, msg.ServerID, msg.Content, msg.FileURL, msg.FileName, msg.FileType, msg.FileSize)
 			if err == nil && item != nil {
 				msg.MessageID = item.ID
 				msg.HTML = RenderMessageOOB(item)
 			}
-		} else if msg.Content != "" && msg.HTML == "" {
+		} else if (msg.Content != "" || msg.FileURL != "") && msg.HTML == "" {
 			item := &MessageItem{
 				ID:            "msg_" + time.Now().Format("150405"),
 				AuthorName:    authorName,
 				Initials:      "U",
 				Content:       msg.Content,
+				FileURL:       msg.FileURL,
+				FileName:      msg.FileName,
+				FileType:      msg.FileType,
+				FileSize:      msg.FileSize,
 				FormattedTime: "Today at " + time.Now().Format("15:04"),
 			}
 			msg.HTML = RenderMessageOOB(item)

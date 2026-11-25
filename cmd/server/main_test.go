@@ -14,7 +14,7 @@ func TestHealthHandler(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	rr := httptest.NewRecorder()
 
-	handler := SetupRoutes(cfg, nil, nil, nil)
+	handler := SetupRoutes(cfg, nil, nil, nil, nil)
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusOK {
@@ -40,7 +40,7 @@ func TestRootRedirect(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rr := httptest.NewRecorder()
 
-	handler := SetupRoutes(cfg, nil, nil, nil)
+	handler := SetupRoutes(cfg, nil, nil, nil, nil)
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusTemporaryRedirect {

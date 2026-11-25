@@ -6,10 +6,63 @@ import (
 	"strings"
 )
 
+// RenderAttachmentHTML generates HTML for uploaded files (image preview or download card)
+func RenderAttachmentHTML(item *MessageItem) string {
+	if item.FileURL == "" {
+		return ""
+	}
+	escapedURL := html.EscapeString(item.FileURL)
+	escapedName := html.EscapeString(item.FileName)
+	if escapedName == "" {
+		escapedName = "Attachment"
+	}
+
+	lower := strings.ToLower(item.FileURL)
+	if strings.HasSuffix(lower, ".png") || strings.HasSuffix(lower, ".jpg") ||
+		strings.HasSuffix(lower, ".jpeg") || strings.HasSuffix(lower, ".gif") ||
+		strings.HasSuffix(lower, ".webp") {
+		return fmt.Sprintf(`
+      <div class="msg-attachment-box">
+        <a href="%s" target="_blank" rel="noopener noreferrer">
+          <img src="%s" alt="%s" class="msg-attachment-img" loading="lazy" />
+        </a>
+      </div>`, escapedURL, escapedURL, escapedName)
+	}
+
+	meta := ""
+	if item.FileSize > 0 {
+		if item.FileSize < 1024 {
+			meta = fmt.Sprintf("%d B", item.FileSize)
+		} else if item.FileSize < 1024*1024 {
+			meta = fmt.Sprintf("%.1f KB", float64(item.FileSize)/1024)
+		} else {
+			meta = fmt.Sprintf("%.1f MB", float64(item.FileSize)/(1024*1024))
+		}
+	}
+
+	return fmt.Sprintf(`
+      <div class="msg-attachment-box">
+        <a href="%s" target="_blank" rel="noopener noreferrer" class="msg-attachment-card">
+          <span class="attachment-icon">📎</span>
+          <div class="attachment-info">
+            <span class="attachment-name">%s</span>
+            <span class="attachment-meta">%s</span>
+          </div>
+          <span class="attachment-download">⬇</span>
+        </a>
+      </div>`, escapedURL, escapedName, meta)
+}
+
 // RenderMessageOOB generates an HTMX Out-Of-Band swap fragment that appends the message to #messages-container
 func RenderMessageOOB(item *MessageItem) string {
 	escapedContent := html.EscapeString(item.Content)
 	escapedAuthor := html.EscapeString(item.AuthorName)
+	attachmentHTML := RenderAttachmentHTML(item)
+
+	bodyHTML := ""
+	if escapedContent != "" {
+		bodyHTML = fmt.Sprintf(`<div class="msg-body">%s</div>`, escapedContent)
+	}
 
 	return fmt.Sprintf(`
 <div id="messages-container" hx-swap-oob="beforeend">
@@ -20,7 +73,8 @@ func RenderMessageOOB(item *MessageItem) string {
         <span class="msg-author">%s</span>
         <time class="msg-time">%s</time>
       </header>
-      <div class="msg-body">%s</div>
+      %s
+      %s
       <div id="reactions-msg-%s" class="msg-reactions"></div>
     </div>
     <div class="msg-actions">
@@ -31,7 +85,7 @@ func RenderMessageOOB(item *MessageItem) string {
     </div>
   </article>
 </div>
-`, item.ID, item.Initials, escapedAuthor, item.FormattedTime, escapedContent, item.ID, item.ID, item.ID, item.ID, item.ID)
+`, item.ID, item.Initials, escapedAuthor, item.FormattedTime, bodyHTML, attachmentHTML, item.ID, item.ID, item.ID, item.ID, item.ID)
 }
 
 // RenderMessageEditOOB generates an HTMX OOB swap fragment that replaces the edited message element

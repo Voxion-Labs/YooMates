@@ -33,6 +33,8 @@ type MessageItem struct {
 	Content       string
 	FileURL       string
 	FileName      string
+	FileType      string
+	FileSize      int
 	FormattedTime string
 }
 
@@ -70,10 +72,31 @@ type ViewEngine struct {
 
 // NewViewEngine parses all html templates in the templates directory
 func NewViewEngine(templatesDir string, db *sql.DB) (*ViewEngine, error) {
+	funcMap := template.FuncMap{
+		"isImage": func(url string) bool {
+			lower := strings.ToLower(url)
+			return strings.HasSuffix(lower, ".png") || strings.HasSuffix(lower, ".jpg") ||
+				strings.HasSuffix(lower, ".jpeg") || strings.HasSuffix(lower, ".gif") ||
+				strings.HasSuffix(lower, ".webp")
+		},
+		"formatSize": func(bytes int) string {
+			if bytes <= 0 {
+				return ""
+			}
+			if bytes < 1024 {
+				return fmt.Sprintf("%d B", bytes)
+			} else if bytes < 1024*1024 {
+				return fmt.Sprintf("%.1f KB", float64(bytes)/1024)
+			}
+			return fmt.Sprintf("%.1f MB", float64(bytes)/(1024*1024))
+		},
+	}
+
 	pattern := filepath.Join(templatesDir, "*.html")
 	partialsPattern := filepath.Join(templatesDir, "partials", "*.html")
 
-	tmpl, err := template.ParseGlob(pattern)
+	tmpl := template.New("").Funcs(funcMap)
+	tmpl, err := tmpl.ParseGlob(pattern)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse root templates: %w", err)
 	}

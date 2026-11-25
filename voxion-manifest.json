@@ -1,10 +1,19 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-25T07:49:20Z",
-  "branch": "main",
-  "head_commit": "6cfa1b0666b6b67427114c74c08d404312719caf",
+  "last_updated": "2026-11-25T08:01:21Z",
+  "branch": "HEAD",
+  "head_commit": "82adabd14986612be572d4ccad0ec33585c31d99",
   "history": [
+    {
+      "hash": "82adabd14986612be572d4ccad0ec33585c31d99",
+      "short_hash": "82adabd",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-25T07:49:20Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "6cfa1b0666b6b67427114c74c08d404312719caf",
       "short_hash": "6cfa1b0",
@@ -362,17 +371,6 @@
         "src/shared/components/MainShell.tsx",
         "src/shared/lib/auth.ts",
         "src/shared/lib/email.ts"
-      ]
-    },
-    {
-      "hash": "4b6d3e2f312b91c17a6940550b16ce9628adfb8f",
-      "short_hash": "4b6d3e2",
-      "author_name": "Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-09-30T08:23:58+05:30",
-      "subject": "Update README to remove author details",
-      "files_changed": [
-        "README.md"
       ]
     }
   ]

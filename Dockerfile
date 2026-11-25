@@ -35,8 +35,8 @@ COPY --from=builder /app/yoomates /app/yoomates
 COPY --from=builder /src/web /app/web
 COPY --from=builder /src/migrations /app/migrations
 
-# Set ownership
-RUN chown -R voxion:voxion /app
+# Ensure data directories and set ownership
+RUN mkdir -p /app/data/uploads && chown -R voxion:voxion /app
 
 USER voxion
 

@@ -8,12 +8,25 @@
       <span class="msg-author">{{.AuthorName}}</span>
       <time class="msg-time">{{.FormattedTime}}</time>
     </header>
+    {{if .Content}}
     <div class="msg-body">{{.Content}}</div>
+    {{end}}
     {{if .FileURL}}
-    <div style="margin-top: 6px;">
-      <a href="{{.FileURL}}" target="_blank" style="color: var(--accent-white); font-size: 12px; text-decoration: underline;">
-        📎 {{if .FileName}}{{.FileName}}{{else}}Attachment{{end}}
+    <div class="msg-attachment-box">
+      {{if isImage .FileURL}}
+      <a href="{{.FileURL}}" target="_blank" rel="noopener noreferrer">
+        <img src="{{.FileURL}}" alt="{{if .FileName}}{{.FileName}}{{else}}Image{{end}}" class="msg-attachment-img" loading="lazy">
       </a>
+      {{else}}
+      <a href="{{.FileURL}}" target="_blank" rel="noopener noreferrer" class="msg-attachment-card">
+        <span class="attachment-icon">📎</span>
+        <div class="attachment-info">
+          <span class="attachment-name">{{if .FileName}}{{.FileName}}{{else}}Attachment{{end}}</span>
+          {{if .FileSize}}<span class="attachment-meta">{{formatSize .FileSize}}</span>{{end}}
+        </div>
+        <span class="attachment-download">⬇</span>
+      </a>
+      {{end}}
     </div>
     {{end}}
     <!-- Reactions Container -->

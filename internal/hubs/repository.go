@@ -32,6 +32,11 @@ func generateID(prefix string) string {
 
 // SaveMessage stores a new chat message into MySQL
 func (r *Repository) SaveMessage(ctx context.Context, authorID, authorName, channelID, serverID, content string) (*MessageItem, error) {
+	return r.SaveMessageWithAttachment(ctx, authorID, authorName, channelID, serverID, content, "", "", "", 0)
+}
+
+// SaveMessageWithAttachment stores a chat message with optional attachment details into MySQL
+func (r *Repository) SaveMessageWithAttachment(ctx context.Context, authorID, authorName, channelID, serverID, content, fileURL, fileName, fileType string, fileSize int) (*MessageItem, error) {
 	msgID := generateID("msg")
 	now := time.Now()
 
@@ -45,6 +50,10 @@ func (r *Repository) SaveMessage(ctx context.Context, authorID, authorName, chan
 		AuthorName:    authorName,
 		Initials:      initials,
 		Content:       content,
+		FileURL:       fileURL,
+		FileName:      fileName,
+		FileType:      fileType,
+		FileSize:      fileSize,
 		FormattedTime: "Today at " + now.Format("15:04"),
 	}
 
@@ -72,10 +81,10 @@ func (r *Repository) SaveMessage(ctx context.Context, authorID, authorName, chan
 	}
 
 	query := `
-		INSERT INTO messages (id, content, member_id, user_id, channel_id, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
+		INSERT INTO messages (id, content, file_url, file_name, file_type, file_size, member_id, user_id, channel_id, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
-	_, err = r.db.ExecContext(ctx, query, msgID, content, memberID, authorID, channelID, now, now)
+	_, err = r.db.ExecContext(ctx, query, msgID, content, fileURL, fileName, fileType, fileSize, memberID, authorID, channelID, now, now)
 	if err != nil {
 		return item, fmt.Errorf("failed to persist message to mysql: %w", err)
 	}

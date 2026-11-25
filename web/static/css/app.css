@@ -479,3 +479,118 @@ html, body {
   font-size: 12.5px;
   color: var(--text-secondary);
 }
+
+/* Attachment Pipeline Styles (Engineered Minimalism) */
+.attachment-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+.attachment-preview-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.preview-icon {
+  font-size: 12px;
+}
+.preview-filename {
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+.preview-filesize {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.preview-remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 11px;
+  line-height: 1;
+}
+.preview-remove-btn:hover {
+  color: var(--accent-red);
+}
+.upload-status {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.msg-attachment-box {
+  margin-top: 6px;
+  max-width: 480px;
+}
+.msg-attachment-img {
+  max-width: 100%;
+  max-height: 320px;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+  display: block;
+  object-fit: cover;
+  background-color: var(--bg-card);
+}
+.msg-attachment-img:hover {
+  border-color: var(--border-strong);
+}
+.msg-attachment-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: border-color 0.12s ease;
+}
+.msg-attachment-card:hover {
+  border-color: var(--border-strong);
+}
+.attachment-icon {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+.attachment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.attachment-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.attachment-meta {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.attachment-download {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+.msg-attachment-card:hover .attachment-download {
+  color: var(--text-primary);
+}

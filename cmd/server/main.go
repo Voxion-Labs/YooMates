@@ -37,13 +37,19 @@ func HealthHandler(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewEngine *hubs.ViewEngine) http.Handler {
+func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewEngine *hubs.ViewEngine, uploader *hubs.Uploader) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", HealthHandler(cfg))
 
 	// Static assets file server
 	staticFS := http.FileServer(http.Dir("web/static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", staticFS))
+
+	// Attachment file uploads server & API endpoint
+	if uploader != nil {
+		mux.HandleFunc("/api/hubs/upload", hubs.UploadHandler(uploader, authMgr))
+		mux.Handle("/uploads/", http.StripPrefix("/uploads", hubs.ServeFilesHandler(uploader)))
+	}
 
 	// Root redirect: Hubs (Discord chat) is the default primary view
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -110,9 +116,17 @@ func main() {
 		log.Println("[yoomates-views] HTML templates loaded successfully.")
 	}
 
+	// Initialize local/S3 multipart attachment upload pipeline
+	uploader, err := hubs.NewUploader("data/uploads", hubs.DefaultMaxUploadSize, "/uploads")
+	if err != nil {
+		log.Printf("[yoomates-upload] Warning: Could not initialize attachment pipeline (%v)\n", err)
+	} else {
+		log.Println("[yoomates-upload] Multipart attachment upload pipeline active.")
+	}
+
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      SetupRoutes(cfg, authMgr, hub, viewEngine),
+		Handler:      SetupRoutes(cfg, authMgr, hub, viewEngine, uploader),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

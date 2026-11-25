@@ -57,11 +57,11 @@ YooMates is designed around three tightly integrated pillars:
 
 ---
 
-### **Phase 2: Core Chat "Hubs" Engine (Default Discord Parity)** `[IN PROGRESS]`
+### **Phase 2: Core Chat "Hubs" Engine (Default Discord Parity)** `[DONE]`
 - [x] **Sub-phase 2.1**: Native Go WebSocket Hub with goroutine connection pools, channel/server pub-sub routing, and ephemeral presence tracking (replacing Pusher vendor lock-in).
 - [x] **Sub-phase 2.2**: 3-column Hubs chat layout in Go Templates + HTMX (Server rail, Channels tree, Message stream, Active thread/member drawer) with engineered minimalist styling and dumb-pipe JS.
 - [x] **Sub-phase 2.3**: Real-time chat interactions via `hx-ext="ws"` (live messaging, message editing, soft-delete, typing indicators, emoji reactions) backed by MySQL repository and HTMX OOB swaps.
-- [ ] **Sub-phase 2.4**: Local/S3 multipart attachment upload pipeline (replacing UploadThing).
+- [x] **Sub-phase 2.4**: Local/S3 multipart attachment upload pipeline (replacing UploadThing).
 
 ---
 

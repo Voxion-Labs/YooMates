@@ -27,6 +27,10 @@ type WSMessage struct {
 	UserID    string          `json:"user_id,omitempty"`
 	Username  string          `json:"username,omitempty"`
 	Content   string          `json:"content,omitempty"`
+	FileURL   string          `json:"file_url,omitempty"`
+	FileName  string          `json:"file_name,omitempty"`
+	FileType  string          `json:"file_type,omitempty"`
+	FileSize  int             `json:"file_size,omitempty"`
 	MessageID string          `json:"message_id,omitempty"`
 	Emoji     string          `json:"emoji,omitempty"`
 	IsTyping  bool            `json:"is_typing,omitempty"`
