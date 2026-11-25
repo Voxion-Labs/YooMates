@@ -1,10 +1,19 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-25T08:29:11Z",
-  "branch": "main",
-  "head_commit": "b2a80ad44f1f27f3fa708940977b841790d7c555",
+  "last_updated": "2026-11-25T08:30:37Z",
+  "branch": "HEAD",
+  "head_commit": "d25ef0bb838d0a5973092c2ee92c43fe91405df3",
   "history": [
+    {
+      "hash": "d25ef0bb838d0a5973092c2ee92c43fe91405df3",
+      "short_hash": "d25ef0b",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-25T08:29:11Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "b2a80ad44f1f27f3fa708940977b841790d7c555",
       "short_hash": "b2a80ad",
@@ -356,22 +365,6 @@
       "timestamp": "2026-11-23T11:23:41Z",
       "subject": "chore(bot): update commit manifest [skip ci]",
       "files_changed": null
-    },
-    {
-      "hash": "b397ba1973acec8dc718314fe334fd3443e73399",
-      "short_hash": "b397ba1",
-      "author_name": "R-Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-11-23T16:52:56+05:30",
-      "subject": "feat(phase0): initialize governance roadmap, voxion-bot workflow, and rebase Makefile",
-      "files_changed": [
-        ".github/workflows/voxion-bot.yml",
-        "LICENSE",
-        "Makefile",
-        "ROADMAP.md",
-        "public/author/rudranarayan-jena.jpg",
-        "scripts/manifest.go"
-      ]
     }
   ]
 }

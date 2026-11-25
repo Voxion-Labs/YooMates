@@ -16,10 +16,10 @@ type SearchMessage struct {
 
 // SearchResult represents a scored search match
 type SearchResult struct {
-	ID         string `json:"id"`
-	Score      int    `json:"score"`
-	MatchedOn  string `json:"matched_on"`
-	Snippet    string `json:"snippet"`
+	ID        string `json:"id"`
+	Score     int    `json:"score"`
+	MatchedOn string `json:"matched_on"`
+	Snippet   string `json:"snippet"`
 }
 
 // SearchResponse is returned to the client
@@ -120,9 +120,9 @@ func FilterMessages(query string, messages []SearchMessage) []SearchResult {
 		matched, score, snippet := MatchItem(query, msg)
 		if matched {
 			results = append(results, SearchResult{
-				ID:        msg.ID,
-				Score:     score,
-				Snippet:   snippet,
+				ID:      msg.ID,
+				Score:   score,
+				Snippet: snippet,
 			})
 		}
 	}
