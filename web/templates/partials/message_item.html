@@ -16,6 +16,16 @@
       </a>
     </div>
     {{end}}
+    <!-- Reactions Container -->
+    <div id="reactions-msg-{{.ID}}" class="msg-reactions"></div>
+  </div>
+
+  <!-- Minimalist Hover Actions -->
+  <div class="msg-actions">
+    <button class="action-btn" title="React Thumbs Up" ws-send hx-vals='{"type":"reaction","message_id":"{{.ID}}","emoji":"👍"}'>👍</button>
+    <button class="action-btn" title="React Heart" ws-send hx-vals='{"type":"reaction","message_id":"{{.ID}}","emoji":"❤️"}'>❤️</button>
+    <button class="action-btn" title="React Fire" ws-send hx-vals='{"type":"reaction","message_id":"{{.ID}}","emoji":"🔥"}'>🔥</button>
+    <button class="action-btn" title="Delete Message" ws-send hx-vals='{"type":"delete","message_id":"{{.ID}}"}'>🗑</button>
   </div>
 </article>
 {{end}}

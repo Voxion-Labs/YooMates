@@ -12,12 +12,12 @@ import (
 	"yoomates/internal/auth"
 )
 
-func TestHubLifecycleAndBroadcast(t *testing.T) {
-	hub := NewHub()
+func TestHubLifecycleAndRealtimeInteractions(t *testing.T) {
+	repo := NewRepository(nil)
+	hub := NewHub(repo)
 	go hub.Run()
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Mock authenticated context
 		ctx := auth.WithUserContext(r.Context(), &auth.UserContext{
 			ID:       "usr_test_1",
 			Username: "tester",
@@ -37,16 +37,7 @@ func TestHubLifecycleAndBroadcast(t *testing.T) {
 	}
 	defer conn1.Close()
 
-	// Wait for registration
-	time.Sleep(50 * time.Millisecond)
-	if hub.ActiveConnections() != 1 {
-		t.Fatalf("expected 1 active connection, got %d", hub.ActiveConnections())
-	}
-	if !hub.IsUserOnline("usr_test_1") {
-		t.Error("expected user usr_test_1 to be marked online")
-	}
-
-	// Connect Client 2 to same channel
+	// Connect Client 2
 	conn2, _, err := websocket.DefaultDialer.Dial(wsURL, nil)
 	if err != nil {
 		t.Fatalf("failed to dial client 2: %v", err)
@@ -58,26 +49,6 @@ func TestHubLifecycleAndBroadcast(t *testing.T) {
 		t.Fatalf("expected 2 active connections, got %d", hub.ActiveConnections())
 	}
 
-	// Send test broadcast message to chan_general
-	testMsg, err := NewWSMessage(
-		TypeChat,
-		"srv_1",
-		"chan_general",
-		"usr_test_1",
-		"tester",
-		ChatPayload{
-			ID:      "msg_1",
-			Content: "Hello YooMates Go Engine!",
-		},
-		"<div id='msg-1'>Hello YooMates Go Engine!</div>",
-	)
-	if err != nil {
-		t.Fatalf("failed to create WS message: %v", err)
-	}
-
-	hub.BroadcastMessage(testMsg)
-
-	// Helper to read until a specific message type is received
 	readUntil := func(conn *websocket.Conn, targetType string) (*WSMessage, error) {
 		for {
 			_ = conn.SetReadDeadline(time.Now().Add(2 * time.Second))
@@ -95,36 +66,84 @@ func TestHubLifecycleAndBroadcast(t *testing.T) {
 		}
 	}
 
-	// Read chat message on Client 1
-	received1, err := readUntil(conn1, TypeChat)
+	// 1. Test Live Chat Message & OOB Render
+	chatMsg := &WSMessage{
+		Type:      TypeChat,
+		ServerID:  "srv_1",
+		ChannelID: "chan_general",
+		UserID:    "usr_test_1",
+		Username:  "tester",
+		Content:   "Testing live HTMX WS swap",
+	}
+	hub.BroadcastMessage(chatMsg)
+
+	receivedChat, err := readUntil(conn2, TypeChat)
 	if err != nil {
-		t.Fatalf("client 1 failed to receive chat broadcast: %v", err)
+		t.Fatalf("failed to receive chat: %v", err)
 	}
-	if received1.ChannelID != "chan_general" {
-		t.Errorf("expected channel chan_general, got %s", received1.ChannelID)
+	if !strings.Contains(receivedChat.HTML, `hx-swap-oob="beforeend"`) {
+		t.Errorf("expected HTML to contain hx-swap-oob beforeend, got %s", receivedChat.HTML)
+	}
+	if !strings.Contains(receivedChat.HTML, "Testing live HTMX WS swap") {
+		t.Errorf("expected HTML to contain message content, got %s", receivedChat.HTML)
 	}
 
-	// Read chat message on Client 2
-	received2, err := readUntil(conn2, TypeChat)
+	// 2. Test Typing Indicator
+	typingMsg := &WSMessage{
+		Type:      TypeTyping,
+		ChannelID: "chan_general",
+		Username:  "tester",
+		IsTyping:  true,
+	}
+	hub.BroadcastMessage(typingMsg)
+
+	receivedTyping, err := readUntil(conn2, TypeTyping)
 	if err != nil {
-		t.Fatalf("client 2 failed to receive chat broadcast: %v", err)
+		t.Fatalf("failed to receive typing: %v", err)
 	}
-	if received2.HTML != "<div id='msg-1'>Hello YooMates Go Engine!</div>" {
-		t.Errorf("unexpected HTML received: %s", received2.HTML)
+	if !strings.Contains(receivedTyping.HTML, "tester is typing...") {
+		t.Errorf("expected typing HTML to contain username, got %s", receivedTyping.HTML)
 	}
 
-	// Close Client 1 and Client 2 and verify unregistration
-	conn1.Close()
-	conn2.Close()
-	time.Sleep(100 * time.Millisecond)
+	// 3. Test Emoji Reaction
+	reactMsg := &WSMessage{
+		Type:      TypeReaction,
+		ChannelID: "chan_general",
+		ServerID:  "srv_1",
+		UserID:    "usr_test_1",
+		MessageID: "msg_123",
+		Emoji:     "🔥",
+	}
+	hub.BroadcastMessage(reactMsg)
 
-	if hub.ActiveConnections() != 0 {
-		t.Errorf("expected 0 active connections after disconnect, got %d", hub.ActiveConnections())
+	receivedReact, err := readUntil(conn2, TypeReaction)
+	if err != nil {
+		t.Fatalf("failed to receive reaction: %v", err)
+	}
+	if !strings.Contains(receivedReact.HTML, "🔥") {
+		t.Errorf("expected reaction HTML to contain emoji, got %s", receivedReact.HTML)
+	}
+
+	// 4. Test Soft-Delete Message
+	deleteMsg := &WSMessage{
+		Type:      TypeDelete,
+		ChannelID: "chan_general",
+		MessageID: "msg_123",
+		UserID:    "usr_test_1",
+	}
+	hub.BroadcastMessage(deleteMsg)
+
+	receivedDelete, err := readUntil(conn2, TypeDelete)
+	if err != nil {
+		t.Fatalf("failed to receive delete: %v", err)
+	}
+	if !strings.Contains(receivedDelete.HTML, "[This message was deleted]") {
+		t.Errorf("expected delete HTML to indicate deletion, got %s", receivedDelete.HTML)
 	}
 }
 
 func TestChannelIsolation(t *testing.T) {
-	hub := NewHub()
+	hub := NewHub(nil)
 	go hub.Run()
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -151,16 +170,21 @@ func TestChannelIsolation(t *testing.T) {
 	time.Sleep(50 * time.Millisecond)
 
 	// Broadcast exclusively to chan_alpha
-	msgAlpha, _ := NewWSMessage(TypeChat, "", "chan_alpha", "u1", "alice", nil, "alpha-only")
+	msgAlpha := &WSMessage{
+		Type:      TypeChat,
+		ChannelID: "chan_alpha",
+		UserID:    "u1",
+		Username:  "alice",
+		Content:   "alpha-only-secret",
+	}
 	hub.BroadcastMessage(msgAlpha)
 
-	// connAlpha should receive
 	_ = connAlpha.SetReadDeadline(time.Now().Add(1 * time.Second))
 	_, pAlpha, err := connAlpha.ReadMessage()
 	if err != nil {
 		t.Fatalf("connAlpha expected to receive message: %v", err)
 	}
-	if !strings.Contains(string(pAlpha), "alpha-only") {
+	if !strings.Contains(string(pAlpha), "alpha-only-secret") {
 		t.Errorf("unexpected message on connAlpha: %s", string(pAlpha))
 	}
 

@@ -1,40 +1,28 @@
 package hubs
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"sync"
+	"time"
 )
 
-// Hub maintains the set of active clients and broadcasts messages to the appropriate rooms
+// Hub maintains active clients, routes real-time broadcasts, and handles message lifecycle
 type Hub struct {
-	// Registered clients
-	clients map[*Client]bool
-
-	// Channel subscriptions: channelID -> map[*Client]bool
+	clients        map[*Client]bool
 	channelClients map[string]map[*Client]bool
-
-	// Server subscriptions: serverID -> map[*Client]bool
-	serverClients map[string]map[*Client]bool
-
-	// Presence tracking: userID -> active connection count
-	presence map[string]int
-
-	// Inbound messages to broadcast
-	broadcast chan *WSMessage
-
-	// Register requests from clients
-	register chan *Client
-
-	// Unregister requests from clients
-	unregister chan *Client
-
-	// Mutex for subscription maps
-	mu sync.RWMutex
+	serverClients  map[string]map[*Client]bool
+	presence       map[string]int
+	broadcast      chan *WSMessage
+	register       chan *Client
+	unregister     chan *Client
+	repo           *Repository
+	mu             sync.RWMutex
 }
 
-// NewHub creates a new Hub instance
-func NewHub() *Hub {
+// NewHub creates a new Hub instance with an optional database repository
+func NewHub(repo *Repository) *Hub {
 	return &Hub{
 		clients:        make(map[*Client]bool),
 		channelClients: make(map[string]map[*Client]bool),
@@ -43,6 +31,7 @@ func NewHub() *Hub {
 		broadcast:      make(chan *WSMessage, 256),
 		register:       make(chan *Client),
 		unregister:     make(chan *Client),
+		repo:           repo,
 	}
 }
 
@@ -54,7 +43,6 @@ func (h *Hub) Run() {
 			h.mu.Lock()
 			h.clients[client] = true
 
-			// Track server subscription
 			if client.ServerID != "" {
 				if _, ok := h.serverClients[client.ServerID]; !ok {
 					h.serverClients[client.ServerID] = make(map[*Client]bool)
@@ -62,7 +50,6 @@ func (h *Hub) Run() {
 				h.serverClients[client.ServerID][client] = true
 			}
 
-			// Track channel subscription
 			if client.ChannelID != "" {
 				if _, ok := h.channelClients[client.ChannelID]; !ok {
 					h.channelClients[client.ChannelID] = make(map[*Client]bool)
@@ -70,11 +57,9 @@ func (h *Hub) Run() {
 				h.channelClients[client.ChannelID][client] = true
 			}
 
-			// Update presence if user is authenticated
 			if client.User != nil {
 				h.presence[client.User.ID]++
 				if h.presence[client.User.ID] == 1 {
-					// User just came online
 					go h.BroadcastPresence(client.ServerID, client.User.ID, client.User.Username, "online")
 				}
 			}
@@ -86,7 +71,6 @@ func (h *Hub) Run() {
 				delete(h.clients, client)
 				close(client.Send)
 
-				// Remove from server subscriptions
 				if client.ServerID != "" && h.serverClients[client.ServerID] != nil {
 					delete(h.serverClients[client.ServerID], client)
 					if len(h.serverClients[client.ServerID]) == 0 {
@@ -94,7 +78,6 @@ func (h *Hub) Run() {
 					}
 				}
 
-				// Remove from channel subscriptions
 				if client.ChannelID != "" && h.channelClients[client.ChannelID] != nil {
 					delete(h.channelClients[client.ChannelID], client)
 					if len(h.channelClients[client.ChannelID]) == 0 {
@@ -102,12 +85,10 @@ func (h *Hub) Run() {
 					}
 				}
 
-				// Update presence
 				if client.User != nil {
 					h.presence[client.User.ID]--
 					if h.presence[client.User.ID] <= 0 {
 						delete(h.presence, client.User.ID)
-						// User went offline
 						go h.BroadcastPresence(client.ServerID, client.User.ID, client.User.Username, "offline")
 					}
 				}
@@ -115,13 +96,76 @@ func (h *Hub) Run() {
 			h.mu.Unlock()
 
 		case msg := <-h.broadcast:
-			h.routeBroadcast(msg)
+			h.processAndRoute(msg)
 		}
 	}
 }
 
-// routeBroadcast distributes the message to the intended targets (channel, server, or global)
-func (h *Hub) routeBroadcast(msg *WSMessage) {
+// processAndRoute handles business logic (persistence & HTML generation) before distributing frames
+func (h *Hub) processAndRoute(msg *WSMessage) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	switch msg.Type {
+	case TypeChat:
+		authorName := msg.Username
+		if authorName == "" {
+			authorName = "Team Member"
+		}
+		authorID := msg.UserID
+		if authorID == "" {
+			authorID = "guest"
+		}
+
+		if h.repo != nil && msg.Content != "" {
+			item, err := h.repo.SaveMessage(ctx, authorID, authorName, msg.ChannelID, msg.ServerID, msg.Content)
+			if err == nil && item != nil {
+				msg.MessageID = item.ID
+				msg.HTML = RenderMessageOOB(item)
+			}
+		} else if msg.Content != "" && msg.HTML == "" {
+			item := &MessageItem{
+				ID:            "msg_" + time.Now().Format("150405"),
+				AuthorName:    authorName,
+				Initials:      "U",
+				Content:       msg.Content,
+				FormattedTime: "Today at " + time.Now().Format("15:04"),
+			}
+			msg.HTML = RenderMessageOOB(item)
+		}
+
+	case TypeTyping:
+		msg.HTML = RenderTypingOOB(msg.Username, msg.IsTyping)
+
+	case TypeEdit:
+		if h.repo != nil && msg.MessageID != "" && msg.Content != "" {
+			item, err := h.repo.EditMessage(ctx, msg.MessageID, msg.UserID, msg.Content)
+			if err == nil && item != nil {
+				item.AuthorName = msg.Username
+				msg.HTML = RenderMessageEditOOB(item)
+			}
+		}
+
+	case TypeDelete:
+		if h.repo != nil && msg.MessageID != "" {
+			_ = h.repo.DeleteMessage(ctx, msg.MessageID, msg.UserID)
+		}
+		msg.HTML = RenderMessageDeleteOOB(msg.MessageID)
+
+	case TypeReaction:
+		if h.repo != nil && msg.MessageID != "" && msg.Emoji != "" {
+			reactions, err := h.repo.ToggleReaction(ctx, msg.MessageID, msg.UserID, msg.ServerID, msg.Emoji)
+			if err == nil {
+				msg.HTML = RenderReactionsOOB(msg.MessageID, reactions)
+			}
+		}
+	}
+
+	h.dispatch(msg)
+}
+
+// dispatch delivers the prepared frame to clients
+func (h *Hub) dispatch(msg *WSMessage) {
 	bytes, err := json.Marshal(msg)
 	if err != nil {
 		log.Printf("[hub-error] Failed to marshal broadcast message: %v\n", err)
@@ -177,7 +221,6 @@ func (h *Hub) SubscribeChannel(client *Client, channelID string) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
-	// Unsubscribe from previous channel if different
 	if client.ChannelID != "" && client.ChannelID != channelID {
 		if clients, ok := h.channelClients[client.ChannelID]; ok {
 			delete(clients, client)

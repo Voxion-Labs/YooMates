@@ -26,6 +26,10 @@ type WSMessage struct {
 	ChannelID string          `json:"channel_id,omitempty"`
 	UserID    string          `json:"user_id,omitempty"`
 	Username  string          `json:"username,omitempty"`
+	Content   string          `json:"content,omitempty"`
+	MessageID string          `json:"message_id,omitempty"`
+	Emoji     string          `json:"emoji,omitempty"`
+	IsTyping  bool            `json:"is_typing,omitempty"`
 	Payload   json.RawMessage `json:"payload,omitempty"`
 	HTML      string          `json:"html,omitempty"`
 	Timestamp string          `json:"timestamp"`
@@ -51,6 +55,23 @@ type TypingPayload struct {
 // PresencePayload represents online/offline status
 type PresencePayload struct {
 	Status string `json:"status"` // "online", "idle", "offline"
+}
+
+// ReactionPayload represents an emoji reaction event
+type ReactionPayload struct {
+	MessageID string `json:"message_id"`
+	Emoji     string `json:"emoji"`
+}
+
+// EditPayload represents an edit message request
+type EditPayload struct {
+	MessageID string `json:"message_id"`
+	Content   string `json:"content"`
+}
+
+// DeletePayload represents a delete message request
+type DeletePayload struct {
+	MessageID string `json:"message_id"`
 }
 
 // NewWSMessage creates a timestamped WSMessage

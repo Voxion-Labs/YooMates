@@ -96,8 +96,9 @@ func main() {
 		authMgr = auth.NewManager(pool, cfg)
 	}
 
-	// Initialize real-time WebSocket Hub
-	hub := hubs.NewHub()
+	// Initialize real-time WebSocket Hub with MySQL repository
+	repo := hubs.NewRepository(pool)
+	hub := hubs.NewHub(repo)
 	go hub.Run()
 	log.Println("[yoomates-hubs] Real-time WebSocket hub active.")
 
