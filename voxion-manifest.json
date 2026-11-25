@@ -1,10 +1,37 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-25T08:01:59Z",
+  "last_updated": "2026-11-25T08:09:03Z",
   "branch": "main",
-  "head_commit": "c8de405c1fe2eadfe93a9fe585e2ddddcbe17c64",
+  "head_commit": "d703cbe1e262194ab35f47cc7cd94626750d4912",
   "history": [
+    {
+      "hash": "d703cbe1e262194ab35f47cc7cd94626750d4912",
+      "short_hash": "d703cbe",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-25T13:39:02+05:30",
+      "subject": "Add service worker and IndexedDB caching for instant offline chat loading",
+      "files_changed": [
+        "ROADMAP.md",
+        "cmd/server/main.go",
+        "cmd/server/main_test.go",
+        "web/static/js/dumb-pipe.js",
+        "web/static/js/idb-cache.js",
+        "web/static/sw.js",
+        "web/templates/base.html",
+        "web/templates/hubs.html"
+      ]
+    },
+    {
+      "hash": "2ceee722dd16882750704cededf9cd7da6135ce4",
+      "short_hash": "2ceee72",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-25T08:01:59Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "c8de405c1fe2eadfe93a9fe585e2ddddcbe17c64",
       "short_hash": "c8de405",
@@ -334,29 +361,6 @@
         "LICENSE",
         "prisma/schema.prisma"
       ]
-    },
-    {
-      "hash": "4cdd85a89506324df5e04f40c717f5f0c11a4661",
-      "short_hash": "4cdd85a",
-      "author_name": "liambrooks-lab",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-10-15T18:12:41+05:30",
-      "subject": "chore: polish remaining brand strings and icons to YooMates",
-      "files_changed": [
-        "src/app/not-found.tsx",
-        "src/modules/ai/utils/system-prompts.ts",
-        "src/modules/myspace/components/BlockEditor.tsx",
-        "src/modules/myspace/lib/documents.ts"
-      ]
-    },
-    {
-      "hash": "431a8995e5b9bd86ba616ed0b22b9bab2bb12a1b",
-      "short_hash": "431a899",
-      "author_name": "liambrooks-lab",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-10-15T18:08:57+05:30",
-      "subject": "Merge remote-tracking branch 'origin/main'",
-      "files_changed": null
     }
   ]
 }

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -41,9 +42,23 @@ func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewE
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", HealthHandler(cfg))
 
+	// Resolve static directory (supports both project root and test execution)
+	staticDir := "web/static"
+	if _, err := os.Stat(staticDir); os.IsNotExist(err) {
+		staticDir = "../../web/static"
+	}
+
 	// Static assets file server
-	staticFS := http.FileServer(http.Dir("web/static"))
+	staticFS := http.FileServer(http.Dir(staticDir))
 	mux.Handle("/static/", http.StripPrefix("/static/", staticFS))
+
+	// Service Worker for 0ms offline resilience (scope: /)
+	mux.HandleFunc("/sw.js", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/javascript")
+		w.Header().Set("Service-Worker-Allowed", "/")
+		swPath := filepath.Join(staticDir, "sw.js")
+		http.ServeFile(w, r, swPath)
+	})
 
 	// Attachment file uploads server & API endpoint
 	if uploader != nil {
