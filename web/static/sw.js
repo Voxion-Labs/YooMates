@@ -1,5 +1,5 @@
 // YooMates Offline Resilience Service Worker (Engineered Minimalism)
-const CACHE_NAME = 'yoomates-v1';
+const CACHE_NAME = 'yoomates-v2';
 
 const STATIC_ASSETS = [
   '/',
@@ -7,8 +7,10 @@ const STATIC_ASSETS = [
   '/static/css/app.css',
   '/static/js/htmx.min.js',
   '/static/js/htmx-ws.js',
+  '/static/js/wasm_exec.js',
   '/static/js/idb-cache.js',
-  '/static/js/dumb-pipe.js'
+  '/static/js/dumb-pipe.js',
+  '/static/wasm/search.wasm'
 ];
 
 // Install: pre-cache static assets

@@ -77,7 +77,7 @@ func TestServiceWorkerEndpoint(t *testing.T) {
 	}
 
 	body := rr.Body.String()
-	if !strings.Contains(body, "yoomates-v1") {
-		t.Errorf("expected body to contain cache name 'yoomates-v1', got %s", body)
+	if !strings.Contains(body, "yoomates-v2") {
+		t.Errorf("expected body to contain cache name 'yoomates-v2', got %s", body)
 	}
 }

@@ -20,6 +20,11 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -trimpath -ldflags="-s -w" -o /app/yoomates ./cmd/server/main.go
 
+# Build WebAssembly search module if not present
+RUN if [ ! -f web/static/wasm/search.wasm ]; then \
+        GOOS=js GOARCH=wasm go build -trimpath -ldflags="-s -w" -o web/static/wasm/search.wasm ./cmd/wasm/main.go; \
+    fi
+
 # Stage 2: Minimalist, hardened scratch/alpine runtime
 FROM alpine:3.20 AS runner
 

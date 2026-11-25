@@ -1,5 +1,5 @@
-// YooMates Dumb Pipe JS - Zero Framework, Zero State (<110 lines)
-// Strictly an event, offline cache, and DOM transport layer.
+// YooMates Dumb Pipe JS - Zero Framework, Zero State (<170 lines)
+// Strictly an event, offline cache, WebAssembly search, and DOM transport layer.
 
 (function () {
   'use strict';
@@ -160,12 +160,110 @@
 
   window.addEventListener('DOMContentLoaded', initAttachmentPipeline);
 
-  // 7. Global minimalist keyboard shortcuts
+  // 7. WebAssembly In-Memory Search Engine
+  function initWasmSearch() {
+    if (typeof Go !== 'undefined' && 'WebAssembly' in window) {
+      const go = new Go();
+      WebAssembly.instantiateStreaming(fetch('/static/wasm/search.wasm'), go.importObject)
+        .then(function (result) {
+          go.run(result.instance);
+          const badge = document.getElementById('wasm-badge');
+          if (badge) badge.style.opacity = '1';
+        })
+        .catch(function (err) {
+          console.warn('[wasm-search] Falling back to text matching:', err);
+        });
+    }
+
+    const searchInput = document.getElementById('channel-search-input');
+    const searchCount = document.getElementById('search-count');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function () {
+      const query = searchInput.value.trim();
+      const container = document.getElementById('messages-container');
+      if (!container) return;
+
+      const items = container.querySelectorAll('.message-item');
+      if (query === '') {
+        items.forEach(function (el) {
+          el.classList.remove('msg-search-hidden', 'msg-search-match');
+        });
+        if (searchCount) searchCount.style.display = 'none';
+        return;
+      }
+
+      const msgs = [];
+      items.forEach(function (el) {
+        const id = el.id.replace('msg-', '');
+        const author = el.querySelector('.msg-author') ? el.querySelector('.msg-author').textContent.trim() : '';
+        const body = el.querySelector('.msg-body') ? el.querySelector('.msg-body').textContent.trim() : '';
+        const file = el.querySelector('.attachment-name') ? el.querySelector('.attachment-name').textContent.trim() : '';
+        msgs.push({ id: id, author_name: author, content: body, file_name: file });
+      });
+
+      const matchIds = new Set();
+      if (window.YooSearchWASM) {
+        try {
+          const raw = window.YooSearchWASM(query, JSON.stringify(msgs));
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.results) {
+            parsed.results.forEach(function (r) { matchIds.add(r.id); });
+          }
+        } catch (e) {
+          console.warn('[wasm-search] error:', e);
+        }
+      } else {
+        const q = query.toLowerCase();
+        msgs.forEach(function (m) {
+          if (m.content.toLowerCase().includes(q) || m.author_name.toLowerCase().includes(q) || m.file_name.toLowerCase().includes(q)) {
+            matchIds.add(m.id);
+          }
+        });
+      }
+
+      items.forEach(function (el) {
+        const id = el.id.replace('msg-', '');
+        if (matchIds.has(id)) {
+          el.classList.remove('msg-search-hidden');
+          el.classList.add('msg-search-match');
+        } else {
+          el.classList.add('msg-search-hidden');
+          el.classList.remove('msg-search-match');
+        }
+      });
+
+      if (searchCount) {
+        searchCount.textContent = matchIds.size + ' matches';
+        searchCount.style.display = 'inline';
+      }
+    });
+
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.blur();
+      }
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', initWasmSearch);
+
+  // 8. Global minimalist keyboard shortcuts
   window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     }
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')) {
+      const searchInput = document.getElementById('channel-search-input');
+      if (searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+    }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
       e.preventDefault();
       const input = document.getElementById('chat-input-field');
       if (input) input.focus();

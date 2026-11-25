@@ -65,9 +65,9 @@ YooMates is designed around three tightly integrated pillars:
 
 ---
 
-### **Phase 3: Client-Side Resilience & Dumb-Pipe WASM/Cache** `[IN PROGRESS]`
+### **Phase 3: Client-Side Resilience & Dumb-Pipe WASM/Cache** `[DONE]`
 - [x] **Sub-phase 3.1**: Dumb Pipe JS (<110 lines) + Service Worker & IndexedDB caching for 0ms instant offline chat load.
-- [ ] **Sub-phase 3.2**: WASM module integration (C++ / Go compiled to `.wasm`) for instant local search and client-side message filtering.
+- [x] **Sub-phase 3.2**: WASM module integration (Go WebAssembly compiled to `.wasm`) for instant local search and client-side message filtering.
 
 ---
 

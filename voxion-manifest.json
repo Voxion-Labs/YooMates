@@ -1,10 +1,44 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-25T08:09:46Z",
+  "last_updated": "2026-11-25T08:28:34Z",
   "branch": "main",
-  "head_commit": "f4bb5deacede215cc71a8fb4f4cb29c364637d5e",
+  "head_commit": "de76a867d945b1d00182b9e7751b26b9af60dd0d",
   "history": [
+    {
+      "hash": "de76a867d945b1d00182b9e7751b26b9af60dd0d",
+      "short_hash": "de76a86",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-25T13:58:32+05:30",
+      "subject": "Implement client-side WebAssembly search engine and channel filter UI",
+      "files_changed": [
+        ".gitignore",
+        "Dockerfile",
+        "Makefile",
+        "ROADMAP.md",
+        "cmd/server/main_test.go",
+        "cmd/wasm/main.go",
+        "internal/search/search.go",
+        "internal/search/search_test.go",
+        "web/static/css/app.css",
+        "web/static/js/dumb-pipe.js",
+        "web/static/js/wasm_exec.js",
+        "web/static/sw.js",
+        "web/static/wasm/search.wasm",
+        "web/templates/base.html",
+        "web/templates/hubs.html"
+      ]
+    },
+    {
+      "hash": "bcc997542b3a129b201f7e735ff23be17826756b",
+      "short_hash": "bcc9975",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-25T08:09:46Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "f4bb5deacede215cc71a8fb4f4cb29c364637d5e",
       "short_hash": "f4bb5de",
@@ -337,29 +371,6 @@
         "ROADMAP.md",
         "public/author/rudranarayan-jena.jpg",
         "scripts/manifest.go"
-      ]
-    },
-    {
-      "hash": "34b6a5114cb9a1770e1973658576f447b1a54e2e",
-      "short_hash": "34b6a51",
-      "author_name": "Rudranarayan Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-10-15T18:39:20+05:30",
-      "subject": "Refactor README formatting and remove env variables",
-      "files_changed": [
-        "README.md"
-      ]
-    },
-    {
-      "hash": "a79facef3500d9c6f2b040d61a5716621cadd12a",
-      "short_hash": "a79face",
-      "author_name": "liambrooks-lab",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-10-15T18:13:46+05:30",
-      "subject": "chore: update YooMates references in LICENSE and schema.prisma",
-      "files_changed": [
-        "LICENSE",
-        "prisma/schema.prisma"
       ]
     }
   ]

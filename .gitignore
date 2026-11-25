@@ -1,6 +1,7 @@
 bin/
 *.exe
 *.wasm
+!web/static/wasm/*.wasm
 node_modules/
 .next/
 next-env.d.ts
