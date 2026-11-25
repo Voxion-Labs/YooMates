@@ -1,10 +1,36 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-25T08:01:21Z",
-  "branch": "HEAD",
-  "head_commit": "82adabd14986612be572d4ccad0ec33585c31d99",
+  "last_updated": "2026-11-25T08:01:59Z",
+  "branch": "main",
+  "head_commit": "c8de405c1fe2eadfe93a9fe585e2ddddcbe17c64",
   "history": [
+    {
+      "hash": "c8de405c1fe2eadfe93a9fe585e2ddddcbe17c64",
+      "short_hash": "c8de405",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-25T13:30:51+05:30",
+      "subject": "Add multipart file upload handler and attachment pipeline replacing UploadThing",
+      "files_changed": [
+        ".gitignore",
+        "Dockerfile",
+        "ROADMAP.md",
+        "cmd/server/main.go",
+        "cmd/server/main_test.go",
+        "internal/hubs/html_render.go",
+        "internal/hubs/hub.go",
+        "internal/hubs/message.go",
+        "internal/hubs/repository.go",
+        "internal/hubs/uploads.go",
+        "internal/hubs/uploads_test.go",
+        "internal/hubs/views.go",
+        "web/static/css/app.css",
+        "web/static/js/dumb-pipe.js",
+        "web/templates/partials/message_input.html",
+        "web/templates/partials/message_item.html"
+      ]
+    },
     {
       "hash": "82adabd14986612be572d4ccad0ec33585c31d99",
       "short_hash": "82adabd",
@@ -331,47 +357,6 @@
       "timestamp": "2026-10-15T18:08:57+05:30",
       "subject": "Merge remote-tracking branch 'origin/main'",
       "files_changed": null
-    },
-    {
-      "hash": "c3fe49f8d51632fa3de2fe3135978b838754ce98",
-      "short_hash": "c3fe49f",
-      "author_name": "liambrooks-lab",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-10-15T18:00:08+05:30",
-      "subject": "chore: rebrand HorizonSync to YooMates",
-      "files_changed": [
-        ".env.example",
-        "CONTRIBUTING.md",
-        "README.md",
-        "package-lock.json",
-        "package.json",
-        "public/branding/horizonsync-banner.jpg",
-        "public/branding/horizonsync-logo.jpg",
-        "public/branding/yoomates-logo.png",
-        "render.yaml",
-        "src/app/(auth)/layout.tsx",
-        "src/app/(auth)/login/page.tsx",
-        "src/app/(auth)/register/page.tsx",
-        "src/app/(main)/global/page.tsx",
-        "src/app/(main)/profile/[username]/page.tsx",
-        "src/app/(main)/profile/settings/page.tsx",
-        "src/app/layout.tsx",
-        "src/modules/ai/components/AIChatWindow.tsx",
-        "src/modules/ai/utils/system-prompts.ts",
-        "src/modules/auth/actions/auth.actions.ts",
-        "src/modules/auth/actions/notification.actions.ts",
-        "src/modules/auth/components/LoginForm.tsx",
-        "src/modules/auth/components/RegisterForm.tsx",
-        "src/modules/global/components/FeedComposer.tsx",
-        "src/modules/global/lib/posts.ts",
-        "src/modules/myspace/lib/documents.ts",
-        "src/modules/profile/components/ProfileHeader.tsx",
-        "src/modules/profile/components/ProfileSettingsForm.tsx",
-        "src/shared/components/BrandIdentity.tsx",
-        "src/shared/components/MainShell.tsx",
-        "src/shared/lib/auth.ts",
-        "src/shared/lib/email.ts"
-      ]
     }
   ]
 }
