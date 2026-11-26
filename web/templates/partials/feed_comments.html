@@ -1,0 +1,37 @@
+{{define "comment_item"}}
+<div class="comment-item" id="comment-{{.ID}}">
+  <div class="comment-avatar">{{.AuthorInitials}}</div>
+  <div class="comment-content-box">
+    <div class="comment-header">
+      <span class="comment-author">{{.AuthorName}}</span>
+      <span class="comment-username">@{{.AuthorUsername}}</span>
+      <span class="comment-dot">·</span>
+      <time class="comment-time">{{.FormattedTime}}</time>
+    </div>
+    <div class="comment-text">{{.Text}}</div>
+  </div>
+</div>
+{{end}}
+
+{{define "feed_comments"}}
+<div class="post-comments-container">
+  <!-- Add Comment Form -->
+  <form class="comment-composer-form" 
+        hx-post="/global/posts/{{.PostID}}/comments" 
+        hx-target="#comments-list-{{.PostID}}" 
+        hx-swap="beforeend"
+        hx-on::after-request="this.reset();">
+    <input type="text" name="text" class="comment-input" placeholder="Post your reply..." autocomplete="off" required>
+    <button type="submit" class="comment-submit-btn">Reply</button>
+  </form>
+
+  <!-- Comments List -->
+  <div id="comments-list-{{.PostID}}" class="comments-list">
+    {{range .Comments}}
+      {{template "comment_item" .}}
+    {{else}}
+      <div class="no-comments-msg">No replies yet. Be the first to reply!</div>
+    {{end}}
+  </div>
+</div>
+{{end}}

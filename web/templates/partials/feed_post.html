@@ -1,0 +1,99 @@
+{{define "feed_post"}}
+<article class="feed-post-card" id="post-{{.ID}}">
+  <div class="post-avatar-col">
+    <div class="post-avatar">{{.AuthorInitials}}</div>
+  </div>
+
+  <div class="post-main-col">
+    <!-- Post Header -->
+    <header class="post-header">
+      <span class="post-author-name">{{.AuthorName}}</span>
+      <span class="post-author-handle">@{{.AuthorUsername}}</span>
+      <span class="post-dot">·</span>
+      <time class="post-time">{{.FormattedTime}}</time>
+    </header>
+
+    <!-- Post Body -->
+    <div class="post-body-text">
+      {{.Content}}
+    </div>
+
+    <!-- Media Attachment (if present) -->
+    {{if .MediaURL}}
+    <div class="post-media-box">
+      {{if isImage .MediaURL}}
+      <img src="{{.MediaURL}}" alt="{{.MediaName}}" class="post-media-img" loading="lazy">
+      {{else}}
+      <a href="{{.MediaURL}}" target="_blank" rel="noopener noreferrer" class="post-attachment-link">
+        <span class="attachment-icon">📎</span>
+        <span class="attachment-title">{{if .MediaName}}{{.MediaName}}{{else}}Download File{{end}}</span>
+      </a>
+      {{end}}
+    </div>
+    {{end}}
+
+    <!-- Interactive Poll (if present) -->
+    {{if .Poll}}
+    <div class="post-poll-container">
+      {{template "feed_poll" .Poll}}
+    </div>
+    {{end}}
+
+    <!-- Quote Post (if present) -->
+    {{if .QuotePost}}
+    <div class="quote-post-embed">
+      <div class="quote-post-header">
+        <div class="quote-post-avatar">{{.QuotePost.AuthorInitials}}</div>
+        <span class="quote-post-author">{{.QuotePost.AuthorName}}</span>
+        <span class="quote-post-handle">@{{.QuotePost.AuthorUsername}}</span>
+        <span class="quote-post-dot">·</span>
+        <span class="quote-post-time">{{.QuotePost.FormattedTime}}</span>
+      </div>
+      <div class="quote-post-content">
+        {{.QuotePost.Content}}
+      </div>
+    </div>
+    {{end}}
+
+    <!-- Post Action Buttons -->
+    <footer class="post-actions-bar">
+      <!-- Comment Action -->
+      <button class="post-action-btn comment-btn" 
+              hx-get="/global/posts/{{.ID}}/comments" 
+              hx-target="#comments-drawer-{{.ID}}" 
+              hx-swap="innerHTML"
+              title="Reply">
+        <span class="action-icon">💬</span>
+        <span class="action-count">{{.CommentsCount}}</span>
+      </button>
+
+      <!-- Retweet / Quote Action -->
+      <button class="post-action-btn quote-btn" 
+              onclick="document.getElementById('composer-quote-id').value='{{.ID}}'; document.getElementById('composer-textarea').focus();"
+              title="Quote post">
+        <span class="action-icon">🔁</span>
+        <span class="action-count">Quote</span>
+      </button>
+
+      <!-- Like Action -->
+      <button id="like-btn-{{.ID}}" 
+              class="post-action-btn like-btn {{if .HasLiked}}liked{{end}}" 
+              hx-post="/global/posts/{{.ID}}/like" 
+              hx-target="#like-btn-{{.ID}}" 
+              hx-swap="outerHTML" 
+              title="Like post">
+        <span class="action-icon">{{if .HasLiked}}❤️{{else}}🤍{{end}}</span>
+        <span class="action-count">{{.LikesCount}}</span>
+      </button>
+
+      <!-- Share / Bookmark Action -->
+      <button class="post-action-btn share-btn" title="Share link" onclick="navigator.clipboard.writeText(window.location.origin + '/global#post-{{.ID}}'); alert('Link copied to clipboard');">
+        <span class="action-icon">📤</span>
+      </button>
+    </footer>
+
+    <!-- Comments Drawer (Expandable) -->
+    <div id="comments-drawer-{{.ID}}" class="comments-drawer"></div>
+  </div>
+</article>
+{{end}}

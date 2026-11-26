@@ -9,12 +9,14 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
 	"yoomates/internal/auth"
 	"yoomates/internal/config"
 	"yoomates/internal/db"
+	"yoomates/internal/feed"
 	"yoomates/internal/hubs"
 )
 
@@ -38,7 +40,7 @@ func HealthHandler(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewEngine *hubs.ViewEngine, uploader *hubs.Uploader) http.Handler {
+func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewEngine *hubs.ViewEngine, uploader *hubs.Uploader, feedEngines ...*feed.ViewEngine) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", HealthHandler(cfg))
 
@@ -81,6 +83,50 @@ func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewE
 			hubsHandler = authMgr.SessionMiddleware(hubsHandler)
 		}
 		mux.Handle("/hubs", hubsHandler)
+	}
+
+	var feedEngine *feed.ViewEngine
+	if len(feedEngines) > 0 && feedEngines[0] != nil {
+		feedEngine = feedEngines[0]
+	}
+
+	if feedEngine != nil {
+		var globalHandler http.Handler = http.HandlerFunc(feedEngine.GlobalHandler)
+		if authMgr != nil {
+			globalHandler = authMgr.SessionMiddleware(globalHandler)
+		}
+		mux.Handle("/global", globalHandler)
+
+		// Post creation & stream pagination
+		mux.HandleFunc("/global/posts", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == http.MethodPost {
+				feedEngine.CreatePostHandler(w, r)
+			} else {
+				feedEngine.PostsStreamHandler(w, r)
+			}
+		})
+
+		// Dynamic sub-routes: /global/posts/{id}/like and /global/posts/{id}/comments
+		mux.HandleFunc("/global/posts/", func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasSuffix(r.URL.Path, "/like") {
+				feedEngine.LikeHandler(w, r)
+				return
+			}
+			if strings.Contains(r.URL.Path, "/comments") {
+				feedEngine.CommentsHandler(w, r)
+				return
+			}
+			http.NotFound(w, r)
+		})
+
+		// Poll vote handler: /global/polls/{id}/vote
+		mux.HandleFunc("/global/polls/", func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasSuffix(r.URL.Path, "/vote") {
+				feedEngine.PollVoteHandler(w, r)
+				return
+			}
+			http.NotFound(w, r)
+		})
 	}
 
 	if authMgr != nil {
@@ -139,9 +185,18 @@ func main() {
 		log.Println("[yoomates-upload] Multipart attachment upload pipeline active.")
 	}
 
+	// Initialize Global Feed (Twitter/X style) repository & view engine
+	feedRepo := feed.NewRepository(pool)
+	feedEngine, err := feed.NewViewEngine("web/templates", feedRepo)
+	if err != nil {
+		log.Printf("[yoomates-feed] Warning: Could not initialize feed view engine (%v)\n", err)
+	} else {
+		log.Println("[yoomates-feed] Global Feed engine active.")
+	}
+
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      SetupRoutes(cfg, authMgr, hub, viewEngine, uploader),
+		Handler:      SetupRoutes(cfg, authMgr, hub, viewEngine, uploader, feedEngine),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

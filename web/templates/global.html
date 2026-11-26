@@ -1,0 +1,178 @@
+{{template "base.html" .}}
+
+{{define "title"}}Global Feed | YooMates{{end}}
+
+{{define "content"}}
+<div class="feed-layout">
+  <!-- Left Column: Navigation Rail -->
+  <aside class="feed-nav-col" aria-label="Global Navigation">
+    <div class="feed-brand-header">
+      <a href="/global" class="feed-brand-logo" title="YooMates Global">
+        <span class="feed-logo-icon">🗲</span>
+        <span class="feed-brand-title">YooMates</span>
+      </a>
+    </div>
+
+    <nav class="feed-nav-links">
+      <a href="/global" class="feed-nav-item active" title="Global Feed">
+        <span class="nav-icon">🌐</span>
+        <span class="nav-label">Global Feed</span>
+      </a>
+      <a href="/hubs" class="feed-nav-item" title="Hubs (Chat & Voice)">
+        <span class="nav-icon">💬</span>
+        <span class="nav-label">Hubs</span>
+      </a>
+      <a href="/myspace" class="feed-nav-item" title="My Space (Workspace & Docs)">
+        <span class="nav-icon">📝</span>
+        <span class="nav-label">My Space</span>
+      </a>
+      <a href="/global" class="feed-nav-item" title="Bookmarks">
+        <span class="nav-icon">🔖</span>
+        <span class="nav-label">Bookmarks</span>
+      </a>
+      <a href="/global" class="feed-nav-item" title="Profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </a>
+    </nav>
+
+    <div class="feed-nav-user-pill">
+      <div class="user-avatar">{{.CurrentUser.Initials}}</div>
+      <div class="user-meta">
+        <span class="user-name">{{.CurrentUser.Name}}</span>
+        <span class="user-handle">@{{.CurrentUser.Username}}</span>
+      </div>
+      <a href="/api/auth/logout" class="nav-logout-btn" title="Sign Out">⎋</a>
+    </div>
+  </aside>
+
+  <!-- Center Column: Chronological Post Stream & Composer -->
+  <main class="feed-center-col" id="feed-center-col">
+    <header class="feed-sticky-header">
+      <div class="feed-header-title">Home</div>
+      <div class="feed-header-tabs">
+        <button class="feed-tab-btn active">For You</button>
+        <button class="feed-tab-btn">Following</button>
+      </div>
+    </header>
+
+    <!-- Post Composer -->
+    <section class="feed-composer-box">
+      <div class="composer-avatar-col">
+        <div class="composer-avatar">{{.CurrentUser.Initials}}</div>
+      </div>
+      <div class="composer-main-col">
+        <form id="feed-composer-form" 
+              hx-post="/global/posts" 
+              hx-target="#posts-container" 
+              hx-swap="afterbegin"
+              hx-on::after-request="this.reset(); document.getElementById('composer-poll-drawer').style.display='none'; document.getElementById('composer-quote-id').value='';">
+          <textarea id="composer-textarea" 
+                    name="content" 
+                    class="composer-textarea" 
+                    placeholder="What is happening in the engine?" 
+                    rows="3" 
+                    required></textarea>
+          
+          <input type="hidden" name="quote_post_id" id="composer-quote-id" value="">
+          <input type="hidden" name="media_url" id="composer-media-url" value="">
+          <input type="hidden" name="media_name" id="composer-media-name" value="">
+          <input type="hidden" name="media_type" id="composer-media-type" value="">
+
+          <!-- Expandable Poll Drawer -->
+          <div id="composer-poll-drawer" class="composer-poll-drawer" style="display: none;">
+            <div class="poll-drawer-header">Create a Poll</div>
+            <input type="text" name="poll_question" class="poll-input" placeholder="Ask a question..." autocomplete="off">
+            <input type="text" name="poll_option_0" class="poll-input" placeholder="Option 1" autocomplete="off">
+            <input type="text" name="poll_option_1" class="poll-input" placeholder="Option 2" autocomplete="off">
+            <input type="text" name="poll_option_2" class="poll-input" placeholder="Option 3 (optional)" autocomplete="off">
+            <input type="text" name="poll_option_3" class="poll-input" placeholder="Option 4 (optional)" autocomplete="off">
+          </div>
+
+          <div class="composer-actions-bar">
+            <div class="composer-tools">
+              <button type="button" class="tool-btn" title="Add Poll" onclick="const d = document.getElementById('composer-poll-drawer'); d.style.display = d.style.display === 'none' ? 'block' : 'none';">
+                📊
+              </button>
+              <button type="button" class="tool-btn" title="Emoji" onclick="const t = document.getElementById('composer-textarea'); t.value += ' ✨'; t.focus();">
+                😀
+              </button>
+            </div>
+            <button type="submit" class="composer-submit-btn">Post</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Posts Container (Prepend new posts, append infinite scroll) -->
+    <div id="posts-container" class="posts-stream-container">
+      {{range .Posts}}
+        {{template "feed_post" .}}
+      {{else}}
+        <div class="no-posts-card">
+          <p>No posts in feed yet. Be the first to share an update!</p>
+        </div>
+      {{end}}
+
+      <!-- Infinite Scroll Trigger Sentinel -->
+      {{if .HasMore}}
+      <div id="feed-scroll-sentinel" 
+           class="feed-scroll-sentinel" 
+           hx-get="/global/posts?cursor={{.NextCursor}}" 
+           hx-trigger="revealed" 
+           hx-swap="outerHTML">
+        <span class="feed-spinner"></span>
+      </div>
+      {{end}}
+    </div>
+  </main>
+
+  <!-- Right Column: Trends & Widgets -->
+  <aside class="feed-widgets-col" aria-label="Explore & Trends">
+    <!-- Search Box -->
+    <div class="feed-search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search Global Feed..." autocomplete="off">
+    </div>
+
+    <!-- Trending Topics Card -->
+    <div class="widget-card">
+      <div class="widget-card-title">What's happening</div>
+      <div class="widget-items-list">
+        {{range .TrendingTopics}}
+        <div class="trend-item">
+          <div class="trend-category">{{.Category}}</div>
+          <div class="trend-topic">{{.Topic}}</div>
+          <div class="trend-count">{{.PostCount}}</div>
+        </div>
+        {{end}}
+      </div>
+    </div>
+
+    <!-- Who to Follow Card -->
+    <div class="widget-card">
+      <div class="widget-card-title">Who to follow</div>
+      <div class="widget-items-list">
+        {{range .WhoToFollow}}
+        <div class="follow-item">
+          <div class="follow-avatar">{{.Initials}}</div>
+          <div class="follow-meta">
+            <span class="follow-name">{{.Name}}</span>
+            <span class="follow-handle">@{{.Username}}</span>
+            <span class="follow-bio">{{.Bio}}</span>
+          </div>
+          <button class="follow-btn" onclick="this.textContent = this.textContent === 'Follow' ? 'Following' : 'Follow'; this.classList.toggle('active');">
+            Follow
+          </button>
+        </div>
+        {{end}}
+      </div>
+    </div>
+
+    <footer class="feed-footer-meta">
+      <span>Terms of Service · Privacy Policy · Cookie Policy</span>
+      <span>© 2026 Voxion Labs · YooMates Engine v2.0</span>
+    </footer>
+  </aside>
+</div>
+{{end}}

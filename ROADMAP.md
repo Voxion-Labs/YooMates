@@ -77,8 +77,8 @@ YooMates is designed around three tightly integrated pillars:
 
 ---
 
-### **Phase 5: Global Feed & My Space Migration** `[PENDING]`
-- [ ] **Sub-phase 5.1**: Global Feed (Twitter/X style) with chronological posts, quote posts, comments, likes, polls, and HTMX infinite scroll.
+### **Phase 5: Global Feed & My Space Migration** `[IN PROGRESS]`
+- [x] **Sub-phase 5.1**: Global Feed (Twitter/X style) with chronological posts, quote posts, comments, likes, polls, and HTMX infinite scroll.
 - [ ] **Sub-phase 5.2**: My Space (Notion style) minimalist block/markdown editor with local-first autosave and kanban/list views.
 
 ---

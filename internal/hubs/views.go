@@ -91,15 +91,19 @@ func NewViewEngine(templatesDir string, db *sql.DB) (*ViewEngine, error) {
 			}
 			return fmt.Sprintf("%.1f MB", float64(bytes)/(1024*1024))
 		},
+		"formatPercent": func(p float64) string {
+			return fmt.Sprintf("%.1f%%", p)
+		},
 	}
 
-	pattern := filepath.Join(templatesDir, "*.html")
+	basePattern := filepath.Join(templatesDir, "base.html")
+	pagePattern := filepath.Join(templatesDir, "hubs.html")
 	partialsPattern := filepath.Join(templatesDir, "partials", "*.html")
 
 	tmpl := template.New("").Funcs(funcMap)
-	tmpl, err := tmpl.ParseGlob(pattern)
+	tmpl, err := tmpl.ParseFiles(basePattern, pagePattern)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse root templates: %w", err)
+		return nil, fmt.Errorf("failed to parse base and hubs templates: %w", err)
 	}
 
 	tmpl, err = tmpl.ParseGlob(partialsPattern)

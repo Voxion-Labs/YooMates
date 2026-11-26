@@ -1,0 +1,38 @@
+{{define "feed_poll"}}
+<div id="poll-{{.ID}}" class="feed-poll-card">
+  {{if .Question}}
+  <div class="poll-question">{{.Question}}</div>
+  {{end}}
+
+  <div class="poll-options-list">
+    {{if .HasVoted}}
+      {{range .Options}}
+      <div class="poll-result-bar-wrapper">
+        <div class="poll-result-fill" style="width: {{.Percentage}}%;"></div>
+        <div class="poll-result-content">
+          <span class="poll-option-name">{{.Text}}</span>
+          <span class="poll-option-pct">{{formatPercent .Percentage}} ({{.VoteCount}})</span>
+        </div>
+      </div>
+      {{end}}
+    {{else}}
+      {{range .Options}}
+      <button class="poll-vote-btn" 
+              hx-post="/global/polls/{{$.ID}}/vote" 
+              hx-vals='{"option_id":"{{.ID}}"}' 
+              hx-target="#poll-{{$.ID}}" 
+              hx-swap="outerHTML">
+        <span>{{.Text}}</span>
+      </button>
+      {{end}}
+    {{end}}
+  </div>
+
+  <div class="poll-meta">
+    <span>{{.TotalVotes}} votes</span>
+    {{if .HasVoted}}
+    <span>· Final results</span>
+    {{end}}
+  </div>
+</div>
+{{end}}
