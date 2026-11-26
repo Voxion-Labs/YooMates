@@ -1,0 +1,87 @@
+{{define "space_kanban"}}
+<div class="space-kanban-board" id="kanban-board">
+  {{range .}}
+  <div class="kanban-column" id="kanban-col-{{.Status}}">
+    <!-- Column Header -->
+    <div class="kanban-column-header">
+      <div class="col-title-group">
+        <span class="col-icon">{{.Icon}}</span>
+        <span class="col-title">{{.Title}}</span>
+        <span class="col-counter">{{.Count}}</span>
+      </div>
+    </div>
+
+    <!-- Cards Stream -->
+    <div class="kanban-cards-container">
+      {{range .Documents}}
+      <div class="kanban-card" id="kcard-{{.ID}}">
+        <div class="kcard-header">
+          <span class="kcard-icon">{{if .Icon}}{{.Icon}}{{else}}📄{{end}}</span>
+          <a href="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}" 
+             class="kcard-title"
+             hx-get="/myspace/documents/{{.ID}}" 
+             hx-target="#workspace-view-container"
+             hx-push-url="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}">
+            {{.Title}}
+          </a>
+        </div>
+
+        <div class="kcard-meta">
+          <time class="kcard-time">{{.FormattedTime}}</time>
+
+          <!-- Quick Move Controls -->
+          <div class="kcard-actions">
+            {{if ne .Status "BACKLOG"}}
+            <button class="kcard-move-btn" 
+                    title="Move to Backlog" 
+                    hx-post="/myspace/documents/{{.ID}}/status" 
+                    hx-vals='{"status":"BACKLOG","folder_id":"{{.FolderID}}"}' 
+                    hx-target="#workspace-view-container">
+              «
+            </button>
+            {{end}}
+            {{if eq .Status "BACKLOG"}}
+            <button class="kcard-move-btn" 
+                    title="Move to To Do" 
+                    hx-post="/myspace/documents/{{.ID}}/status" 
+                    hx-vals='{"status":"TODO","folder_id":"{{.FolderID}}"}' 
+                    hx-target="#workspace-view-container">
+              →
+            </button>
+            {{else if eq .Status "TODO"}}
+            <button class="kcard-move-btn" 
+                    title="Move to In Progress" 
+                    hx-post="/myspace/documents/{{.ID}}/status" 
+                    hx-vals='{"status":"IN_PROGRESS","folder_id":"{{.FolderID}}"}' 
+                    hx-target="#workspace-view-container">
+              →
+            </button>
+            {{else if eq .Status "IN_PROGRESS"}}
+            <button class="kcard-move-btn" 
+                    title="Mark Completed" 
+                    hx-post="/myspace/documents/{{.ID}}/status" 
+                    hx-vals='{"status":"DONE","folder_id":"{{.FolderID}}"}' 
+                    hx-target="#workspace-view-container">
+              ✓
+            </button>
+            {{end}}
+          </div>
+        </div>
+      </div>
+      {{else}}
+      <div class="kanban-empty-slot">No items</div>
+      {{end}}
+    </div>
+
+    <!-- Quick Add Card to Column -->
+    <form class="kanban-quick-add-form" 
+          hx-post="/myspace/documents" 
+          hx-target="#workspace-view-container" 
+          hx-on::after-request="this.reset();">
+      <input type="hidden" name="status" value="{{.Status}}">
+      <input type="text" name="title" class="kanban-quick-input" placeholder="+ Add task..." required autocomplete="off">
+    </form>
+  </div>
+  {{end}}
+</div>
+{{end}}

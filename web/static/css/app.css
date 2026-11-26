@@ -807,7 +807,7 @@ html, body {
 }
 
 /* ==========================================================================
-   Global Feed (Twitter/X Style Minimalist Engine Surface)
+   Global Feed (Minimalist Engine Surface)
    ========================================================================== */
 
 .feed-layout {
@@ -1495,4 +1495,654 @@ html, body {
   flex-direction: column;
   gap: 4px;
   padding: 0 4px;
+}
+
+/* ==========================================================================
+   My Space (Minimalist Workspace & Markdown Surface)
+   ========================================================================== */
+
+.space-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* 1. Sidebar */
+.space-sidebar {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  background-color: var(--bg-channel);
+  border-right: 1px solid var(--border-subtle);
+  overflow-y: auto;
+}
+.space-brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 14px 8px;
+}
+.brand-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.space-brand-icon {
+  font-size: 16px;
+}
+.space-brand-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.engine-ver {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.space-quick-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+.quick-link-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.1s ease;
+}
+.quick-link-item:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+.link-icon {
+  font-size: 14px;
+}
+
+.space-divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  margin: 8px 0 12px 0;
+}
+
+.space-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.add-doc-quick-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.add-doc-quick-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.folders-tree-list, .docs-tree-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.folder-tree-item, .doc-tree-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.1s ease;
+}
+.folder-tree-item:hover, .doc-tree-item:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+.folder-tree-item.active, .doc-tree-item.active {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.folder-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.folder-name, .doc-tree-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.folder-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.doc-tree-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.docs-tree-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 8px 10px;
+  font-style: italic;
+}
+
+.space-user-pill {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+.space-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+.space-user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.space-user-name {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.space-user-handle {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+.space-logout-btn {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+}
+.space-logout-btn:hover {
+  color: var(--accent-red);
+}
+
+/* 2. Main Workspace Stage */
+.space-stage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+.space-top-bar {
+  height: 48px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background-color: var(--bg-primary);
+  flex-shrink: 0;
+}
+.space-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.crumb-root, .crumb-folder {
+  color: var(--text-muted);
+}
+.crumb-sep {
+  color: var(--border-muted);
+}
+.crumb-doc {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.space-view-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.view-tab-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.1s ease;
+}
+.view-tab-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+.view-tab-btn.active {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.space-view-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+}
+
+/* 3. Document Editor Surface */
+.space-editor-surface {
+  max-width: 860px;
+  margin: 0 auto;
+}
+.editor-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.editor-meta-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.doc-icon-badge {
+  font-size: 20px;
+}
+.doc-status-select {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  color: var(--text-primary);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.autosave-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-green);
+}
+.editor-mode-toggle {
+  display: flex;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 6px;
+  padding: 2px;
+}
+.mode-btn {
+  background: transparent;
+  border: none;
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.mode-btn.active {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.doc-editor-form {
+  display: flex;
+  flex-direction: column;
+}
+.doc-title-input {
+  font-size: 28px;
+  font-weight: 800;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.doc-content-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono), monospace;
+  font-size: 14.5px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+/* Markdown Preview Typography */
+.markdown-preview-body {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+.md-h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 16px 0 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 6px;
+}
+.md-h2 {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 14px 0 6px 0;
+}
+.md-h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 12px 0 4px 0;
+}
+.md-p {
+  margin-bottom: 10px;
+}
+.md-list, .md-task-list {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+.task-item {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.task-item.checked {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.task-box {
+  font-size: 13px;
+}
+.md-inline-code {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.md-code-block {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 12px 0;
+}
+.md-spacer {
+  height: 8px;
+}
+
+/* 4. Kanban Board Surface */
+.space-kanban-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(240px, 1fr));
+  gap: 16px;
+  height: 100%;
+  align-items: start;
+}
+.kanban-column {
+  background-color: var(--bg-channel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 120px);
+}
+.kanban-column-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.col-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.col-icon {
+  font-size: 13px;
+}
+.col-title {
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+}
+.col-counter {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  background-color: var(--bg-hover);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--text-muted);
+}
+.kanban-cards-container {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex: 1;
+}
+.kanban-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 6px;
+  padding: 10px;
+  transition: all 0.12s ease;
+}
+.kanban-card:hover {
+  border-color: var(--border-strong);
+  background-color: var(--bg-hover);
+}
+.kcard-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.kcard-icon {
+  font-size: 13px;
+  margin-top: 1px;
+}
+.kcard-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  line-height: 1.35;
+  flex: 1;
+}
+.kcard-title:hover {
+  text-decoration: underline;
+}
+.kcard-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kcard-time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.kcard-actions {
+  display: flex;
+  gap: 4px;
+}
+.kcard-move-btn {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.kcard-move-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+.kanban-empty-slot {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 16px 0;
+  font-style: italic;
+}
+.kanban-quick-add-form {
+  padding: 8px 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+.kanban-quick-input {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--border-muted);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.kanban-quick-input:focus {
+  border-style: solid;
+  border-color: var(--border-strong);
+  outline: none;
+}
+
+/* 5. List/Table View */
+.space-list-view {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.space-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.space-data-table th {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background-color: var(--bg-channel);
+}
+.table-row-item {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background-color 0.1s ease;
+}
+.table-row-item:hover {
+  background-color: var(--bg-hover);
+}
+.table-row-item td {
+  padding: 10px 14px;
+}
+.doc-table-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.row-doc-icon {
+  font-size: 14px;
+}
+.status-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.status-badge.status-TODO {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: #60A5FA;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+.status-badge.status-IN_PROGRESS {
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #FBBF24;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+.status-badge.status-DONE {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #34D399;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+.status-badge.status-BACKLOG {
+  background-color: rgba(107, 114, 128, 0.15);
+  color: #9CA3AF;
+  border-color: rgba(107, 114, 128, 0.25);
+}
+.row-doc-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.table-open-btn {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.table-open-btn:hover {
+  color: var(--text-primary);
+}
+.empty-table-cell {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-style: italic;
 }

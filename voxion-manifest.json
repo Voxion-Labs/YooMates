@@ -1,10 +1,42 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-26T07:42:08Z",
+  "last_updated": "2026-11-26T07:52:49Z",
   "branch": "main",
-  "head_commit": "c1fd6ce93133728748d8a7b1aed93c4581f379b1",
+  "head_commit": "350ce0faeaecd2482b5a83bbfecacc6ddd018b5d",
   "history": [
+    {
+      "hash": "350ce0faeaecd2482b5a83bbfecacc6ddd018b5d",
+      "short_hash": "350ce0f",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-26T13:22:11+05:30",
+      "subject": "feat(space): implement My Space minimalist workspace with markdown editor, autosave, and kanban view",
+      "files_changed": [
+        "ROADMAP.md",
+        "cmd/server/main.go",
+        "internal/feed/handlers.go",
+        "internal/hubs/views.go",
+        "internal/space/handlers.go",
+        "internal/space/models.go",
+        "internal/space/repository.go",
+        "internal/space/space_test.go",
+        "web/static/css/app.css",
+        "web/templates/myspace.html",
+        "web/templates/partials/space_editor.html",
+        "web/templates/partials/space_kanban.html",
+        "web/templates/partials/space_list.html"
+      ]
+    },
+    {
+      "hash": "37629e73514258904b37da227c357b256ab726ff",
+      "short_hash": "37629e7",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-26T07:42:08Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "c1fd6ce93133728748d8a7b1aed93c4581f379b1",
       "short_hash": "c1fd6ce",
@@ -356,36 +388,6 @@
         "internal/hubs/hub.go",
         "internal/hubs/hub_test.go",
         "internal/hubs/message.go"
-      ]
-    },
-    {
-      "hash": "3bfd99a5df6f7f03b0f42e0187e5099163cb2185",
-      "short_hash": "3bfd99a",
-      "author_name": "voxion-bot",
-      "author_email": "voxion-bot@voxionlabs.io",
-      "timestamp": "2026-11-23T14:23:09Z",
-      "subject": "chore(bot): update commit manifest [skip ci]",
-      "files_changed": null
-    },
-    {
-      "hash": "5d01ee8d5852c08eadb2b59abfe8338c3c32a3fa",
-      "short_hash": "5d01ee8",
-      "author_name": "R-Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-11-23T19:52:14+05:30",
-      "subject": "Implement native session auth with Argon2id password hashing and cookie management",
-      "files_changed": [
-        "ROADMAP.md",
-        "cmd/server/main.go",
-        "cmd/server/main_test.go",
-        "go.mod",
-        "go.sum",
-        "internal/auth/handlers.go",
-        "internal/auth/manager.go",
-        "internal/auth/password.go",
-        "internal/auth/password_test.go",
-        "internal/auth/session.go",
-        "internal/auth/session_test.go"
       ]
     }
   ]

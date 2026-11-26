@@ -94,6 +94,9 @@ func NewViewEngine(templatesDir string, db *sql.DB) (*ViewEngine, error) {
 		"formatPercent": func(p float64) string {
 			return fmt.Sprintf("%.1f%%", p)
 		},
+		"renderMarkdown": func(s string) template.HTML {
+			return template.HTML(s)
+		},
 	}
 
 	basePattern := filepath.Join(templatesDir, "base.html")

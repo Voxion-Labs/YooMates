@@ -44,6 +44,9 @@ func NewViewEngine(templatesDir string, repo *Repository) (*ViewEngine, error) {
 		"add": func(a, b int) int {
 			return a + b
 		},
+		"renderMarkdown": func(s string) template.HTML {
+			return template.HTML(s)
+		},
 	}
 
 	basePattern := filepath.Join(templatesDir, "base.html")

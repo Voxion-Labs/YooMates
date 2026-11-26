@@ -57,7 +57,7 @@ YooMates is designed around three tightly integrated pillars:
 
 ---
 
-### **Phase 2: Core Chat "Hubs" Engine (Default Discord Parity)** `[DONE]`
+### **Phase 2: Core Chat "Hubs" Engine** `[DONE]`
 - [x] **Sub-phase 2.1**: Native Go WebSocket Hub with goroutine connection pools, channel/server pub-sub routing, and ephemeral presence tracking (replacing Pusher vendor lock-in).
 - [x] **Sub-phase 2.2**: 3-column Hubs chat layout in Go Templates + HTMX (Server rail, Channels tree, Message stream, Active thread/member drawer) with engineered minimalist styling and dumb-pipe JS.
 - [x] **Sub-phase 2.3**: Real-time chat interactions via `hx-ext="ws"` (live messaging, message editing, soft-delete, typing indicators, emoji reactions) backed by MySQL repository and HTMX OOB swaps.
@@ -77,9 +77,9 @@ YooMates is designed around three tightly integrated pillars:
 
 ---
 
-### **Phase 5: Global Feed & My Space Migration** `[IN PROGRESS]`
-- [x] **Sub-phase 5.1**: Global Feed (Twitter/X style) with chronological posts, quote posts, comments, likes, polls, and HTMX infinite scroll.
-- [ ] **Sub-phase 5.2**: My Space (Notion style) minimalist block/markdown editor with local-first autosave and kanban/list views.
+### **Phase 5: Global Feed & My Space Migration** `[DONE]`
+- [x] **Sub-phase 5.1**: Global Feed with chronological posts, quote posts, comments, likes, polls, and HTMX infinite scroll.
+- [x] **Sub-phase 5.2**: My Space minimalist block/markdown editor with local-first autosave and kanban/list views.
 
 ---
 

@@ -1,0 +1,49 @@
+{{define "space_list"}}
+<div class="space-list-view">
+  <table class="space-data-table">
+    <thead>
+      <tr>
+        <th style="width: 45%;">Title</th>
+        <th style="width: 20%;">Status</th>
+        <th style="width: 20%;">Last Modified</th>
+        <th style="width: 15%; text-align: right;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .}}
+      <tr class="table-row-item" id="row-{{.ID}}">
+        <td>
+          <a href="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}" 
+             class="doc-table-link"
+             hx-get="/myspace/documents/{{.ID}}" 
+             hx-target="#workspace-view-container"
+             hx-push-url="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}">
+            <span class="row-doc-icon">{{if .Icon}}{{.Icon}}{{else}}📄{{end}}</span>
+            <span class="row-doc-title">{{.Title}}</span>
+          </a>
+        </td>
+        <td>
+          <span class="status-badge status-{{.Status}}">{{.Status}}</span>
+        </td>
+        <td>
+          <span class="row-doc-time">{{.FormattedTime}}</span>
+        </td>
+        <td style="text-align: right;">
+          <a href="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}" 
+             class="table-open-btn"
+             hx-get="/myspace/documents/{{.ID}}" 
+             hx-target="#workspace-view-container"
+             hx-push-url="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}">
+            Open →
+          </a>
+        </td>
+      </tr>
+      {{else}}
+      <tr>
+        <td colspan="4" class="empty-table-cell">No documents in this view.</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}

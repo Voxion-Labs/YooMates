@@ -18,6 +18,7 @@ import (
 	"yoomates/internal/db"
 	"yoomates/internal/feed"
 	"yoomates/internal/hubs"
+	"yoomates/internal/space"
 )
 
 type HealthResponse struct {
@@ -40,7 +41,7 @@ func HealthHandler(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewEngine *hubs.ViewEngine, uploader *hubs.Uploader, feedEngines ...*feed.ViewEngine) http.Handler {
+func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewEngine *hubs.ViewEngine, uploader *hubs.Uploader, optionalEngines ...any) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", HealthHandler(cfg))
 
@@ -86,8 +87,14 @@ func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewE
 	}
 
 	var feedEngine *feed.ViewEngine
-	if len(feedEngines) > 0 && feedEngines[0] != nil {
-		feedEngine = feedEngines[0]
+	var spaceEngine *space.ViewEngine
+	for _, e := range optionalEngines {
+		switch v := e.(type) {
+		case *feed.ViewEngine:
+			feedEngine = v
+		case *space.ViewEngine:
+			spaceEngine = v
+		}
 	}
 
 	if feedEngine != nil {
@@ -127,6 +134,32 @@ func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewE
 			}
 			http.NotFound(w, r)
 		})
+	}
+
+	if spaceEngine != nil {
+		var mySpaceHandler http.Handler = http.HandlerFunc(spaceEngine.MySpaceHandler)
+		if authMgr != nil {
+			mySpaceHandler = authMgr.SessionMiddleware(mySpaceHandler)
+		}
+		mux.Handle("/myspace", mySpaceHandler)
+
+		// Document creation & autosave
+		mux.HandleFunc("/myspace/documents", spaceEngine.CreateDocumentHandler)
+		mux.HandleFunc("/myspace/documents/", func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasSuffix(r.URL.Path, "/autosave") {
+				spaceEngine.AutosaveHandler(w, r)
+				return
+			}
+			if strings.HasSuffix(r.URL.Path, "/status") {
+				spaceEngine.StatusHandler(w, r)
+				return
+			}
+			spaceEngine.GetDocumentHandler(w, r)
+		})
+
+		// Workspace views: Kanban board & List table
+		mux.HandleFunc("/myspace/view/kanban", spaceEngine.KanbanViewHandler)
+		mux.HandleFunc("/myspace/view/list", spaceEngine.ListViewHandler)
 	}
 
 	if authMgr != nil {
@@ -185,7 +218,7 @@ func main() {
 		log.Println("[yoomates-upload] Multipart attachment upload pipeline active.")
 	}
 
-	// Initialize Global Feed (Twitter/X style) repository & view engine
+	// Initialize Global Feed repository & view engine
 	feedRepo := feed.NewRepository(pool)
 	feedEngine, err := feed.NewViewEngine("web/templates", feedRepo)
 	if err != nil {
@@ -194,9 +227,18 @@ func main() {
 		log.Println("[yoomates-feed] Global Feed engine active.")
 	}
 
+	// Initialize My Space workspace engine
+	spaceRepo := space.NewRepository(pool)
+	spaceEngine, err := space.NewViewEngine("web/templates", spaceRepo)
+	if err != nil {
+		log.Printf("[yoomates-space] Warning: Could not initialize space view engine (%v)\n", err)
+	} else {
+		log.Println("[yoomates-space] My Space workspace engine active.")
+	}
+
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      SetupRoutes(cfg, authMgr, hub, viewEngine, uploader, feedEngine),
+		Handler:      SetupRoutes(cfg, authMgr, hub, viewEngine, uploader, feedEngine, spaceEngine),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

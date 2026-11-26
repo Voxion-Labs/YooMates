@@ -1,0 +1,72 @@
+{{define "space_editor"}}
+<div class="space-editor-surface" id="editor-{{.ID}}">
+  <!-- Document Editor Header -->
+  <div class="editor-header-bar">
+    <div class="editor-meta-controls">
+      <!-- Icon Trigger -->
+      <span class="doc-icon-badge">{{if .Icon}}{{.Icon}}{{else}}📄{{end}}</span>
+
+      <!-- Status Selector Dropdown -->
+      <select name="status" 
+              class="doc-status-select status-{{.Status}}" 
+              hx-post="/myspace/documents/{{.ID}}/status" 
+              hx-target="#workspace-view-container" 
+              title="Change Status">
+        <option value="BACKLOG" {{if eq .Status "BACKLOG"}}selected{{end}}>📥 Backlog</option>
+        <option value="TODO" {{if eq .Status "TODO"}}selected{{end}}>📋 To Do</option>
+        <option value="IN_PROGRESS" {{if eq .Status "IN_PROGRESS"}}selected{{end}}>⚡ In Progress</option>
+        <option value="DONE" {{if eq .Status "DONE"}}selected{{end}}>✅ Completed</option>
+      </select>
+
+      <!-- Autosave Status Indicator -->
+      <span id="autosave-status" class="autosave-indicator saved">
+        <span class="status-dot"></span> Saved {{.FormattedTime}}
+      </span>
+    </div>
+
+    <!-- View Mode Switcher -->
+    <div class="editor-mode-toggle">
+      <button type="button" class="mode-btn active" id="btn-edit-mode" onclick="document.getElementById('editor-pane-edit').style.display='block'; document.getElementById('editor-pane-preview').style.display='none'; this.classList.add('active'); document.getElementById('btn-preview-mode').classList.remove('active');">
+        Edit
+      </button>
+      <button type="button" class="mode-btn" id="btn-preview-mode" onclick="document.getElementById('editor-pane-edit').style.display='none'; document.getElementById('editor-pane-preview').style.display='block'; this.classList.add('active'); document.getElementById('btn-edit-mode').classList.remove('active');">
+        Preview
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Document Form with Local-First Autosave -->
+  <form id="doc-autosave-form" 
+        class="doc-editor-form" 
+        hx-post="/myspace/documents/{{.ID}}/autosave" 
+        hx-trigger="keyup changed delay:400ms from:#doc-title-input, keyup changed delay:400ms from:#doc-content-input"
+        hx-target="#autosave-status" 
+        hx-swap="outerHTML">
+
+    <!-- Document Title Input -->
+    <input type="text" 
+           name="title" 
+           id="doc-title-input" 
+           class="doc-title-input" 
+           value="{{.Title}}" 
+           placeholder="Untitled Page" 
+           autocomplete="off">
+
+    <!-- Edit Mode Pane (Textarea) -->
+    <div id="editor-pane-edit" class="editor-pane">
+      <textarea name="content" 
+                id="doc-content-input" 
+                class="doc-content-textarea" 
+                placeholder="Write markdown here... Use # for headings, - [ ] for checklists, ``` for code blocks" 
+                rows="24">{{.Content}}</textarea>
+    </div>
+
+    <!-- Preview Mode Pane (Rendered Markdown) -->
+    <div id="editor-pane-preview" class="editor-pane preview-mode" style="display: none;">
+      <article class="markdown-preview-body">
+        {{renderMarkdown .Content}}
+      </article>
+    </div>
+  </form>
+</div>
+{{end}}

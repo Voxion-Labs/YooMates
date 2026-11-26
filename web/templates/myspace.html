@@ -1,0 +1,142 @@
+{{template "base.html" .}}
+
+{{define "title"}}{{if .ActiveDocument}}{{.ActiveDocument.Title}} - {{end}}My Space | YooMates{{end}}
+
+{{define "content"}}
+<div class="space-shell">
+  <!-- Workspace Sidebar -->
+  <aside class="space-sidebar" aria-label="Workspace Navigation">
+    <div class="space-brand-header">
+      <div class="brand-title-box">
+        <span class="space-brand-icon">📁</span>
+        <span class="space-brand-name">My Space</span>
+      </div>
+      <span class="engine-ver">v2.0</span>
+    </div>
+
+    <!-- Quick Navigation Links -->
+    <div class="space-quick-nav">
+      <a href="/hubs" class="quick-link-item" title="Switch to Chat Hubs">
+        <span class="link-icon">💬</span>
+        <span>Chat Hubs</span>
+      </a>
+      <a href="/global" class="quick-link-item" title="Switch to Global Feed">
+        <span class="link-icon">🌐</span>
+        <span>Global Feed</span>
+      </a>
+    </div>
+
+    <div class="space-divider"></div>
+
+    <!-- Folders / Projects Section -->
+    <div class="space-section-header">
+      <span>WORKSPACES</span>
+    </div>
+
+    <div class="folders-tree-list">
+      {{range .Folders}}
+      <a href="/myspace?folder_id={{.ID}}" 
+         class="folder-tree-item {{if eq $.CurrentFolder.ID .ID}}active{{end}}">
+        <span class="folder-dot" style="background-color: {{.Color}};"></span>
+        <span class="folder-name">{{.Name}}</span>
+        <span class="folder-count">{{.DocCount}}</span>
+      </a>
+      {{end}}
+    </div>
+
+    <div class="space-divider"></div>
+
+    <!-- Documents in Current Folder -->
+    <div class="space-section-header">
+      <span>PAGES</span>
+      <form hx-post="/myspace/documents" hx-target="#workspace-view-container" style="margin: 0;">
+        <input type="hidden" name="folder_id" value="{{.CurrentFolder.ID}}">
+        <input type="hidden" name="title" value="New Page">
+        <button type="submit" class="add-doc-quick-btn" title="Create new document">+</button>
+      </form>
+    </div>
+
+    <div class="docs-tree-list">
+      {{range .Documents}}
+      <a href="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}" 
+         class="doc-tree-item {{if and $.ActiveDocument (eq $.ActiveDocument.ID .ID)}}active{{end}}"
+         hx-get="/myspace/documents/{{.ID}}" 
+         hx-target="#workspace-view-container"
+         hx-push-url="/myspace?doc_id={{.ID}}&folder_id={{.FolderID}}">
+        <span class="doc-tree-icon">{{if .Icon}}{{.Icon}}{{else}}📄{{end}}</span>
+        <span class="doc-tree-title" id="doc-title-badge-{{.ID}}">{{.Title}}</span>
+      </a>
+      {{else}}
+      <div class="docs-tree-empty">No pages yet</div>
+      {{end}}
+    </div>
+
+    <!-- User Profile Pill -->
+    <div class="space-user-pill">
+      <div class="space-user-avatar">{{.CurrentUser.Initials}}</div>
+      <div class="space-user-info">
+        <span class="space-user-name">{{.CurrentUser.Name}}</span>
+        <span class="space-user-handle">@{{.CurrentUser.Username}}</span>
+      </div>
+      <a href="/api/auth/logout" class="space-logout-btn" title="Sign Out">⎋</a>
+    </div>
+  </aside>
+
+  <!-- Workspace Main Content Stage -->
+  <main class="space-stage">
+    <!-- Top Action Bar -->
+    <header class="space-top-bar">
+      <!-- Breadcrumb -->
+      <div class="space-breadcrumb">
+        <span class="crumb-root">My Space</span>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-folder">{{if .CurrentFolder}}{{.CurrentFolder.Name}}{{else}}Workspace{{end}}</span>
+        {{if .ActiveDocument}}
+        <span class="crumb-sep">/</span>
+        <span class="crumb-doc">{{.ActiveDocument.Title}}</span>
+        {{end}}
+      </div>
+
+      <!-- View Switcher Tabs -->
+      <div class="space-view-tabs">
+        <a href="/myspace?folder_id={{.CurrentFolder.ID}}&view=editor{{if .ActiveDocument}}&doc_id={{.ActiveDocument.ID}}{{end}}" 
+           class="view-tab-btn {{if eq .ViewType "editor"}}active{{end}}"
+           hx-get="/myspace/documents/{{if .ActiveDocument}}{{.ActiveDocument.ID}}{{end}}"
+           hx-target="#workspace-view-container"
+           title="Document Editor View">
+          <span>📝 Editor</span>
+        </a>
+        <a href="/myspace?folder_id={{.CurrentFolder.ID}}&view=kanban" 
+           class="view-tab-btn {{if eq .ViewType "kanban"}}active{{end}}"
+           hx-get="/myspace/view/kanban?folder_id={{.CurrentFolder.ID}}" 
+           hx-target="#workspace-view-container"
+           title="Kanban Board View">
+          <span>⚡ Board</span>
+        </a>
+        <a href="/myspace?folder_id={{.CurrentFolder.ID}}&view=list" 
+           class="view-tab-btn {{if eq .ViewType "list"}}active{{end}}"
+           hx-get="/myspace/view/list?folder_id={{.CurrentFolder.ID}}" 
+           hx-target="#workspace-view-container"
+           title="List Table View">
+          <span>📋 List</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Active View Container -->
+    <div class="space-view-container" id="workspace-view-container">
+      {{if eq .ViewType "kanban"}}
+        {{template "space_kanban" .KanbanColumns}}
+      {{else if eq .ViewType "list"}}
+        {{template "space_list" .Documents}}
+      {{else}}
+        {{if .ActiveDocument}}
+          {{template "space_editor" .ActiveDocument}}
+        {{else}}
+          {{template "space_kanban" .KanbanColumns}}
+        {{end}}
+      {{end}}
+    </div>
+  </main>
+</div>
+{{end}}
