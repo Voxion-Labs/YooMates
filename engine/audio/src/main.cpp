@@ -6,6 +6,10 @@
 #include "audio_packet.hpp"
 #include "vad.hpp"
 #include "voice_gateway.hpp"
+#include "opus_parser.hpp"
+#include "jitter_buffer.hpp"
+#include "cng.hpp"
+#include "transcoder.hpp"
 
 using namespace yoomates;
 
@@ -95,7 +99,140 @@ void run_tests() {
         std::cout << "  [PASS] Multi-peer Audio Packet Multiplexing & Mute/Deafen Routing\n";
     }
 
-    std::cout << "[yoomates-audio-engine] All C++ audio tests PASSED cleanly (4/4).\n";
+    // 5. Test Opus TOC Parser & Demuxer (RFC 6716)
+    {
+        // Case A: Config 14 (Hybrid, Fullband 48kHz, 10ms, Mono, 1 frame)
+        // TOC: (14 << 3) | (0 << 2) | 0 = 0x70
+        uint8_t pkt_a[] = {0x70, 0xAA, 0xBB};
+        OpusFrameInfo info_a;
+        assert(OpusParser::parse_packet(pkt_a, sizeof(pkt_a), info_a));
+        assert(info_a.mode == OpusMode::HYBRID);
+        assert(info_a.sample_rate_hz == 48000);
+        assert(info_a.channels == 1);
+        assert(info_a.frame_duration_ms == 10.0);
+        assert(info_a.frame_count == 1);
+        assert(info_a.total_samples_per_channel == 480);
+
+        // Case B: Config 31 (CELT, Fullband 48kHz, 20ms, Stereo, 2 equal frames)
+        // TOC: (31 << 3) | (1 << 2) | 1 = 0xFD
+        uint8_t pkt_b[] = {0xFD, 0x11, 0x22};
+        OpusFrameInfo info_b;
+        assert(OpusParser::parse_packet(pkt_b, sizeof(pkt_b), info_b));
+        assert(info_b.mode == OpusMode::CELT);
+        assert(info_b.channels == 2);
+        assert(info_b.frame_duration_ms == 20.0);
+        assert(info_b.frame_count == 2);
+        assert(info_b.total_duration_ms == 40.0);
+        assert(info_b.total_samples_per_channel == 1920);
+
+        std::cout << "  [PASS] Opus Packet Inspection & RFC 6716 TOC Parsing\n";
+    }
+
+    // 6. Test Adaptive Dynamic Jitter Buffer & Packet Loss Concealment (PLC)
+    {
+        AdaptiveJitterBuffer jbuf(20, 100, 20);
+
+        // Feed packets out-of-order: 100, 102, 101
+        std::vector<uint8_t> data = {0x01};
+        jbuf.push(AudioPacket(100, 0, 1, data));
+        jbuf.push(AudioPacket(102, 960, 1, data));
+        jbuf.push(AudioPacket(101, 480, 1, data));
+
+        AudioPacket out_pkt;
+        bool is_plc = false;
+
+        // Pop 1: seq 100
+        assert(jbuf.pop(out_pkt, is_plc));
+        assert(!is_plc && out_pkt.header.sequence_number == 100);
+
+        // Pop 2: seq 101 (reordered correctly!)
+        assert(jbuf.pop(out_pkt, is_plc));
+        assert(!is_plc && out_pkt.header.sequence_number == 101);
+
+        // Pop 3: seq 102
+        assert(jbuf.pop(out_pkt, is_plc));
+        assert(!is_plc && out_pkt.header.sequence_number == 102);
+
+        // Test PLC gap detection: Push 104 without pushing 103
+        jbuf.push(AudioPacket(104, 1920, 1, data));
+
+        // Next pop should flag PLC for missing seq 103!
+        assert(jbuf.pop(out_pkt, is_plc));
+        assert(is_plc && out_pkt.header.sequence_number == 103);
+        assert(jbuf.get_stats().plc_frames == 1);
+
+        // Subsequent pop delivers 104
+        assert(jbuf.pop(out_pkt, is_plc));
+        assert(!is_plc && out_pkt.header.sequence_number == 104);
+
+        // Test late packet rejection (pushing seq 100 which was already played)
+        assert(!jbuf.push(AudioPacket(100, 0, 1, data)));
+        assert(jbuf.get_stats().dropped_late > 0);
+
+        std::cout << "  [PASS] Adaptive Jitter Buffer Re-ordering & PLC Detection\n";
+    }
+
+    // 7. Test Silence Suppression & Comfort Noise Generation (CNG)
+    {
+        ComfortNoiseGenerator cng(-55.0);
+        std::vector<int16_t> noise(480);
+        cng.generate(noise.data(), noise.size());
+
+        // Calculate RMS of generated comfort noise
+        double sum_sq = 0.0;
+        for (int16_t s : noise) {
+            double v = static_cast<double>(s) / 32767.0;
+            sum_sq += v * v;
+        }
+        double rms = std::sqrt(sum_sq / static_cast<double>(noise.size()));
+        double rms_dbfs = 20.0 * std::log10(std::max(rms, 1e-6));
+
+        // Comfort noise at -55 dBFS should be roughly between -65 dBFS and -45 dBFS
+        assert(rms_dbfs > -68.0 && rms_dbfs < -42.0);
+
+        // Test DTX Controller
+        ComfortNoiseGenerator::DTXController dtx(3, 10);
+        assert(dtx.process_frame(true) == ComfortNoiseGenerator::DTXController::Action::TRANSMIT_NORMAL);
+        assert(dtx.process_frame(false) == ComfortNoiseGenerator::DTXController::Action::TRANSMIT_HANGOVER);
+        assert(dtx.process_frame(false) == ComfortNoiseGenerator::DTXController::Action::TRANSMIT_HANGOVER);
+        assert(dtx.process_frame(false) == ComfortNoiseGenerator::DTXController::Action::TRANSMIT_HANGOVER);
+        assert(dtx.process_frame(false) == ComfortNoiseGenerator::DTXController::Action::SUPPRESS);
+        assert(dtx.is_in_dtx());
+
+        std::cout << "  [PASS] Silence Suppression (DTX) & Comfort Noise Generation (CNG)\n";
+    }
+
+    // 8. Test Audio Resampling & Dynamic Limiting
+    {
+        // Generate 480 samples of 440Hz tone at 48kHz (10 ms)
+        std::vector<int16_t> in_48k(480);
+        for (size_t i = 0; i < in_48k.size(); ++i) {
+            in_48k[i] = static_cast<int16_t>(16000.0 * std::sin(2.0 * 3.14159 * 440.0 * i / 48000.0));
+        }
+
+        // Downsample 48kHz -> 16kHz (expected 160 samples for 10ms)
+        std::vector<int16_t> out_16k(200);
+        size_t n_down = AudioTranscoder::resample_pcm16(in_48k.data(), in_48k.size(), 48000,
+                                                        out_16k.data(), out_16k.size(), 16000);
+        assert(n_down == 160);
+
+        // Upsample 16kHz -> 48kHz (expected 480 samples for 10ms)
+        std::vector<int16_t> out_48k(600);
+        size_t n_up = AudioTranscoder::resample_pcm16(out_16k.data(), n_down, 16000,
+                                                      out_48k.data(), out_48k.size(), 48000);
+        assert(n_up == 480);
+
+        // Test Soft-limiter protection: amplify signal with +12dB boost
+        std::vector<int16_t> loud_signal(100, 25000);
+        AudioTranscoder::apply_gain_and_limit(loud_signal.data(), loud_signal.size(), 12.0);
+        for (int16_t s : loud_signal) {
+            assert(s > 0 && s <= 32767); // Strictly bounded without overflow
+        }
+
+        std::cout << "  [PASS] Low-Latency Resampling (48kHz <-> 16kHz) & Soft-Limiter\n";
+    }
+
+    std::cout << "[yoomates-audio-engine] All C++ audio tests PASSED cleanly (8/8).\n";
 }
 
 int main(int argc, char* argv[]) {
@@ -105,8 +242,8 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "==========================================================\n";
-    std::cout << "  YooMates C++ High-Performance Audio Engine (v1.0)\n";
-    std::cout << "  Low-Latency WebRTC Gateway & RTP Packet Processor\n";
+    std::cout << "  YooMates C++ High-Performance Audio Engine (v1.1)\n";
+    std::cout << "  Low-Latency WebRTC Gateway, Jitter Buffer & Transcoder\n";
     std::cout << "==========================================================\n";
     std::cout << "Usage: yoomates-voice [--test]\n";
     return 0;

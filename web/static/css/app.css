@@ -702,6 +702,21 @@ html, body {
   font-size: 10.5px;
   color: var(--text-muted);
 }
+.voice-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0 6px 0;
+}
+.voice-stat-pill {
+  font-size: 9.5px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  padding: 1px 4px;
+}
 .voice-actions {
   display: flex;
   align-items: center;

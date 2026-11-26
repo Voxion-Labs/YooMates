@@ -22,10 +22,11 @@ type VoicePeer struct {
 
 // VoiceRoom maintains active participants in a voice channel
 type VoiceRoom struct {
-	ID       string                `json:"id"`
-	ServerID string                `json:"server_id"`
-	Name     string                `json:"name"`
-	Peers    map[string]*VoicePeer `json:"peers"`
+	ID       string                        `json:"id"`
+	ServerID string                        `json:"server_id"`
+	Name     string                        `json:"name"`
+	Peers    map[string]*VoicePeer         `json:"peers"`
+	Trackers map[string]*PeerBufferTracker `json:"-"`
 	mu       sync.RWMutex
 }
 
@@ -58,6 +59,9 @@ func (g *Gateway) Join(serverID, channelID, userID, username string) (*VoicePeer
 		if prevRoom, ok := g.rooms[prevRoomID]; ok {
 			prevRoom.mu.Lock()
 			delete(prevRoom.Peers, userID)
+			if prevRoom.Trackers != nil {
+				delete(prevRoom.Trackers, userID)
+			}
 			if len(prevRoom.Peers) == 0 {
 				delete(g.rooms, prevRoomID)
 			}
@@ -74,6 +78,7 @@ func (g *Gateway) Join(serverID, channelID, userID, username string) (*VoicePeer
 			ServerID: serverID,
 			Name:     "Lounge",
 			Peers:    make(map[string]*VoicePeer),
+			Trackers: make(map[string]*PeerBufferTracker),
 		}
 		g.rooms[channelID] = room
 	}
@@ -95,6 +100,10 @@ func (g *Gateway) Join(serverID, channelID, userID, username string) (*VoicePeer
 
 	room.mu.Lock()
 	room.Peers[userID] = peer
+	if room.Trackers == nil {
+		room.Trackers = make(map[string]*PeerBufferTracker)
+	}
+	room.Trackers[userID] = NewPeerBufferTracker()
 	room.mu.Unlock()
 
 	g.userRoom[userID] = channelID
@@ -116,6 +125,9 @@ func (g *Gateway) Leave(channelID, userID string) (*VoicePeer, error) {
 	peer, peerExists := room.Peers[userID]
 	if peerExists {
 		delete(room.Peers, userID)
+		if room.Trackers != nil {
+			delete(room.Trackers, userID)
+		}
 	}
 	remaining := len(room.Peers)
 	room.mu.Unlock()
@@ -233,8 +245,48 @@ func (g *Gateway) GetUserRoom(userID string) string {
 	return g.userRoom[userID]
 }
 
+// RecordPeerPacket updates audio metrics for a peer in a voice room
+func (g *Gateway) RecordPeerPacket(channelID, userID string, seq uint16, payloadBytes int, arrivalTimeMS, rtpTimestampMS int64) {
+	g.mu.RLock()
+	room, exists := g.rooms[channelID]
+	g.mu.RUnlock()
+	if !exists {
+		return
+	}
+
+	room.mu.RLock()
+	tracker, ok := room.Trackers[userID]
+	room.mu.RUnlock()
+	if ok && tracker != nil {
+		tracker.RecordPacket(seq, payloadBytes, arrivalTimeMS, rtpTimestampMS)
+	}
+}
+
+// GetPeerMetrics retrieves audio metrics for a peer
+func (g *Gateway) GetPeerMetrics(channelID, userID string) PeerMetrics {
+	g.mu.RLock()
+	room, exists := g.rooms[channelID]
+	g.mu.RUnlock()
+	if !exists {
+		return DefaultMetrics()
+	}
+
+	room.mu.RLock()
+	tracker, ok := room.Trackers[userID]
+	room.mu.RUnlock()
+	if ok && tracker != nil {
+		return tracker.GetMetrics()
+	}
+	return DefaultMetrics()
+}
+
 // RenderVoiceStatusOOB renders Discord-style bottom-left Voice Connected panel
 func RenderVoiceStatusOOB(channelID, channelName string, peer *VoicePeer) string {
+	return RenderVoiceStatusWithMetricsOOB(channelID, channelName, peer, DefaultMetrics())
+}
+
+// RenderVoiceStatusWithMetricsOOB renders Discord-style bottom-left Voice Connected panel with real-time stats
+func RenderVoiceStatusWithMetricsOOB(channelID, channelName string, peer *VoicePeer, metrics PeerMetrics) string {
 	micIcon := "🎤"
 	if peer.Muted {
 		micIcon = "🔇"
@@ -253,6 +305,11 @@ func RenderVoiceStatusOOB(channelID, channelName string, peer *VoicePeer) string
     </div>
     <span class="voice-channel-name">%s</span>
   </div>
+  <div class="voice-stats-bar">
+    <span class="voice-stat-pill" title="Jitter buffer delay">⏱️ %dms</span>
+    <span class="voice-stat-pill" title="Packet loss">🛡️ %.1f%%%% loss</span>
+    <span class="voice-stat-pill" title="Opus fullband audio">🔊 48kHz</span>
+  </div>
   <div class="voice-actions">
     <button class="voice-ctrl-btn %s" title="Toggle Mute" ws-send hx-vals='{"type":"voice_mute","channel_id":"%s","muted":%t}'>
       %s
@@ -265,7 +322,8 @@ func RenderVoiceStatusOOB(channelID, channelName string, peer *VoicePeer) string
     </button>
   </div>
 </div>
-`, html.EscapeString(channelName), map[bool]string{true: "active", false: ""}[peer.Muted], channelID, !peer.Muted, micIcon,
+`, html.EscapeString(channelName), metrics.TargetDelayMS, metrics.PacketLossRate*100.0,
+		map[bool]string{true: "active", false: ""}[peer.Muted], channelID, !peer.Muted, micIcon,
 		map[bool]string{true: "active", false: ""}[peer.Deafened], channelID, !peer.Deafened, deafenIcon,
 		channelID)
 }
