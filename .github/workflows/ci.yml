@@ -48,6 +48,12 @@ jobs:
       - name: Run Test Suite
         run: go test -v -race ./...
 
+      - name: Build and Test C++ Audio Engine
+        run: |
+          mkdir -p bin
+          g++ -std=c++14 -O3 -Wall -Iengine/audio/include engine/audio/src/*.cpp -o bin/yoomates-voice
+          ./bin/yoomates-voice --test
+
       - name: Build Server Binary
         run: go build -v -o /dev/null ./cmd/server/main.go
 

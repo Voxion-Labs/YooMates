@@ -58,6 +58,7 @@ type HubsViewModel struct {
 	Servers        []ServerItem
 	CurrentChannel ChannelItem
 	Channels       []ChannelItem
+	VoiceChannels  []ChannelItem
 	CurrentUser    CurrentUserItem
 	Messages       []MessageItem
 	OnlineMembers  []MemberItem
@@ -138,6 +139,10 @@ func (v *ViewEngine) HubsHandler(w http.ResponseWriter, r *http.Request) {
 			{ID: "chan_engineering", Name: "engineering", Type: "TEXT"},
 			{ID: "chan_architecture", Name: "architecture", Type: "TEXT"},
 			{ID: "chan_random", Name: "random", Type: "TEXT"},
+		},
+		VoiceChannels: []ChannelItem{
+			{ID: "chan_voice_lounge", Name: "Lounge", Type: "VOICE", Description: "Casual voice chat room"},
+			{ID: "chan_voice_standup", Name: "Daily Standup", Type: "VOICE", Description: "Engineering sync room"},
 		},
 		CurrentUser: CurrentUserItem{
 			ID:       "usr_guest",

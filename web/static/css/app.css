@@ -653,3 +653,140 @@ html, body {
   background-color: rgba(34, 197, 94, 0.05);
   border-left: 2px solid var(--accent-green);
 }
+
+/* Voice Gateway & Audio Engine Styles (Engineered Minimalism) */
+.voice-channel-btn {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.12s ease;
+}
+.voice-channel-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--accent-white);
+}
+
+.voice-status-panel {
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.voice-status-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.voice-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.voice-ping-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--accent-green);
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+}
+.voice-status-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-green);
+  letter-spacing: 0.02em;
+}
+.voice-channel-name {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+.voice-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.voice-ctrl-btn {
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.voice-ctrl-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+.voice-ctrl-btn.active {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+.voice-disconnect-btn:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+.voice-participants-overlay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--bg-chat);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.voice-participants-overlay:empty {
+  display: none;
+}
+.voice-peer-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+  transition: all 0.12s ease;
+}
+.voice-peer-card.speaking {
+  border-color: var(--accent-green);
+}
+.peer-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  position: relative;
+  transition: box-shadow 0.1s ease;
+}
+.peer-avatar.speaking {
+  box-shadow: 0 0 0 2px var(--accent-green);
+}
+.peer-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  font-size: 9px;
+  line-height: 1;
+}
+.peer-name {
+  font-size: 11.5px;
+  color: var(--text-primary);
+}

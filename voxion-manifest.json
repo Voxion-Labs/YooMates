@@ -1,10 +1,47 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-25T08:31:01Z",
+  "last_updated": "2026-11-26T06:19:35Z",
   "branch": "main",
-  "head_commit": "41d07761e84b5565003d4b88b475a52c0f3acee0",
+  "head_commit": "fd0dff945073758650e5d9c5413657a351620d0e",
   "history": [
+    {
+      "hash": "fd0dff945073758650e5d9c5413657a351620d0e",
+      "short_hash": "fd0dff9",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-26T11:49:24+05:30",
+      "subject": "feat(audio): implement C++ audio packet engine and real-time voice channel gateway",
+      "files_changed": [
+        ".github/workflows/ci.yml",
+        "Makefile",
+        "ROADMAP.md",
+        "engine/audio/include/audio_packet.hpp",
+        "engine/audio/include/lock.hpp",
+        "engine/audio/include/vad.hpp",
+        "engine/audio/include/voice_gateway.hpp",
+        "engine/audio/src/main.cpp",
+        "engine/audio/src/voice_gateway.cpp",
+        "internal/hubs/hub.go",
+        "internal/hubs/message.go",
+        "internal/hubs/views.go",
+        "internal/voice/gateway.go",
+        "internal/voice/gateway_test.go",
+        "web/static/css/app.css",
+        "web/static/js/dumb-pipe.js",
+        "web/templates/hubs.html",
+        "web/templates/partials/channel_sidebar.html"
+      ]
+    },
+    {
+      "hash": "6e59ccb382adb9d0c22e8728d4ac6d2752d676da",
+      "short_hash": "6e59ccb",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-25T08:31:01Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "41d07761e84b5565003d4b88b475a52c0f3acee0",
       "short_hash": "41d0776",
@@ -340,32 +377,6 @@
         "docker-compose.yml",
         "internal/config/config.go",
         "internal/config/config_test.go"
-      ]
-    },
-    {
-      "hash": "7d608b489678f87bb2f747e48cea09df5b17e1aa",
-      "short_hash": "7d608b4",
-      "author_name": "voxion-bot",
-      "author_email": "voxion-bot@voxionlabs.io",
-      "timestamp": "2026-11-23T11:30:15Z",
-      "subject": "chore(bot): update commit manifest [skip ci]",
-      "files_changed": null
-    },
-    {
-      "hash": "1c8671b6a50bfcdfdbfd80d667af2497ee4f6989",
-      "short_hash": "1c8671b",
-      "author_name": "R-Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-11-23T16:58:03+05:30",
-      "subject": "ci: add GitHub Actions CI pipeline for Go tests, linting, and Docker builds",
-      "files_changed": [
-        ".github/workflows/ci.yml",
-        ".gitignore",
-        "Dockerfile",
-        "ROADMAP.md",
-        "cmd/server/main.go",
-        "cmd/server/main_test.go",
-        "go.mod"
       ]
     }
   ]

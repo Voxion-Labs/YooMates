@@ -6,6 +6,8 @@ import (
 	"log"
 	"sync"
 	"time"
+
+	"yoomates/internal/voice"
 )
 
 // Hub maintains active clients, routes real-time broadcasts, and handles message lifecycle
@@ -18,6 +20,7 @@ type Hub struct {
 	register       chan *Client
 	unregister     chan *Client
 	repo           *Repository
+	voiceGateway   *voice.Gateway
 	mu             sync.RWMutex
 }
 
@@ -32,7 +35,13 @@ func NewHub(repo *Repository) *Hub {
 		register:       make(chan *Client),
 		unregister:     make(chan *Client),
 		repo:           repo,
+		voiceGateway:   voice.NewGateway(),
 	}
+}
+
+// VoiceGateway returns the underlying voice gateway
+func (h *Hub) VoiceGateway() *voice.Gateway {
+	return h.voiceGateway
 }
 
 // Run begins listening for client registration, unregistration, and broadcast events
@@ -90,6 +99,14 @@ func (h *Hub) Run() {
 					if h.presence[client.User.ID] <= 0 {
 						delete(h.presence, client.User.ID)
 						go h.BroadcastPresence(client.ServerID, client.User.ID, client.User.Username, "offline")
+
+						// Clean up voice room on disconnect
+						if h.voiceGateway != nil {
+							voiceRoom := h.voiceGateway.GetUserRoom(client.User.ID)
+							if voiceRoom != "" {
+								_, _ = h.voiceGateway.Leave(voiceRoom, client.User.ID)
+							}
+						}
 					}
 				}
 			}
@@ -161,6 +178,49 @@ func (h *Hub) processAndRoute(msg *WSMessage) {
 			reactions, err := h.repo.ToggleReaction(ctx, msg.MessageID, msg.UserID, msg.ServerID, msg.Emoji)
 			if err == nil {
 				msg.HTML = RenderReactionsOOB(msg.MessageID, reactions)
+			}
+		}
+
+	case TypeVoiceJoin:
+		if h.voiceGateway != nil && msg.ChannelID != "" && msg.UserID != "" {
+			peer, err := h.voiceGateway.Join(msg.ServerID, msg.ChannelID, msg.UserID, msg.Username)
+			if err == nil && peer != nil {
+				peers := h.voiceGateway.GetRoomPeers(msg.ChannelID)
+				msg.HTML = voice.RenderVoiceStatusOOB(msg.ChannelID, "Lounge", peer) + voice.RenderVoiceParticipantsOOB(msg.ChannelID, peers)
+			}
+		}
+
+	case TypeVoiceLeave:
+		if h.voiceGateway != nil && msg.ChannelID != "" && msg.UserID != "" {
+			_, _ = h.voiceGateway.Leave(msg.ChannelID, msg.UserID)
+			peers := h.voiceGateway.GetRoomPeers(msg.ChannelID)
+			msg.HTML = voice.RenderVoiceDisconnectOOB() + voice.RenderVoiceParticipantsOOB(msg.ChannelID, peers)
+		}
+
+	case TypeVoiceMute:
+		if h.voiceGateway != nil && msg.ChannelID != "" && msg.UserID != "" {
+			peer, err := h.voiceGateway.SetMute(msg.ChannelID, msg.UserID, msg.Muted)
+			if err == nil && peer != nil {
+				peers := h.voiceGateway.GetRoomPeers(msg.ChannelID)
+				msg.HTML = voice.RenderVoiceStatusOOB(msg.ChannelID, "Lounge", peer) + voice.RenderVoiceParticipantsOOB(msg.ChannelID, peers)
+			}
+		}
+
+	case TypeVoiceDeafen:
+		if h.voiceGateway != nil && msg.ChannelID != "" && msg.UserID != "" {
+			peer, err := h.voiceGateway.SetDeafen(msg.ChannelID, msg.UserID, msg.Deafened)
+			if err == nil && peer != nil {
+				peers := h.voiceGateway.GetRoomPeers(msg.ChannelID)
+				msg.HTML = voice.RenderVoiceStatusOOB(msg.ChannelID, "Lounge", peer) + voice.RenderVoiceParticipantsOOB(msg.ChannelID, peers)
+			}
+		}
+
+	case TypeVoiceSpeaking:
+		if h.voiceGateway != nil && msg.ChannelID != "" && msg.UserID != "" {
+			_, err := h.voiceGateway.SetSpeaking(msg.ChannelID, msg.UserID, msg.IsSpeaking)
+			if err == nil {
+				peers := h.voiceGateway.GetRoomPeers(msg.ChannelID)
+				msg.HTML = voice.RenderVoiceParticipantsOOB(msg.ChannelID, peers)
 			}
 		}
 	}

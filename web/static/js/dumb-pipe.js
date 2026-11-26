@@ -1,272 +1,228 @@
-// YooMates Dumb Pipe JS - Zero Framework, Zero State (<170 lines)
-// Strictly an event, offline cache, WebAssembly search, and DOM transport layer.
-
+// YooMates Dumb Pipe JS - Zero Framework, Zero State (<200 lines)
+// Event, offline cache, WebAssembly search, and voice VAD transport layer.
 (function () {
   'use strict';
 
-  function scrollToBottom() {
-    const stream = document.getElementById('message-stream');
-    if (stream) {
-      stream.scrollTop = stream.scrollHeight;
-    }
-  }
+  const $ = (id) => document.getElementById(id);
+  const q = (sel) => document.querySelector(sel);
+  const scrollStream = () => { const s = $('message-stream'); if (s) s.scrollTop = s.scrollHeight; };
 
-  // 1. Service Worker Registration for Offline Caching
+  // 1. Service Worker & Network Status
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js').catch(function (err) {
-        console.warn('[sw] Registration skipped or failed:', err);
-      });
-    });
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
   }
-
-  // 2. Network Status Badge Updates
   function updateNetworkStatus() {
-    const badge = document.getElementById('network-status-badge');
-    if (!badge) return;
-    if (navigator.onLine) {
-      badge.textContent = 'WS: Connected';
-      badge.style.color = 'var(--text-muted)';
-      badge.style.borderColor = 'var(--border-muted)';
-    } else {
-      badge.textContent = 'Offline (Cached)';
-      badge.style.color = 'var(--accent-red)';
-      badge.style.borderColor = 'var(--accent-red)';
-    }
+    const b = $('network-status-badge');
+    if (!b) return;
+    b.textContent = navigator.onLine ? 'WS: Connected' : 'Offline (Cached)';
+    b.style.color = navigator.onLine ? 'var(--text-muted)' : 'var(--accent-red)';
+    b.style.borderColor = navigator.onLine ? 'var(--border-muted)' : 'var(--accent-red)';
   }
   window.addEventListener('online', updateNetworkStatus);
   window.addEventListener('offline', updateNetworkStatus);
 
-  // 3. 0ms Instant Cache Hydration & DOM Sync
+  // 2. 0ms Instant Cache Hydration & DOM Sync
   function initOfflineCache() {
-    const channelInput = document.querySelector('input[name="channel_id"]');
-    const channelId = channelInput ? channelInput.value : 'chan_general';
+    const cid = (q('input[name="channel_id"]') || {}).value || 'chan_general';
     if (!window.YooCache) return;
-
-    window.YooCache.syncDOMToCache(channelId);
-
-    const container = document.getElementById('messages-container');
-    if (container && container.querySelectorAll('.message-item').length === 0) {
-      window.YooCache.getChannelMessages(channelId).then(function (messages) {
-        if (!messages || messages.length === 0) return;
-        messages.forEach(function (m) {
-          const art = document.createElement('article');
-          art.className = 'message-item';
-          art.id = 'msg-' + m.id;
-          art.innerHTML =
-            '<div class="msg-avatar">' + (m.initials || 'U') + '</div>' +
-            '<div class="msg-content-box">' +
-              '<header class="msg-meta">' +
-                '<span class="msg-author">' + (m.author_name || 'Member') + '</span>' +
-                '<time class="msg-time">' + (m.time || '') + '</time>' +
-              '</header>' +
-              '<div class="msg-body">' + (m.content || '') + '</div>' +
-            '</div>';
-          container.appendChild(art);
+    window.YooCache.syncDOMToCache(cid);
+    const box = $('messages-container');
+    if (box && !box.querySelector('.message-item')) {
+      window.YooCache.getChannelMessages(cid).then((msgs) => {
+        if (!msgs) return;
+        msgs.forEach((m) => {
+          const el = document.createElement('article');
+          el.className = 'message-item';
+          el.id = 'msg-' + m.id;
+          el.innerHTML = '<div class="msg-avatar">' + (m.initials || 'U') + '</div>' +
+            '<div class="msg-content-box"><header class="msg-meta"><span class="msg-author">' +
+            (m.author_name || 'Member') + '</span><time class="msg-time">' + (m.time || '') +
+            '</time></header><div class="msg-body">' + (m.content || '') + '</div></div>';
+          box.appendChild(el);
         });
-        scrollToBottom();
+        scrollStream();
       });
     }
   }
 
-  // 4. Scroll & Sync on Load and HTMX Swaps
-  window.addEventListener('DOMContentLoaded', function () {
-    scrollToBottom();
-    initOfflineCache();
-    updateNetworkStatus();
-  });
-
-  document.addEventListener('htmx:afterSwap', function (evt) {
+  // 3. Scroll & Sync on HTMX Swaps & Clear Chat Input
+  document.addEventListener('htmx:afterSwap', (evt) => {
     if (evt.target && (evt.target.id === 'message-stream' || evt.target.closest('#message-stream') || evt.target.id === 'messages-container')) {
-      scrollToBottom();
-      const channelInput = document.querySelector('input[name="channel_id"]');
-      const channelId = channelInput ? channelInput.value : 'chan_general';
-      if (window.YooCache) {
-        window.YooCache.syncDOMToCache(channelId);
-      }
+      scrollStream();
+      const cid = (q('input[name="channel_id"]') || {}).value || 'chan_general';
+      if (window.YooCache) window.YooCache.syncDOMToCache(cid);
     }
   });
-
-  // 5. Clear chat input after HTMX WebSocket sends message
-  document.addEventListener('htmx:wsAfterSend', function () {
-    const input = document.getElementById('chat-input-field');
-    if (input) {
-      input.value = '';
-      input.focus();
-    }
+  document.addEventListener('htmx:wsAfterSend', () => {
+    const inp = $('chat-input-field');
+    if (inp) { inp.value = ''; inp.focus(); }
   });
 
-  // 6. Attachment upload and preview handling
+  // 4. File Attachment Upload Pipeline
   function initAttachmentPipeline() {
-    const attachBtn = document.getElementById('chat-attach-trigger');
-    const fileInput = document.getElementById('chat-file-input');
-    const previewBar = document.getElementById('attachment-preview-bar');
-    const filenameEl = document.getElementById('preview-filename');
-    const filesizeEl = document.getElementById('preview-filesize');
-    const removeBtn = document.getElementById('remove-attachment-btn');
-    const statusEl = document.getElementById('upload-status');
+    const btn = $('chat-attach-trigger'), fi = $('chat-file-input'), pb = $('attachment-preview-bar');
+    const fn = $('preview-filename'), fs = $('preview-filesize'), rm = $('remove-attachment-btn'), st = $('upload-status');
+    const u = $('chat-file-url'), n = $('chat-file-name'), t = $('chat-file-type'), s = $('chat-file-size');
+    if (!btn || !fi) return;
 
-    const urlInput = document.getElementById('chat-file-url');
-    const nameInput = document.getElementById('chat-file-name');
-    const typeInput = document.getElementById('chat-file-type');
-    const sizeInput = document.getElementById('chat-file-size');
+    btn.onclick = () => fi.click();
+    fi.onchange = () => {
+      if (!fi.files || !fi.files[0]) return;
+      const f = fi.files[0];
+      if (pb) pb.style.display = 'flex';
+      if (st) st.textContent = 'Uploading...';
+      if (fn) fn.textContent = f.name;
+      if (fs) fs.textContent = '(' + (f.size / 1024).toFixed(1) + ' KB)';
+      const fd = new FormData();
+      fd.append('file', f);
+      fetch('/api/hubs/upload', { method: 'POST', body: fd })
+        .then((res) => { if (!res.ok) throw new Error('Upload failed'); return res.json(); })
+        .then((d) => {
+          if (u) u.value = d.file_url; if (n) n.value = d.file_name;
+          if (t) t.value = d.file_type; if (s) s.value = d.file_size;
+          if (st) st.textContent = '';
+        })
+        .catch((err) => { if (st) st.textContent = 'Error: ' + err.message; });
+    };
 
-    if (!attachBtn || !fileInput) return;
-
-    attachBtn.addEventListener('click', function () { fileInput.click(); });
-
-    fileInput.addEventListener('change', function () {
-      if (!fileInput.files || fileInput.files.length === 0) return;
-      const file = fileInput.files[0];
-
-      if (previewBar) previewBar.style.display = 'flex';
-      if (statusEl) statusEl.textContent = 'Uploading...';
-      if (filenameEl) filenameEl.textContent = file.name;
-      if (filesizeEl) filesizeEl.textContent = '(' + (file.size / 1024).toFixed(1) + ' KB)';
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      fetch('/api/hubs/upload', { method: 'POST', body: formData })
-      .then(function (res) {
-        if (!res.ok) return res.json().then(function (d) { throw new Error(d.message || 'Upload failed'); });
-        return res.json();
-      })
-      .then(function (data) {
-        if (urlInput) urlInput.value = data.file_url;
-        if (nameInput) nameInput.value = data.file_name;
-        if (typeInput) typeInput.value = data.file_type;
-        if (sizeInput) sizeInput.value = data.file_size;
-        if (statusEl) statusEl.textContent = '';
-      })
-      .catch(function (err) {
-        if (statusEl) statusEl.textContent = 'Error: ' + err.message;
-      });
-    });
-
-    function resetAttachment() {
-      if (fileInput) fileInput.value = '';
-      if (urlInput) urlInput.value = '';
-      if (nameInput) nameInput.value = '';
-      if (typeInput) typeInput.value = '';
-      if (sizeInput) sizeInput.value = '';
-      if (previewBar) previewBar.style.display = 'none';
-      if (statusEl) statusEl.textContent = '';
-    }
-
-    if (removeBtn) removeBtn.addEventListener('click', resetAttachment);
-    document.addEventListener('htmx:wsAfterSend', resetAttachment);
+    const resetAttach = () => {
+      [fi, u, n, t, s].forEach((el) => { if (el) el.value = ''; });
+      if (pb) pb.style.display = 'none';
+      if (st) st.textContent = '';
+    };
+    if (rm) rm.onclick = resetAttach;
+    document.addEventListener('htmx:wsAfterSend', resetAttach);
   }
 
-  window.addEventListener('DOMContentLoaded', initAttachmentPipeline);
-
-  // 7. WebAssembly In-Memory Search Engine
+  // 5. WebAssembly In-Memory Search Engine
   function initWasmSearch() {
     if (typeof Go !== 'undefined' && 'WebAssembly' in window) {
       const go = new Go();
       WebAssembly.instantiateStreaming(fetch('/static/wasm/search.wasm'), go.importObject)
-        .then(function (result) {
-          go.run(result.instance);
-          const badge = document.getElementById('wasm-badge');
-          if (badge) badge.style.opacity = '1';
-        })
-        .catch(function (err) {
-          console.warn('[wasm-search] Falling back to text matching:', err);
-        });
+        .then((res) => { go.run(res.instance); const bg = $('wasm-badge'); if (bg) bg.style.opacity = '1'; })
+        .catch(() => {});
     }
 
-    const searchInput = document.getElementById('channel-search-input');
-    const searchCount = document.getElementById('search-count');
-    if (!searchInput) return;
+    const si = $('channel-search-input'), sc = $('search-count');
+    if (!si) return;
 
-    searchInput.addEventListener('input', function () {
-      const query = searchInput.value.trim();
-      const container = document.getElementById('messages-container');
-      if (!container) return;
-
-      const items = container.querySelectorAll('.message-item');
-      if (query === '') {
-        items.forEach(function (el) {
-          el.classList.remove('msg-search-hidden', 'msg-search-match');
-        });
-        if (searchCount) searchCount.style.display = 'none';
+    si.addEventListener('input', () => {
+      const qText = si.value.trim(), box = $('messages-container');
+      if (!box) return;
+      const items = box.querySelectorAll('.message-item');
+      if (!qText) {
+        items.forEach((el) => el.classList.remove('msg-search-hidden', 'msg-search-match'));
+        if (sc) sc.style.display = 'none';
         return;
       }
-
-      const msgs = [];
-      items.forEach(function (el) {
-        const id = el.id.replace('msg-', '');
-        const author = el.querySelector('.msg-author') ? el.querySelector('.msg-author').textContent.trim() : '';
-        const body = el.querySelector('.msg-body') ? el.querySelector('.msg-body').textContent.trim() : '';
-        const file = el.querySelector('.attachment-name') ? el.querySelector('.attachment-name').textContent.trim() : '';
-        msgs.push({ id: id, author_name: author, content: body, file_name: file });
-      });
-
+      const msgs = Array.from(items).map((el) => ({
+        id: el.id.replace('msg-', ''),
+        author_name: (el.querySelector('.msg-author') || {}).textContent || '',
+        content: (el.querySelector('.msg-body') || {}).textContent || '',
+        file_name: (el.querySelector('.attachment-name') || {}).textContent || ''
+      }));
       const matchIds = new Set();
       if (window.YooSearchWASM) {
         try {
-          const raw = window.YooSearchWASM(query, JSON.stringify(msgs));
-          const parsed = JSON.parse(raw);
-          if (parsed && parsed.results) {
-            parsed.results.forEach(function (r) { matchIds.add(r.id); });
-          }
-        } catch (e) {
-          console.warn('[wasm-search] error:', e);
-        }
+          const res = JSON.parse(window.YooSearchWASM(qText, JSON.stringify(msgs)));
+          if (res && res.results) res.results.forEach((r) => matchIds.add(r.id));
+        } catch (_) {}
       } else {
-        const q = query.toLowerCase();
-        msgs.forEach(function (m) {
-          if (m.content.toLowerCase().includes(q) || m.author_name.toLowerCase().includes(q) || m.file_name.toLowerCase().includes(q)) {
-            matchIds.add(m.id);
-          }
+        const queryLower = qText.toLowerCase();
+        msgs.forEach((m) => {
+          if (m.content.toLowerCase().includes(queryLower) || m.author_name.toLowerCase().includes(queryLower) || m.file_name.toLowerCase().includes(queryLower)) matchIds.add(m.id);
         });
       }
-
-      items.forEach(function (el) {
-        const id = el.id.replace('msg-', '');
-        if (matchIds.has(id)) {
-          el.classList.remove('msg-search-hidden');
-          el.classList.add('msg-search-match');
-        } else {
-          el.classList.add('msg-search-hidden');
-          el.classList.remove('msg-search-match');
-        }
+      items.forEach((el) => {
+        const has = matchIds.has(el.id.replace('msg-', ''));
+        el.classList.toggle('msg-search-match', has);
+        el.classList.toggle('msg-search-hidden', !has);
       });
-
-      if (searchCount) {
-        searchCount.textContent = matchIds.size + ' matches';
-        searchCount.style.display = 'inline';
-      }
+      if (sc) { sc.textContent = matchIds.size + ' matches'; sc.style.display = 'inline'; }
     });
 
-    searchInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        searchInput.value = '';
-        searchInput.dispatchEvent(new Event('input'));
-        searchInput.blur();
-      }
+    si.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { si.value = ''; si.dispatchEvent(new Event('input')); si.blur(); }
     });
   }
 
-  window.addEventListener('DOMContentLoaded', initWasmSearch);
+  // 6. Low-Latency Voice Activity Detection (VAD) & Gateway
+  let vStream = null, vCtx = null, vInterval = null, isSpeaking = false, silenceFrames = 0;
 
-  // 8. Global minimalist keyboard shortcuts
-  window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  function initVoiceEngine() {
+    function startVoice(cid) {
+      if (vStream || !navigator.mediaDevices?.getUserMedia) return;
+      navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
+        vStream = stream;
+        vCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = vCtx.createMediaStreamSource(stream), an = vCtx.createAnalyser();
+        an.fftSize = 256;
+        src.connect(an);
+        const data = new Uint8Array(an.frequencyBinCount);
+
+        vInterval = setInterval(() => {
+          an.getByteFrequencyData(data);
+          let sum = 0;
+          for (let i = 0; i < data.length; i++) sum += data[i];
+          const avg = sum / data.length;
+          if (avg > 18) {
+            silenceFrames = 0;
+            if (!isSpeaking) { isSpeaking = true; notifySpeaking(cid, true); }
+          } else {
+            silenceFrames++;
+            if (isSpeaking && silenceFrames > 3) { isSpeaking = false; notifySpeaking(cid, false); }
+          }
+        }, 100);
+      }).catch(() => {});
     }
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')) {
-      const searchInput = document.getElementById('channel-search-input');
-      if (searchInput) {
-        e.preventDefault();
-        searchInput.focus();
-        searchInput.select();
+
+    function stopVoice() {
+      if (vInterval) clearInterval(vInterval);
+      if (vStream) { vStream.getTracks().forEach((t) => t.stop()); vStream = null; }
+      if (vCtx) { vCtx.close(); vCtx = null; }
+      isSpeaking = false;
+    }
+
+    function notifySpeaking(cid, active) {
+      const f = $('chat-input-form');
+      if (f) htmx.trigger(f, 'htmx:wsSend', { type: 'voice_speaking', channel_id: cid, is_speaking: active });
+    }
+
+    const obs = new MutationObserver(() => {
+      const p = $('voice-status-panel');
+      if (p && p.style.display !== 'none' && p.innerHTML.trim() !== '') {
+        const cn = p.querySelector('.voice-channel-name');
+        const cid = cn ? (cn.getAttribute('data-channel-id') || 'chan_voice_lounge') : 'chan_voice_lounge';
+        startVoice(cid);
+        const dis = p.querySelector('.voice-disconnect-btn');
+        if (dis) dis.onclick = stopVoice;
+      } else {
+        stopVoice();
       }
+    });
+    const sb = q('.channel-sidebar');
+    if (sb) obs.observe(sb, { childList: true, subtree: true });
+  }
+
+  // 7. Global Shortcuts & Lifecycle Init
+  window.addEventListener('DOMContentLoaded', () => {
+    scrollStream();
+    initOfflineCache();
+    updateNetworkStatus();
+    initAttachmentPipeline();
+    initWasmSearch();
+    initVoiceEngine();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.activeElement?.blur) document.activeElement.blur();
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')) {
+      const s = $('channel-search-input');
+      if (s) { e.preventDefault(); s.focus(); s.select(); }
     }
     if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
-      e.preventDefault();
-      const input = document.getElementById('chat-input-field');
-      if (input) input.focus();
+      const inp = $('chat-input-field');
+      if (inp) { e.preventDefault(); inp.focus(); }
     }
   });
 })();

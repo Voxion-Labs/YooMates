@@ -26,19 +26,38 @@
       <span class="channel-prefix">#</span>
       <span>engineering</span>
     </a>
-    <a href="/hubs?channel_id=announcements" class="channel-item">
-      <span class="channel-prefix">#</span>
-      <span>announcements</span>
-    </a>
     {{end}}
 
-    <!-- Voice Channels -->
+    <!-- Voice Channels (WebRTC / C++ Low-Latency Audio Gateway) -->
     <div class="channel-category" style="margin-top: 10px;">Voice Channels</div>
-    <div class="channel-item" style="opacity: 0.85;">
+    {{range .VoiceChannels}}
+    <div class="channel-item voice-channel-btn" 
+         ws-send 
+         hx-vals='{"type":"voice_join","server_id":"{{$.CurrentServer.ID}}","channel_id":"{{.ID}}"}'
+         title="Click to connect to voice channel">
+      <span class="channel-prefix">🔊</span>
+      <span>{{.Name}}</span>
+    </div>
+    {{else}}
+    <div class="channel-item voice-channel-btn" 
+         ws-send 
+         hx-vals='{"type":"voice_join","server_id":"{{$.CurrentServer.ID}}","channel_id":"chan_voice_lounge"}'
+         title="Click to connect to voice channel">
       <span class="channel-prefix">🔊</span>
       <span>Lounge</span>
     </div>
+    <div class="channel-item voice-channel-btn" 
+         ws-send 
+         hx-vals='{"type":"voice_join","server_id":"{{$.CurrentServer.ID}}","channel_id":"chan_voice_standup"}'
+         title="Click to connect to voice channel">
+      <span class="channel-prefix">🔊</span>
+      <span>Standup</span>
+    </div>
+    {{end}}
   </div>
+
+  <!-- Voice Connection Panel (Populated on voice connect) -->
+  <div id="voice-status-panel" class="voice-status-panel" style="display: none;"></div>
 
   <!-- User Status Card -->
   <div class="user-status-card">
