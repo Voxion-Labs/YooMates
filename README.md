@@ -1,236 +1,150 @@
 <p align="center">
-  <img src="public/branding/yoomates-logo.png" alt="YooMates logo" width="180" />
+  <img src="web/static/img/yoomates-logo.png" alt="YooMates logo" width="180" />
 </p>
 
 <br>
 
 # <div align="center"><strong>YooMates</strong></div>
 
-YooMates is a unified collaboration platform that combines:
+> **The Engineered Minimalism Operating Surface for Modern Engineering Teams**  
+> Powered by pure **Go (Golang)**, native **C++ low-latency audio**, **WebAssembly**, and **Go Templates + HTMX**.  
+> **Zero `node_modules` | Zero TypeScript runtime overhead | <15ms cold start | Sub-millisecond p99 dispatch.**
 
-- real-time team communication 
-- a public social feed 
-- a private knowledge and execution workspace 
+---
 
-The product is designed as a single, cohesive operating surface for modern teams that want communication, planning, publishing, and AI assistance in one place.
+## 1. Product Overview & Pillars
 
-## Product Overview
+YooMates unifies team communication, organization-wide publishing, and personal execution into a single, cohesive operating surface:
 
-YooMates is built around three core pillars:
+- **Chat Hubs (`/hubs`)**:
+  High-throughput real-time team collaboration with channels, direct messages, emoji reactions, threaded message drawers, typing indicators, multipart file attachments, and real-time C++ WebRTC/RTP voice lounges.
+- **Global Feed (`/global`)**:
+  Organization-wide chronological publishing stream with rich posts, interactive polls, nested comments, like tracking, and HTMX cursor-based infinite scroll.
+- **My Space (`/myspace`)**:
+  High-density personal execution workspace with nested document hierarchies, built-in Markdown editor with local-first 500ms debounced autosave, interactive Kanban boards, and compact list views.
 
-- `Hubs`
-  Real-time team collaboration with channels, direct messages, reactions, forwarding, and side-panel threads.
+---
 
-- `Global`
-  Organization-wide publishing with rich posts, comments, likes, bookmarks, quote-posting, polls, and author post management.
+## 2. Core Architecture & Engineering Principles
 
-- `My Space`
-  A personal execution layer with nested documents, reminders, slash-command editing, drag-and-drop blocks, and structured workspace views such as list, kanban, and calendar.
+YooMates was migrated from a legacy Next.js / Node.js / Prisma prototype to a high-performance, single-binary architecture:
 
-## Highlights
+1. **Zero Runtime `node_modules` & Zero TypeScript**:
+   - The entire backend runs as a single, statically compiled Go binary (<25MB) with zero external runtime dependencies.
+2. **JavaScript as a "Dumb Pipe" (<220 Lines)**:
+   - Client-side JavaScript (`web/static/js/dumb-pipe.js`) has **zero business logic** and **zero state management**.
+   - Acts purely as an event relay: passing WebSocket frames, triggering WASM routines, audio VAD, and handling the global `Ctrl+K` quick switcher.
+3. **Hypermedia & Server-Driven UI (Go `html/template` + HTMX)**:
+   - Server-side pre-rendered HTML partials with <5ms TTFB.
+   - Real-time DOM updates via WebSocket streams (`hx-ext="ws"`), out-of-band swaps, and optimistic updates.
+4. **Client-Side Resilience & WebAssembly**:
+   - Service Worker (`sw.js`) and IndexedDB (`idb-cache.js`) for 0ms instant offline message loading.
+   - Pure Go compiled WebAssembly search engine (`search.wasm`) for instant, client-side message filtering.
+5. **C++ Low-Latency Audio Engine (`engine/audio/`)**:
+   - RFC 3550 RTP packet router, RFC 6716 Opus TOC parser, atomic spinlocks, adaptive jitter buffering with packet loss concealment (PLC), and comfort noise generation (CNG).
+6. **Raw MySQL 8.4 (InnoDB) Persistence**:
+   - Raw SQL migrations (`migrations/0001_initial_schema.sql`) utilizing ACID transactions, foreign keys, and indexes without ORM overhead.
 
-- production-grade Next.js App Router architecture
-- strongly typed end-to-end TypeScript codebase
-- Prisma + PostgreSQL data model
-- NextAuth-based authentication
-- responsive theme-aware UI
-- real-time messaging with Pusher
-- branded login security notifications by email
-- AI drafting assistant integration
-- modular shared UI primitives for drawers, toasts, skeletons, and transitions
+---
 
-## Feature Parity Status
-
-### Hubs
-
-- channel chat and direct messages
-- message editing and soft deletion
-- forwarding references
-- emoji reactions
-- side-panel threads
-- typing indicators and presence
-- file and image attachments
-
-### Global
-
-- create post with media
-- quote-posting
-- optimistic likes, bookmarks, comments
-- author archive and delete actions
-- poll creation and voting
-- bookmarks tab
-- infinite scroll feed loading
-
-### My Space
-
-- nested document hierarchy
-- reminders and follow-ups
-- slash commands in the editor
-- drag-and-drop block reordering
-- sub-page creation
-- list, kanban, and calendar workspace views
-
-## Architecture
-
-### Frontend
-
-- `Next.js 14`
-- `React 18`
-- `Tailwind CSS`
-- `framer-motion`
-- `next-themes`
-
-### Backend
-
-- `Next.js Route Handlers`
-- `Server Actions`
-- `Prisma ORM`
-- `PostgreSQL`
-- `NextAuth`
-- `Pusher`
-- `UploadThing`
-- `Nodemailer`
-
-### Repository Structure
+## 3. Repository Structure
 
 ```text
-├── 📂 src/
-│   ├── 📂 app/
-│   │   ├── 📂 (auth)/
-│   │   ├── 📂 (main)/
-│   │   └── 📂 api/
-│   ├── 📂 modules/
-│   │   ├── 📂 ai/
-│   │   ├── 📂 auth/
-│   │   ├── 📂 global/
-│   │   ├── 📂 hubs/
-│   │   ├── 📂 myspace/
-│   │   └── 📂 profile/
-│   └── 📂 shared/
-│       ├── 📂 components/
-│       ├── 📂 hooks/
-│       └── 📂 lib/
-├── 📂 prisma/
-└── 📂 public/
+├── 📂 cmd/
+│   ├── 📂 server/             # Primary Go HTTP + WebSocket server entrypoint
+│   ├── 📂 wasm/               # Go source compiled to web/static/wasm/search.wasm
+│   └── 📂 benchmark/          # High-concurrency load benchmark CLI suite
+├── 📂 engine/
+│   └── 📂 audio/              # High-performance C++ RTP / Voice processing engine
+│       ├── 📂 include/        # C++ headers (RTP, Jitter Buffer, VAD, Transcoder, CNG)
+│       └── 📂 src/            # C++ implementation & verification suite
+├── 📂 internal/
+│   ├── 📂 auth/               # Argon2id password hashing, session tokens & middleware
+│   ├── 📂 config/             # Environment & configuration loader
+│   ├── 📂 db/                 # MySQL 8.4 database pool management
+│   ├── 📂 feed/               # Global Feed domain models, handlers, repository & tests
+│   ├── 📂 hubs/               # Chat Hubs WebSocket hub, routing, attachments & tests
+│   ├── 📂 search/             # In-memory search & tokenization library
+│   ├── 📂 space/              # My Space document tree, autosave, Kanban & markdown parser
+│   └── 📂 voice/              # Go Voice Gateway connecting to C++ audio engine
+├── 📂 migrations/             # Raw MySQL 8.4 InnoDB DDL schema migrations
+├── 📂 scripts/                # Commit manifest & governance scripts (voxion-bot)
+├── 📂 web/
+│   ├── 📂 static/             # Static assets (CSS, JS dumb-pipe, WASM binary)
+│   └── 📂 templates/          # Go HTML templates & HTMX partials
+├── 📄 BENCHMARKS.md           # Concurrency load benchmark telemetry report
+├── 📄 ROADMAP.md              # Authoritative multi-phase migration roadmap
+├── 📄 Dockerfile              # Multi-stage production container build
+├── 📄 docker-compose.yml      # Local orchestration (MySQL 8.4, Redis, MinIO, YooMates)
+└── 📄 Makefile                # Automation commands (rebase pull/push, tests, benchmarks)
 ```
 
-## Tech Decisions
+---
 
-- `App Router` keeps route-level layouts and loading states modular.
-- `Server Actions` are used where mutation ergonomics and type sharing matter.
-- `Route Handlers` are used for client-side fetch flows, realtime-related endpoints, and external service boundaries.
-- `Prisma` provides the relational base for social, communication, and workspace features.
-- `Pusher` handles realtime message fanout, presence, and incremental UI updates.
+## 4. Quickstart & Local Development
 
-## Local Development
+### Prerequisites
+- **Go 1.22+**
+- **Docker & Docker Compose**
+- **C++ Compiler (g++ / MinGW / Clang)**
 
-### 1. Install dependencies
-
+### 1. Start Infrastructure (MySQL 8.4, Redis, MinIO)
 ```bash
-npm install
+docker compose up -d db redis s3
 ```
 
-### 2. Generate Prisma client
-
+### 2. Run Database Migrations
+Migrations run automatically on container boot, or can be applied using raw MySQL:
 ```bash
-npx prisma generate
+# Apply schema directly
+docker compose exec db mysql -u yoomates -p yoomates < migrations/0001_initial_schema.sql
 ```
 
-### 3. Run database migrations
-
+### 3. Compile WebAssembly & C++ Audio Engine
 ```bash
-npx prisma migrate dev
+make wasm
+make audio-engine
 ```
 
-### 4. Start the app
-
+### 4. Run the Server
 ```bash
-npm run dev
+make run
+# Or directly: go run ./cmd/server/main.go
 ```
+The server will boot in **< 15ms** and serve requests at `http://localhost:8080`.
 
-## Build and Verification
+---
 
+## 5. Testing & Benchmarks
+
+### Run Unit Tests
 ```bash
-npx tsc --noEmit
-npm run build
+make test
+# Or: go test -v -count=1 ./...
 ```
 
-## Security Posture
+### Run C++ Audio Engine Verification
+```bash
+make test-audio
+```
 
-YooMates includes:
+### Run Concurrency Load Benchmarks
+```bash
+make benchmark
+```
+*Full benchmarking methodology and comparison telemetry available in [BENCHMARKS.md](BENCHMARKS.md).*
 
-- server-side input sanitization helpers
-- same-origin protection for mutation routes
-- session-protected route groups
-- soft-delete patterns for sensitive content
-- branded login notification emails
-- screenshot monitoring alerts on the client
+---
 
-## UI / UX Notes
+## 6. Global Keyboard Shortcuts
 
-- dual theme system with explicit dark and light visual identities
-- mobile-first responsive layouts
-- drawer-based navigation on smaller screens
-- loading skeletons and smooth route transitions
-- polished, high-contrast collaboration surfaces
-
-## Deployment Notes
-
-YooMates is designed to run well on a standard Next.js deployment stack such as:
-
-- Vercel for app hosting
-- Neon, Supabase, or Railway PostgreSQL for data
-- Pusher for realtime delivery
-- UploadThing for file handling
-- Resend or SMTP-compatible mail infrastructure
-
-## Deploying to Vercel
-
-1. Import the repository into Vercel.
-2. Set the framework preset to `Next.js`.
-3. Add every environment variable from `.env.example`.
-4. Point `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL` to your Vercel production URL.
-5. Use a managed PostgreSQL database and run `npx prisma migrate deploy` against production before launch if it has not already been executed.
-
-The repository includes `vercel.json` and a `postinstall` Prisma generate step so the build is production-safe by default.
-
-## Deploying to Render
-
-1. Create a new Blueprint or Web Service from this repository.
-2. Render will detect `render.yaml` and configure the Node service.
-3. Set all secret environment variables in the Render dashboard.
-4. Point `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL` to your Render domain or custom domain.
-5. Confirm that your production database is reachable from Render before the first deploy.
-
-The Render service is configured to:
-
-- install dependencies
-- run the production build
-- execute `prisma migrate deploy` on startup
-- serve the app with `next start`
-
-## Recommended Production Checklist
-
-- configure a managed PostgreSQL database
-- run Prisma migrations in the target environment
-- set all auth provider secrets
-- set all Pusher keys for realtime
-- configure SMTP credentials for security emails
-- set the OpenAI key for AI assistant features
-- verify UploadThing credentials
-- confirm `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL`
-- verify the logo and banner are present in `public/branding`
-- update your custom domain DNS before opening public access
-
-## Roadmap Direction
-
-Potential future expansion areas:
-
-- moderation and admin controls for Hubs
-- richer analytics on Global engagement
-- collaborative editing in My Space
-- activity audit logs
-- organization-level settings and billing
+| Shortcut | Action |
+|:---|:---|
+| <kbd>Ctrl+K</kbd> / <kbd>Cmd+K</kbd> | Open Universal Quick Switcher (Command Palette) |
+| <kbd>Ctrl+F</kbd> / <kbd>Cmd+F</kbd> | Focus Instant WebAssembly Channel Search |
+| <kbd>Esc</kbd> | Dismiss active modal / quick switcher / clear search |
+| <kbd>↑</kbd> / <kbd>↓</kbd> | Navigate results in Quick Switcher |
+| <kbd>↵</kbd> | Execute selected navigation or command |
 
 ---
 
