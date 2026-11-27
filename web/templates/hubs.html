@@ -17,11 +17,10 @@
       <div class="channel-title-box">
         <span class="channel-prefix" style="font-size: 16px;">#</span>
         <h1 class="channel-title">{{if .CurrentChannel.Name}}{{.CurrentChannel.Name}}{{else}}general{{end}}</h1>
-        <span class="channel-desc">{{if .CurrentChannel.Description}}{{.CurrentChannel.Description}}{{else}}Real-time team collaboration surface{{end}}</span>
+        <span class="channel-desc">{{if .CurrentChannel.Description}}{{.CurrentChannel.Description}}{{else}}General team collaboration and daily sync{{end}}</span>
       </div>
 
       <div style="display: flex; gap: 10px; align-items: center;">
-        <!-- Minimalist WASM Instant Search Input -->
         <div class="header-search-box">
           <span class="search-icon">🔍</span>
           <input 
@@ -31,7 +30,6 @@
             placeholder="Search channel... (Ctrl+F)" 
             autocomplete="off"
           >
-          <span id="wasm-badge" class="wasm-badge" title="WebAssembly In-Memory Search Active">WASM</span>
           <span id="search-count" class="search-count" style="display: none;"></span>
         </div>
 
@@ -40,7 +38,7 @@
         </button>
 
         <span id="network-status-badge" style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); border: 1px solid var(--border-muted); padding: 2px 6px; border-radius: 4px;">
-          WS: Connected
+          Online
         </span>
       </div>
     </header>

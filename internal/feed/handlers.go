@@ -113,15 +113,15 @@ func (v *ViewEngine) GlobalHandler(w http.ResponseWriter, r *http.Request) {
 		NextCursor:  nextCursor,
 		HasMore:     nextCursor != "",
 		TrendingTopics: []TrendingItem{
-			{Category: "Architecture · Trending", Topic: "#ZeroNodeModules", PostCount: "14.2K posts"},
-			{Category: "Technology · Trending", Topic: "#GolangHTMX", PostCount: "28.5K posts"},
-			{Category: "Performance · Trending", Topic: "#WebAssembly", PostCount: "9.1K posts"},
-			{Category: "Audio · Trending", Topic: "#CplusplusWebRTC", PostCount: "5.8K posts"},
+			{Category: "Company · Trending", Topic: "#ProductUpdate", PostCount: "14.2K posts"},
+			{Category: "Team · Trending", Topic: "#SprintPlanning", PostCount: "28.5K posts"},
+			{Category: "Design · Trending", Topic: "#WorkspaceSync", PostCount: "9.1K posts"},
+			{Category: "Announcements · Trending", Topic: "#Q1Goals", PostCount: "5.8K posts"},
 		},
 		WhoToFollow: []FollowSuggestion{
-			{ID: "usr_voxion", Name: "Voxion Bot", Username: "voxion-bot", Initials: "VB", Bio: "Automated engine coordinator & CI manifest engine"},
-			{ID: "usr_rjena", Name: "Rudranarayan Jena", Username: "rjena", Initials: "RJ", Bio: "Systems architect & builder @ Voxion Labs"},
-			{ID: "usr_liam", Name: "Liam Brooks", Username: "liambrooks", Initials: "LB", Bio: "Distributed backend & media systems engineer"},
+			{ID: "usr_voxion", Name: "Voxion Bot", Username: "voxion-bot", Initials: "VB", Bio: "Automated platform updates and announcements"},
+			{ID: "usr_rjena", Name: "Rudranarayan Jena", Username: "rjena", Initials: "RJ", Bio: "Founder @ Voxion Labs"},
+			{ID: "usr_liam", Name: "Liam Brooks", Username: "liambrooks", Initials: "LB", Bio: "Product Engineering Lead"},
 		},
 	}
 

@@ -1,10 +1,45 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-27T07:23:17Z",
+  "last_updated": "2026-11-27T07:42:43Z",
   "branch": "main",
-  "head_commit": "9b6cfabdd4a25c1136d86eb071a919e00957c7ea",
+  "head_commit": "6643e1b5e449f338632b38b44966cfefcc1e3a47",
   "history": [
+    {
+      "hash": "6643e1b5e449f338632b38b44966cfefcc1e3a47",
+      "short_hash": "6643e1b",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-27T13:12:41+05:30",
+      "subject": "feat(docs): update technical specification and polish product interface",
+      "files_changed": [
+        "CONTRIBUTING.md",
+        "README.md",
+        "ROADMAP.md",
+        "internal/feed/handlers.go",
+        "internal/feed/repository.go",
+        "internal/hubs/views.go",
+        "internal/space/repository.go",
+        "public/branding/yoomates-logo.png",
+        "web/static/js/dumb-pipe.js",
+        "web/templates/global.html",
+        "web/templates/hubs.html",
+        "web/templates/myspace.html",
+        "web/templates/partials/channel_sidebar.html",
+        "web/templates/partials/member_sidebar.html",
+        "web/templates/partials/message_stream.html",
+        "web/templates/partials/quick_switcher.html"
+      ]
+    },
+    {
+      "hash": "eae84c75d98384c4a1e99087c1ad06b8060f240d",
+      "short_hash": "eae84c7",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-27T07:23:17Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "9b6cfabdd4a25c1136d86eb071a919e00957c7ea",
       "short_hash": "9b6cfab",
@@ -453,37 +488,6 @@
         "web/static/css/app.css",
         "web/templates/partials/message_item.html",
         "web/templates/partials/message_stream.html"
-      ]
-    },
-    {
-      "hash": "9e64346c8c9c2718d3ddcd350644292b0a6cfeff",
-      "short_hash": "9e64346",
-      "author_name": "voxion-bot",
-      "author_email": "voxion-bot@voxionlabs.io",
-      "timestamp": "2026-11-24T07:37:22Z",
-      "subject": "chore(bot): update commit manifest [skip ci]",
-      "files_changed": null
-    },
-    {
-      "hash": "31cfe16e9442cc48ab5676c71d9cf7e59d9895b9",
-      "short_hash": "31cfe16",
-      "author_name": "R-Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-11-24T13:06:15+05:30",
-      "subject": "Migrate database layer to MySQL with connection pool and schema migrations",
-      "files_changed": [
-        ".env.example",
-        "ROADMAP.md",
-        "cmd/server/main.go",
-        "docker-compose.yml",
-        "go.mod",
-        "go.sum",
-        "internal/auth/manager.go",
-        "internal/config/config.go",
-        "internal/db/db.go",
-        "internal/db/db_test.go",
-        "internal/hubs/views.go",
-        "migrations/0001_initial_schema.sql"
       ]
     }
   ]

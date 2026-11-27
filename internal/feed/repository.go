@@ -65,7 +65,7 @@ func (r *Repository) seedInitialData() {
 	// 1. Initial Launch Post
 	p1 := &Post{
 		ID:             "post_launch",
-		Content:        "Welcome to the new YooMates Global Feed. Engineered in pure Go + HTMX with zero TypeScript/node_modules runtime overhead and <5ms TTFB. Monochromatic, high-density, real-time.",
+		Content:        "Welcome to YooMates Global. This is the centralized stream for company announcements, project updates, and team discussions.",
 		AuthorID:       "usr_rjena",
 		AuthorName:     "Rudranarayan Jena",
 		AuthorUsername: "rjena",
@@ -82,11 +82,11 @@ func (r *Repository) seedInitialData() {
 	poll := &Poll{
 		ID:       pollID,
 		PostID:   p2ID,
-		Question: "Which backend architecture do you prefer for real-time collaboration?",
+		Question: "Preferred format for weekly sprint reviews and team check-ins?",
 		Options: []PollOption{
-			{ID: "opt_1", PollID: pollID, Text: "Go + HTMX + Dumb-Pipe WASM", Position: 0, VoteCount: 38, Percentage: 76.0},
-			{ID: "opt_2", PollID: pollID, Text: "Next.js + Prisma + Pusher", Position: 1, VoteCount: 4, Percentage: 8.0},
-			{ID: "opt_3", PollID: pollID, Text: "Elixir / Phoenix LiveView", Position: 2, VoteCount: 8, Percentage: 16.0},
+			{ID: "opt_1", PollID: pollID, Text: "Written summary & async brief", Position: 0, VoteCount: 38, Percentage: 76.0},
+			{ID: "opt_2", PollID: pollID, Text: "15-minute sync in Voice Lounge", Position: 1, VoteCount: 4, Percentage: 8.0},
+			{ID: "opt_3", PollID: pollID, Text: "Bi-weekly demo & retrospective", Position: 2, VoteCount: 8, Percentage: 16.0},
 		},
 		TotalVotes: 50,
 		HasVoted:   false,
@@ -94,7 +94,7 @@ func (r *Repository) seedInitialData() {
 
 	p2 := &Post{
 		ID:             p2ID,
-		Content:        "Architectural benchmark results are in. We dropped 400MB of node_modules and achieved 0ms offline loads with IndexedDB and WebAssembly.",
+		Content:        "Q1 milestone documents have been published to My Space. Please review the updated deliverables and task boards before the planning sync.",
 		AuthorID:       "usr_voxion",
 		AuthorName:     "Voxion Bot",
 		AuthorUsername: "voxion-bot",
@@ -109,7 +109,7 @@ func (r *Repository) seedInitialData() {
 	// 3. Quote Post referencing p1
 	p3 := &Post{
 		ID:             "post_quote",
-		Content:        "Notice how smooth the instant page transitions feel without client-side React hydration lag. Pure hypermedia in action.",
+		Content:        "The updated workspace layout is live across all channels. Clean, fast, and completely distraction-free.",
 		AuthorID:       "usr_liam",
 		AuthorName:     "Liam Brooks",
 		AuthorUsername: "liambrooks",
@@ -131,7 +131,7 @@ func (r *Repository) seedInitialData() {
 		{
 			ID:             "cmt_1",
 			PostID:         p1.ID,
-			Text:           "Loving the monochromatic dark aesthetics. Extremely fast.",
+			Text:           "Great update. The high-density view makes tracking updates much easier.",
 			AuthorID:       "usr_liam",
 			AuthorName:     "Liam Brooks",
 			AuthorUsername: "liambrooks",

@@ -2,7 +2,7 @@
 <aside class="channel-sidebar" aria-label="Channels">
   <div class="server-header">
     <span>{{if .CurrentServer.Name}}{{.CurrentServer.Name}}{{else}}General Hub{{end}}</span>
-    <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">v2.0</span>
+    <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">Workspace</span>
   </div>
 
   <div class="channel-list">
@@ -28,7 +28,7 @@
     </a>
     {{end}}
 
-    <!-- Voice Channels (WebRTC / C++ Low-Latency Audio Gateway) -->
+    <!-- Voice Channels -->
     <div class="channel-category" style="margin-top: 10px;">Voice Channels</div>
     {{range .VoiceChannels}}
     <div class="channel-item voice-channel-btn" 

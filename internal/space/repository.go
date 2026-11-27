@@ -88,29 +88,26 @@ func (r *Repository) seedInitialData() {
 	// Default Documents
 	d1 := &Document{
 		ID:       "doc_arch_spec",
-		Title:    "Engine Architecture & Resilience Specification",
+		Title:    "Product Overview & Strategic Roadmap",
 		FolderID: f1.ID,
 		Icon:     "📄",
 		Status:   "IN_PROGRESS",
 		Position: 0,
 		UserID:   "usr_default",
-		Content: `# Engine Architecture Specification
+		Content: `# Product Overview & Strategic Roadmap
 
-## Overview
-This document outlines the high-throughput, low-latency architecture replacing monolithic JavaScript runtimes with high-concurrency Go and C++.
+## Objective
+Consolidate team workflows into a single high-performance workspace covering communication, announcements, and task execution.
 
-### Core Principles
-- **Zero Runtime Dependencies**: No runtime node_modules or transpiled JavaScript frameworks.
-- **Dumb Pipe Transport**: Minimalist JavaScript strictly under 230 lines acting solely as an event relay.
-- **Server-Driven Hypermedia**: Go HTML templates with HTMX for instantaneous sub-5ms DOM swaps.
-- **Native Audio Pipeline**: Low-latency C++ WebRTC packet multiplexing and adaptive jitter buffers.
+## Key Initiatives
+- **Team Collaboration**: Structure active channels and voice discussion rooms.
+- **Company Updates**: Use Global Feed for async status reports and announcements.
+- **Execution & Tracking**: Keep notes, meeting minutes, and Kanban boards organized in My Space.
 
-### Verification Checklist
-- [x] Native Go session-based authentication (Argon2id)
-- [x] Goroutine-backed WebSocket Hub
-- [x] C++ RTP RFC 3550 audio packet processor
-- [x] Opus TOC parser and adaptive jitter buffer
-- [ ] Offline local-first workspace autosave
+## Deliverables
+- [x] Finalize team workspace hierarchy
+- [x] Align sprint milestones with quarterly goals
+- [ ] Complete documentation audit across all active projects
 `,
 		CreatedAt:     now.Add(-24 * time.Hour),
 		UpdatedAt:     now.Add(-15 * time.Minute),
@@ -119,18 +116,21 @@ This document outlines the high-throughput, low-latency architecture replacing m
 
 	d2 := &Document{
 		ID:       "doc_audio_log",
-		Title:    "Audio Buffer & Silence Suppression Benchmarks",
+		Title:    "Team Operating Guidelines & Best Practices",
 		FolderID: f1.ID,
-		Icon:     "🔊",
+		Icon:     "📘",
 		Status:   "DONE",
 		Position: 1,
 		UserID:   "usr_default",
-		Content: `# Audio Buffer & Silence Suppression Benchmarks
+		Content: `# Team Operating Guidelines & Best Practices
 
-## Benchmark Summary
-- **Network Jitter**: RFC 3550 moving variance computed with $J(i) = J(i-1) + (|D| - J(i-1))/16$.
-- **Bandwidth Reduction**: Silence suppression via DTX controller saves ~68% voice bandwidth during conversational pauses.
-- **Comfort Noise Generation**: XorShift32 PRNG shaped at -55 dBFS prevents perceived call dropouts.
+## Overview
+Standard protocols and working agreements for asynchronous communication and project delivery.
+
+## Communication Channels
+- **Real-Time Discussion**: Use #general or direct messages in Chat Hubs.
+- **Company Announcements**: Publish broad updates and polls in the Global Feed.
+- **Project Documentation**: Maintain living documents and Kanban cards in My Space.
 `,
 		CreatedAt:     now.Add(-48 * time.Hour),
 		UpdatedAt:     now.Add(-2 * time.Hour),
@@ -139,17 +139,17 @@ This document outlines the high-throughput, low-latency architecture replacing m
 
 	d3 := &Document{
 		ID:       "doc_sprint_tasks",
-		Title:    "Workspace & Feed Release Tasks",
+		Title:    "Sprint Backlog & Priorities",
 		FolderID: f2.ID,
 		Icon:     "📋",
 		Status:   "TODO",
 		Position: 0,
 		UserID:   "usr_default",
-		Content: `# Workspace Release Tasks
+		Content: `# Sprint Backlog & Priorities
 
-1. Implement Kanban board status transitions
-2. Wire automatic background autosave on typing
-3. Verify local IndexedDB cache synchronization
+1. Review customer feedback on recent updates
+2. Finalize user preferences and navigation shortcuts
+3. Prepare summary deck for leadership review
 `,
 		CreatedAt:     now.Add(-6 * time.Hour),
 		UpdatedAt:     now.Add(-1 * time.Hour),
@@ -158,15 +158,15 @@ This document outlines the high-throughput, low-latency architecture replacing m
 
 	d4 := &Document{
 		ID:       "doc_backlog_ideas",
-		Title:    "Federated Relay & Distributed Sync",
+		Title:    "Project Planning & Backlog Notes",
 		FolderID: f2.ID,
 		Icon:     "💡",
 		Status:   "BACKLOG",
 		Position: 1,
 		UserID:   "usr_default",
-		Content: `# Future Protocol Ideas
+		Content: `# Backlog & Feature Ideas
 
-Exploration of CRDT-based offline peer-to-peer document synchronization and cryptographic signature verification.
+Exploration of upcoming collaboration features, user notification settings, and workspace customization options.
 `,
 		CreatedAt:     now.Add(-12 * time.Hour),
 		UpdatedAt:     now.Add(-4 * time.Hour),

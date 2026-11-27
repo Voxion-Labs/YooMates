@@ -11,7 +11,7 @@
   function updateNetworkStatus() {
     const b = $('network-status-badge');
     if (!b) return;
-    b.textContent = navigator.onLine ? 'WS: Connected' : 'Offline (Cached)';
+    b.textContent = navigator.onLine ? 'Online' : 'Offline';
     b.style.color = navigator.onLine ? 'var(--text-muted)' : 'var(--accent-red)';
     b.style.borderColor = navigator.onLine ? 'var(--border-muted)' : 'var(--accent-red)';
   }
@@ -82,7 +82,7 @@
     if (typeof Go !== 'undefined' && 'WebAssembly' in window) {
       const go = new Go();
       WebAssembly.instantiateStreaming(fetch('/static/wasm/search.wasm'), go.importObject)
-        .then((res) => { go.run(res.instance); const bg = $('wasm-badge'); if (bg) bg.style.opacity = '1'; }).catch(() => {});
+        .then((res) => { go.run(res.instance); }).catch(() => {});
     }
     const si = $('channel-search-input'), sc = $('search-count');
     if (!si) return;
