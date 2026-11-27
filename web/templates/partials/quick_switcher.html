@@ -1,0 +1,119 @@
+{{define "quick_switcher"}}
+<div id="quick-switcher-modal" class="qs-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-label="Quick Switcher">
+  <div class="qs-dialog">
+    <div class="qs-search-header">
+      <span class="qs-search-icon">🔍</span>
+      <input 
+        type="text" 
+        id="qs-search-input" 
+        class="qs-search-input" 
+        placeholder="Jump to surface, channel, or action... (e.g. 'hubs', 'feed', 'space', '#general')" 
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <span class="qs-esc-hint"><kbd>Esc</kbd></span>
+    </div>
+
+    <div id="qs-results-list" class="qs-results-list">
+      <!-- Surfaces -->
+      <div class="qs-group-header">SURFACES &amp; PILLARS</div>
+      <a href="/hubs" class="qs-item" data-url="/hubs" data-keywords="hubs chat channels guilds voice team messages">
+        <span class="qs-item-icon">💬</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">Chat Hubs</span>
+          <span class="qs-item-desc">Real-time team chat, channels &amp; voice rooms</span>
+        </div>
+        <span class="qs-item-badge"><kbd>H</kbd></span>
+      </a>
+      <a href="/global" class="qs-item" data-url="/global" data-keywords="global feed posts news timeline polls updates">
+        <span class="qs-item-icon">🌐</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">Global Feed</span>
+          <span class="qs-item-desc">Organization-wide publishing feed, polls &amp; comments</span>
+        </div>
+        <span class="qs-item-badge"><kbd>G</kbd></span>
+      </a>
+      <a href="/myspace" class="qs-item" data-url="/myspace" data-keywords="my space workspace docs notes kanban documents">
+        <span class="qs-item-icon">📝</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">My Space</span>
+          <span class="qs-item-desc">Personal workspace, markdown notes &amp; kanban</span>
+        </div>
+        <span class="qs-item-badge"><kbd>M</kbd></span>
+      </a>
+
+      <!-- Channels -->
+      <div class="qs-group-header">CHANNELS &amp; AUDIO</div>
+      <a href="/hubs?channel_id=chan_general" class="qs-item" data-url="/hubs?channel_id=chan_general" data-keywords="general chan_general #general default chat">
+        <span class="qs-item-icon">#</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">#general</span>
+          <span class="qs-item-desc">General discussion and daily sync</span>
+        </div>
+        <span class="qs-item-badge">Hubs</span>
+      </a>
+      <a href="/hubs?channel_id=chan_dev_talk" class="qs-item" data-url="/hubs?channel_id=chan_dev_talk" data-keywords="dev-talk development code engineering tech">
+        <span class="qs-item-icon">#</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">#dev-talk</span>
+          <span class="qs-item-desc">Engineering, architecture &amp; code reviews</span>
+        </div>
+        <span class="qs-item-badge">Hubs</span>
+      </a>
+      <a href="/hubs?channel_id=chan_announcements" class="qs-item" data-url="/hubs?channel_id=chan_announcements" data-keywords="announcements releases updates news notice">
+        <span class="qs-item-icon">#</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">#announcements</span>
+          <span class="qs-item-desc">Official team notices &amp; releases</span>
+        </div>
+        <span class="qs-item-badge">Hubs</span>
+      </a>
+      <a href="/hubs?channel_id=chan_voice_lounge" class="qs-item" data-url="/hubs?channel_id=chan_voice_lounge" data-keywords="voice lounge audio call room rtp vad">
+        <span class="qs-item-icon">🔊</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">Voice Lounge</span>
+          <span class="qs-item-desc">Low-latency C++ audio voice room</span>
+        </div>
+        <span class="qs-item-badge">Voice</span>
+      </a>
+
+      <!-- Quick Actions -->
+      <div class="qs-group-header">QUICK ACTIONS</div>
+      <a href="/global#composer-textarea" class="qs-item" data-url="/global#composer-textarea" data-keywords="new post publish create share status poll compose">
+        <span class="qs-item-icon">✍️</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">Compose Global Post</span>
+          <span class="qs-item-desc">Share a quick update or launch a poll</span>
+        </div>
+        <span class="qs-item-badge"><kbd>P</kbd></span>
+      </a>
+      <a href="/myspace" class="qs-item" data-url="/myspace" data-keywords="new document note page create write markdown kanban">
+        <span class="qs-item-icon">📄</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">New Note / Document</span>
+          <span class="qs-item-desc">Create or edit a clean markdown document</span>
+        </div>
+        <span class="qs-item-badge"><kbd>N</kbd></span>
+      </a>
+      <a href="/hubs" class="qs-item" data-url="/hubs" data-keywords="search wasm find in-memory messages filter">
+        <span class="qs-item-icon">🔍</span>
+        <div class="qs-item-info">
+          <span class="qs-item-title">WASM Instant Search</span>
+          <span class="qs-item-desc">Filter in-memory messages with zero latency (Ctrl+F)</span>
+        </div>
+        <span class="qs-item-badge"><kbd>Ctrl+F</kbd></span>
+      </a>
+
+      <div id="qs-empty-msg" class="qs-empty-msg" style="display: none;">
+        No destinations or actions found matching your query.
+      </div>
+    </div>
+
+    <footer class="qs-footer">
+      <span class="qs-footer-tip"><kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
+      <span class="qs-footer-tip"><kbd>↵</kbd> to select</span>
+      <span class="qs-footer-tip"><kbd>Esc</kbd> to dismiss</span>
+    </footer>
+  </div>
+</div>
+{{end}}

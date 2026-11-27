@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS verification_tokens (
     PRIMARY KEY (identifier, token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2. Hubs (Discord Core Collaboration)
+-- 2. Hubs Core Collaboration
 CREATE TABLE IF NOT EXISTS servers (
     id VARCHAR(64) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS reactions (
     CONSTRAINT fk_reactions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 3. Global Feed (Twitter Core)
+-- 3. Global Feed Core
 CREATE TABLE IF NOT EXISTS posts (
     id VARCHAR(64) PRIMARY KEY,
     content TEXT NOT NULL,
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS poll_votes (
     CONSTRAINT fk_poll_votes_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 4. My Space (Notion Core)
+-- 4. My Space Core
 CREATE TABLE IF NOT EXISTS document_folders (
     id VARCHAR(64) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

@@ -96,7 +96,7 @@ func getCurrentUser(r *http.Request) CurrentUserItem {
 	}
 }
 
-// GlobalHandler renders the master Twitter/X style Global Feed surface
+// GlobalHandler renders the master Global Feed surface
 func (v *ViewEngine) GlobalHandler(w http.ResponseWriter, r *http.Request) {
 	user := getCurrentUser(r)
 

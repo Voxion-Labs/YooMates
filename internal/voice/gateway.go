@@ -280,12 +280,12 @@ func (g *Gateway) GetPeerMetrics(channelID, userID string) PeerMetrics {
 	return DefaultMetrics()
 }
 
-// RenderVoiceStatusOOB renders Discord-style bottom-left Voice Connected panel
+// RenderVoiceStatusOOB renders bottom-left Voice Connected panel
 func RenderVoiceStatusOOB(channelID, channelName string, peer *VoicePeer) string {
 	return RenderVoiceStatusWithMetricsOOB(channelID, channelName, peer, DefaultMetrics())
 }
 
-// RenderVoiceStatusWithMetricsOOB renders Discord-style bottom-left Voice Connected panel with real-time stats
+// RenderVoiceStatusWithMetricsOOB renders bottom-left Voice Connected panel with real-time stats
 func RenderVoiceStatusWithMetricsOOB(channelID, channelName string, peer *VoicePeer, metrics PeerMetrics) string {
 	micIcon := "🎤"
 	if peer.Muted {

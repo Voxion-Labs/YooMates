@@ -69,7 +69,7 @@ func SetupRoutes(cfg *config.Config, authMgr *auth.Manager, hub *hubs.Hub, viewE
 		mux.Handle("/uploads/", http.StripPrefix("/uploads", hubs.ServeFilesHandler(uploader)))
 	}
 
-	// Root redirect: Hubs (Discord chat) is the default primary view
+	// Root redirect: Hubs is the default primary view
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)

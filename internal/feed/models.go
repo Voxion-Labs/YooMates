@@ -40,7 +40,7 @@ type Comment struct {
 	FormattedTime  string    `json:"formatted_time"`
 }
 
-// Post represents a Twitter/X style publication in the Global Feed
+// Post represents a publication in the Global Feed
 type Post struct {
 	ID             string    `json:"id"`
 	Content        string    `json:"content"`

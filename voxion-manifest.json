@@ -1,10 +1,43 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-26T07:53:07Z",
+  "last_updated": "2026-11-27T07:08:08Z",
   "branch": "main",
-  "head_commit": "38e0a5e93de24d7d45470df843c9a8563e49660e",
+  "head_commit": "69bd7c76044088d6fef6c3a3933947518c675bc9",
   "history": [
+    {
+      "hash": "69bd7c76044088d6fef6c3a3933947518c675bc9",
+      "short_hash": "69bd7c7",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-27T12:38:03+05:30",
+      "subject": "feat(ui): implement universal Quick Switcher, Ctrl+K shortcuts, and monochromatic design polish",
+      "files_changed": [
+        "ROADMAP.md",
+        "cmd/server/main.go",
+        "internal/feed/handlers.go",
+        "internal/feed/models.go",
+        "internal/voice/gateway.go",
+        "migrations/0001_initial_schema.sql",
+        "web/static/css/app.css",
+        "web/static/js/dumb-pipe.js",
+        "web/templates/base.html",
+        "web/templates/global.html",
+        "web/templates/hubs.html",
+        "web/templates/myspace.html",
+        "web/templates/partials/quick_switcher.html",
+        "web/templates/partials/server_rail.html"
+      ]
+    },
+    {
+      "hash": "3296dc05fbaf9ca7c1e6bc57ffb6976176f67b1b",
+      "short_hash": "3296dc0",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-26T07:53:07Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "38e0a5e93de24d7d45470df843c9a8563e49660e",
       "short_hash": "38e0a5e",
@@ -359,35 +392,6 @@
         ".github/workflows/voxion-bot.yml",
         "Dockerfile",
         "go.mod"
-      ]
-    },
-    {
-      "hash": "06f55303d12620f0e474e7fd73242155c2d7307f",
-      "short_hash": "06f5530",
-      "author_name": "voxion-bot",
-      "author_email": "voxion-bot@voxionlabs.io",
-      "timestamp": "2026-11-24T07:10:04Z",
-      "subject": "chore(bot): update commit manifest [skip ci]",
-      "files_changed": null
-    },
-    {
-      "hash": "f416fc59195362dc08cb5f47d88be624f4c18960",
-      "short_hash": "f416fc5",
-      "author_name": "R-Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-11-24T12:38:48+05:30",
-      "subject": "Add native Go WebSocket hub with channel pub-sub and presence tracking",
-      "files_changed": [
-        "ROADMAP.md",
-        "cmd/server/main.go",
-        "cmd/server/main_test.go",
-        "go.mod",
-        "go.sum",
-        "internal/hubs/client.go",
-        "internal/hubs/handler.go",
-        "internal/hubs/hub.go",
-        "internal/hubs/hub_test.go",
-        "internal/hubs/message.go"
       ]
     }
   ]

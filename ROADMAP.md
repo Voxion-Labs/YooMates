@@ -8,9 +8,9 @@
 ## 1. Core Product Identity & Pillars
 
 YooMates is designed around three tightly integrated pillars:
-1. **Hubs (Primary / Default View)**: Discord-like real-time team collaboration with guilds/servers, channels (text/audio/video), direct messages, message reactions, threads, typing indicators, and presence.
-2. **Global**: Twitter/X-like organization-wide publishing feed with posts, comments, likes, bookmarks, quote posts, polls, and infinite scroll.
-3. **My Space**: Notion-like personal execution workspace with nested hierarchical documents, markdown/block-based editing, reminders, and kanban/list views.
+1. **Hubs (Primary / Default View)**: Real-time team collaboration with guilds/servers, channels (text/audio/video), direct messages, message reactions, threads, typing indicators, and presence.
+2. **Global**: Organization-wide publishing feed with posts, comments, likes, bookmarks, quote posts, polls, and infinite scroll.
+3. **My Space**: Personal execution workspace with nested hierarchical documents, markdown/block-based editing, reminders, and kanban/list views.
 
 ---
 
@@ -83,7 +83,7 @@ YooMates is designed around three tightly integrated pillars:
 
 ---
 
-### **Phase 6: Hardening, Benchmarking & Legacy Cleanup** `[PENDING]`
-- [ ] **Sub-phase 6.1**: Monochromatic / utilitarian styling audit and keyboard shortcuts (`Ctrl+K`, quick switcher).
+### **Phase 6: Hardening, Benchmarking & Legacy Cleanup** `[IN PROGRESS]`
+- [x] **Sub-phase 6.1**: Monochromatic / utilitarian styling audit and keyboard shortcuts (`Ctrl+K`, quick switcher).
 - [ ] **Sub-phase 6.2**: Concurrency load benchmarking (Go WebSocket vs legacy Pusher/Node).
 - [ ] **Sub-phase 6.3**: Complete deprecation & removal of legacy TS/Next.js files (`package.json`, `node_modules`, `src/app`).
