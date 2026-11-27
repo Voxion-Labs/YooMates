@@ -9,7 +9,7 @@ BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2>NUL || echo main)
 BIN_DIR := bin
 SERVER_BIN := $(BIN_DIR)/server.exe
 
-.PHONY: help pull push sync manifest build wasm audio-engine test-audio run test clean status
+.PHONY: help pull push sync manifest build wasm audio-engine test-audio benchmark run test clean status
 
 help:
 	@echo ===============================================================
@@ -23,6 +23,7 @@ help:
 	@echo   make wasm         - Compile WebAssembly client search module
 	@echo   make audio-engine - Compile C++ low-latency audio processing engine
 	@echo   make test-audio   - Run C++ audio engine verification suite
+	@echo   make benchmark    - Execute WebSocket concurrency load benchmarks
 	@echo   make run          - Run local Go server (cmd/server/main.go)
 	@echo   make test         - Execute Go unit tests
 	@echo   make status       - View current git branch and uncommitted changes
@@ -68,6 +69,11 @@ audio-engine:
 test-audio: audio-engine
 	@echo [test] Executing C++ audio test suite...
 	$(BIN_DIR)\yoomates-voice.exe --test
+
+benchmark:
+	@echo [benchmark] Running concurrency load benchmark suite...
+	go test -bench Benchmark -run none .\internal\hubs
+	go run ./cmd/benchmark/main.go
 
 run:
 	@echo [run] Launching YooMates Go server...

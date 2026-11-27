@@ -85,5 +85,5 @@ YooMates is designed around three tightly integrated pillars:
 
 ### **Phase 6: Hardening, Benchmarking & Legacy Cleanup** `[IN PROGRESS]`
 - [x] **Sub-phase 6.1**: Monochromatic / utilitarian styling audit and keyboard shortcuts (`Ctrl+K`, quick switcher).
-- [ ] **Sub-phase 6.2**: Concurrency load benchmarking (Go WebSocket vs legacy Pusher/Node).
+- [x] **Sub-phase 6.2**: Concurrency load benchmarking (Go WebSocket vs legacy Pusher/Node).
 - [ ] **Sub-phase 6.3**: Complete deprecation & removal of legacy TS/Next.js files (`package.json`, `node_modules`, `src/app`).

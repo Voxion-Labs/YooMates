@@ -1,10 +1,35 @@
 {
   "project": "YooMates",
   "bot_name": "voxion-bot",
-  "last_updated": "2026-11-27T07:08:45Z",
+  "last_updated": "2026-11-27T07:17:13Z",
   "branch": "main",
-  "head_commit": "2d5e5e400522e718d0e6f415361296c2abca5021",
+  "head_commit": "2abc2d465f351278a9d4ea264ab386e3fd27ca7b",
   "history": [
+    {
+      "hash": "2abc2d465f351278a9d4ea264ab386e3fd27ca7b",
+      "short_hash": "2abc2d4",
+      "author_name": "R-Jena",
+      "author_email": "rudrajena.ventures@outlook.com",
+      "timestamp": "2026-11-27T12:47:08+05:30",
+      "subject": "feat(perf): implement concurrency load benchmark suite and document telemetry",
+      "files_changed": [
+        "BENCHMARKS.md",
+        "Makefile",
+        "ROADMAP.md",
+        "cmd/benchmark/main.go",
+        "internal/hubs/hub.go",
+        "internal/hubs/hub_benchmark_test.go"
+      ]
+    },
+    {
+      "hash": "c2375d79ebf98f8f5c0cec0051856ec93a158fb8",
+      "short_hash": "c2375d7",
+      "author_name": "voxion-bot",
+      "author_email": "voxion-bot@voxionlabs.io",
+      "timestamp": "2026-11-27T07:08:45Z",
+      "subject": "chore(bot): update commit manifest [skip ci]",
+      "files_changed": null
+    },
     {
       "hash": "2d5e5e400522e718d0e6f415361296c2abca5021",
       "short_hash": "2d5e5e4",
@@ -369,29 +394,6 @@
         "web/templates/partials/message_item.html",
         "web/templates/partials/message_stream.html",
         "web/templates/partials/server_rail.html"
-      ]
-    },
-    {
-      "hash": "5b64f9479ae895ab233467cb8790e11cf9b53b33",
-      "short_hash": "5b64f94",
-      "author_name": "voxion-bot",
-      "author_email": "voxion-bot@voxionlabs.io",
-      "timestamp": "2026-11-24T07:16:06Z",
-      "subject": "chore(bot): update commit manifest [skip ci]",
-      "files_changed": null
-    },
-    {
-      "hash": "295d008723d4f5631f19a5fe6d736ab4871f1120",
-      "short_hash": "295d008",
-      "author_name": "R-Jena",
-      "author_email": "rudrajena440@gmail.com",
-      "timestamp": "2026-11-24T12:45:13+05:30",
-      "subject": "Update Docker builder and CI workflows to use latest Go toolchain",
-      "files_changed": [
-        ".github/workflows/ci.yml",
-        ".github/workflows/voxion-bot.yml",
-        "Dockerfile",
-        "go.mod"
       ]
     }
   ]

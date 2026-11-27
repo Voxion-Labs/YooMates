@@ -246,8 +246,10 @@ func (h *Hub) dispatch(msg *WSMessage) {
 				select {
 				case client.Send <- bytes:
 				default:
-					close(client.Send)
-					delete(h.clients, client)
+					select {
+					case h.unregister <- client:
+					default:
+					}
 				}
 			}
 		}
@@ -261,8 +263,10 @@ func (h *Hub) dispatch(msg *WSMessage) {
 				select {
 				case client.Send <- bytes:
 				default:
-					close(client.Send)
-					delete(h.clients, client)
+					select {
+					case h.unregister <- client:
+					default:
+					}
 				}
 			}
 		}
@@ -274,8 +278,10 @@ func (h *Hub) dispatch(msg *WSMessage) {
 		select {
 		case client.Send <- bytes:
 		default:
-			close(client.Send)
-			delete(h.clients, client)
+			select {
+			case h.unregister <- client:
+			default:
+			}
 		}
 	}
 }
@@ -347,4 +353,14 @@ func (h *Hub) ActiveConnections() int {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
 	return len(h.clients)
+}
+
+// RegisterClient registers a client session with the hub
+func (h *Hub) RegisterClient(client *Client) {
+	h.register <- client
+}
+
+// UnregisterClient unregisters a client session from the hub
+func (h *Hub) UnregisterClient(client *Client) {
+	h.unregister <- client
 }
